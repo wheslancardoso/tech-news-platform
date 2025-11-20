@@ -1,10 +1,14 @@
+'use client'
+
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Trash2 } from 'lucide-react'
 import { PublishButton } from '@/components/publish-button'
+import { Button } from '@/components/ui/button'
+import { deleteNewsletter } from '@/actions/admin'
+import { useState } from 'react'
 
 interface NewsCardProps {
   id: string
@@ -13,36 +17,69 @@ interface NewsCardProps {
   date: string
   intro?: string
   status?: 'draft' | 'published'
-  isAdmin?: boolean // Nova prop
+  isAdmin?: boolean
 }
 
 export function NewsCard({ id, edition, title, date, intro, status = 'published', isAdmin = false }: NewsCardProps) {
   const dateObj = new Date(date)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!confirm(`ATENÇÃO: Isso excluirá a Edição #${edition} permanentemente e reajustará o índice de todas as edições posteriores. Continuar?`)) {
+      return
+    }
+
+    setIsDeleting(true)
+    const result = await deleteNewsletter(id, edition)
+    if (!result.success) {
+      alert(result.message)
+      setIsDeleting(false)
+    }
+  }
   
   return (
-    <div className="relative group h-full">
-      {/* Botão de Publicar (Visível apenas se draft E admin) */}
-      {isAdmin && <PublishButton id={id} status={status} />}
-
-      <Link href={`/archive/${id}`} className="block h-full">
-        <article className="h-full bg-white border border-border transition-all duration-200 ease-in-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 flex flex-col rounded-lg overflow-hidden">
+    <div className="h-full">
+      <Link href={`/archive/${id}`} className="block h-full group">
+        <article className="h-full bg-white border border-border transition-all duration-200 ease-in-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 flex flex-col rounded-lg overflow-hidden relative">
           <div className="p-6 flex flex-col flex-grow">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
-                {format(dateObj, "d MMM", { locale: ptBR })}
-              </span>
-              <div className="flex gap-2 items-center">
-                {status === 'draft' && isAdmin && ( // Draft badge visível apenas para admin ou visível para todos? Geralmente draft não aparece para público.
-                  <Badge variant="secondary" className="text-[10px] h-5 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-                    Draft
+            
+            {/* Header: Data + Badges + Admin Controls */}
+            <div className="flex flex-col gap-3 mb-4">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+                  {format(dateObj, "d MMM", { locale: ptBR })}
+                </span>
+                <div className="flex gap-2 items-center">
+                  {status === 'draft' && isAdmin && ( 
+                    <Badge variant="secondary" className="text-[10px] h-5 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                      Draft
+                    </Badge>
+                  )}
+                  <Badge variant="outline" className="text-[10px] font-normal px-2 py-0 h-5">
+                    #{edition}
                   </Badge>
-                )}
-                {/* Se for draft e não admin, talvez nem devesse renderizar, mas a filtragem acontece na query do banco */}
-                
-                <Badge variant="outline" className="text-[10px] font-normal px-2 py-0 h-5">
-                  #{edition}
-                </Badge>
+                </div>
               </div>
+
+              {/* Admin Controls Row - Movido para dentro do fluxo normal */}
+              {isAdmin && (
+                <div className="flex justify-end gap-2 pt-1 border-t border-dashed">
+                   <PublishButton id={id} status={status} />
+                   <Button 
+                     size="sm" 
+                     variant="destructive" 
+                     className="h-8 px-2"
+                     onClick={handleDelete}
+                     disabled={isDeleting}
+                     title="Excluir Edição"
+                   >
+                     <Trash2 className="w-4 h-4" />
+                   </Button>
+                </div>
+              )}
             </div>
             
             <h3 className="text-xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">

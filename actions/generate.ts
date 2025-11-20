@@ -103,15 +103,26 @@ export async function generateDraft(formData?: FormData) {
       })
     )
 
-    // 4. Persistência
+    // 4. Persistência: Calcular Próximo Número de Edição Manualmente
     const supabase = await createClient()
+
+    // Busca o maior edition_number atual
+    const { data: maxEditionData } = await supabase
+      .from('newsletters')
+      .select('edition_number')
+      .order('edition_number', { ascending: false })
+      .limit(1)
+      .single()
+
+    const nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
     
     const { error } = await supabase
       .from('newsletters')
       .insert({
+        edition_number: nextEditionNumber, // Força o número calculado
         title: contentJson.title,
         summary_intro: contentJson.intro,
-        content_json: contentJson, // Salva a nova estrutura JSON
+        content_json: contentJson,
         html_content: htmlContent,
         status: 'draft'
       })
@@ -121,7 +132,7 @@ export async function generateDraft(formData?: FormData) {
       throw new Error('Falha ao salvar draft')
     }
 
-    console.log('🎉 Edição Tech News salva com sucesso!')
+    console.log(`🎉 Edição #${nextEditionNumber} salva com sucesso!`)
     revalidatePath('/')
     
   } catch (error) {
