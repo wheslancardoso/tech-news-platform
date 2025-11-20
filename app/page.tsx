@@ -156,6 +156,14 @@ export default async function Home() {
           </div>
         </div>
       </footer>
+      {/* Floating Dev Trigger */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <form action={generateDraft}>
+          <Button type="submit" variant="secondary" className="shadow-lg opacity-75 hover:opacity-100 transition-opacity">
+            ⚡ (Dev) Gerar Edição
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }
