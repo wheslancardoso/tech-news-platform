@@ -84,6 +84,7 @@ export default async function Home() {
                     title={news.title}
                     date={news.created_at}
                     intro={news.summary_intro}
+                    status={news.status} // Passando status para o card
                   />
                 ))}
               </div>
