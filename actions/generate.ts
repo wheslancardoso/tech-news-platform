@@ -2,70 +2,108 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import Parser from 'rss-parser'
+import OpenAI from 'openai'
+import { render } from '@react-email/render'
+import { DailyNewsletter } from '@/emails/daily-template'
 
-// Mocks para simulação
-const MOCK_RSS_URLS = [
+// Configurações
+const FEEDS = [
   'https://techcrunch.com/feed/',
-  'https://news.ycombinator.com/rss',
-  'https://verge.com/rss'
+  'https://www.theverge.com/rss/index.xml'
 ]
 
-const MOCK_AI_RESPONSE = {
-  title: 'Tech Daily: AI Revolution & Next.js Updates',
-  intro: 'Hoje o mundo da tecnologia parou para ver as novidades da Vercel e os novos modelos da OpenAI.',
-  sections: [
-    {
-      headline: 'GPT-5 Anunciado?',
-      body: 'Rumores indicam que o novo modelo está mais próximo do que imaginamos, com capacidades de raciocínio avançadas.',
-      link: 'https://openai.com'
-    },
-    {
-      headline: 'Next.js 15 Estável',
-      body: 'A nova versão traz melhorias significativas em performance e simplificação das Server Actions.',
-      link: 'https://nextjs.org'
-    }
-  ]
-}
-
 export async function generateDraft(formData?: FormData) {
-  const supabase = await createClient()
-  
-  // 1. Mock: Ler RSS (Em produção, usaríamos rss-parser aqui)
-  console.log('Lendo feeds RSS:', MOCK_RSS_URLS)
-  
-  // 2. Mock: Simular chamada OpenAI
-  console.log('Gerando resumo com AI...')
-  
-  const content = MOCK_AI_RESPONSE
-  
-  // 3. Gerar HTML básico (para o email)
-  const htmlContent = `
-    <h1>${content.title}</h1>
-    <p>${content.intro}</p>
-    ${content.sections.map(s => `
-      <div style="margin-bottom: 20px;">
-        <h3>${s.headline}</h3>
-        <p>${s.body}</p>
-        <a href="${s.link}">Ler mais</a>
-      </div>
-    `).join('')}
-  `
+  console.log('🚀 Iniciando geração de draft...')
 
-  // 4. Salvar no Supabase
-  const { error } = await supabase
-    .from('newsletters')
-    .insert({
-      title: content.title,
-      summary_intro: content.intro,
-      content_json: content,
-      html_content: htmlContent,
-      status: 'draft'
+  try {
+    // 1. Ingestão: Ler Feeds RSS
+    const parser = new Parser()
+    const feedItems: any[] = []
+
+    for (const url of FEEDS) {
+      try {
+        const feed = await parser.parseURL(url)
+        feedItems.push(...feed.items)
+      } catch (error) {
+        console.error(`Erro ao ler feed ${url}:`, error)
+        // Continua mesmo se um feed falhar
+      }
+    }
+
+    // Ordenar por data (mais recentes primeiro) e pegar os top 5
+    const sortedItems = feedItems
+      .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
+      .slice(0, 5)
+
+    // Preparar dados para a IA
+    const itemsForAI = sortedItems.map(item => ({
+      title: item.title,
+      link: item.link,
+      pubDate: item.pubDate
+    }))
+
+    console.log(`✅ RSS processado. ${itemsForAI.length} itens encontrados.`)
+
+    // 2. O Editor: Chamada OpenAI
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
     })
 
-  if (error) {
-    console.error('Erro ao salvar draft:', error)
-    throw new Error('Falha ao gerar draft')
-  }
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "Você é um editor de tecnologia experiente. Gere uma newsletter matinal em Português do Brasil. O output deve ser EXCLUSIVAMENTE um JSON válido com a estrutura: { title: string, intro: string, sections: { headline: string, body: string, link: string }[] }."
+        },
+        {
+          role: "user",
+          content: `Aqui estão as notícias mais recentes:\n${JSON.stringify(itemsForAI)}`
+        }
+      ],
+      response_format: { type: "json_object" }
+    })
 
-  revalidatePath('/')
+    const aiContent = completion.choices[0].message.content
+    if (!aiContent) throw new Error('Falha ao gerar conteúdo com IA')
+
+    const contentJson = JSON.parse(aiContent)
+    console.log('✅ Conteúdo gerado pela IA:', contentJson.title)
+
+    // 3. Renderização: Gerar HTML com React Email
+    const htmlContent = await render(
+      DailyNewsletter({
+        title: contentJson.title,
+        intro: contentJson.intro,
+        sections: contentJson.sections
+      })
+    )
+
+    // 4. Persistência: Salvar no Supabase
+    const supabase = await createClient()
+    
+    const { error } = await supabase
+      .from('newsletters')
+      .insert({
+        title: contentJson.title,
+        summary_intro: contentJson.intro,
+        content_json: contentJson,
+        html_content: htmlContent,
+        status: 'draft'
+      })
+
+    if (error) {
+      console.error('Erro ao salvar no Supabase:', error)
+      throw new Error('Falha ao salvar draft')
+    }
+
+    console.log('🎉 Newsletter salva com sucesso!')
+    revalidatePath('/')
+    
+  } catch (error) {
+    console.error('❌ Erro fatal na geração:', error)
+    // Não relançamos o erro para não quebrar a UI se for chamado via form
+    // Em produção, deveríamos reportar para um sistema de logs (Sentry)
+  }
 }
