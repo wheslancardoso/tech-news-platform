@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import OpenAI from 'openai'
+import { revalidatePath } from 'next/cache'
 
 // Mocks para simulação
 const MOCK_RSS_URLS = [
@@ -27,21 +27,18 @@ const MOCK_AI_RESPONSE = {
   ]
 }
 
-export async function generateDraft() {
+export async function generateDraft(formData?: FormData) {
   const supabase = await createClient()
   
   // 1. Mock: Ler RSS (Em produção, usaríamos rss-parser aqui)
   console.log('Lendo feeds RSS:', MOCK_RSS_URLS)
   
   // 2. Mock: Simular chamada OpenAI
-  // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  // Em produção: const completion = await openai.chat.completions.create(...)
   console.log('Gerando resumo com AI...')
   
   const content = MOCK_AI_RESPONSE
   
   // 3. Gerar HTML básico (para o email)
-  // Em produção, renderizaríamos o componente React Email aqui para string
   const htmlContent = `
     <h1>${content.title}</h1>
     <p>${content.intro}</p>
@@ -55,7 +52,7 @@ export async function generateDraft() {
   `
 
   // 4. Salvar no Supabase
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('newsletters')
     .insert({
       title: content.title,
@@ -64,14 +61,11 @@ export async function generateDraft() {
       html_content: htmlContent,
       status: 'draft'
     })
-    .select()
-    .single()
 
   if (error) {
     console.error('Erro ao salvar draft:', error)
     throw new Error('Falha ao gerar draft')
   }
 
-  return { success: true, data }
+  revalidatePath('/')
 }
-
