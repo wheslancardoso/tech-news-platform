@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  tech-news:
+    build: .
+    container_name: tech-news-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Importante para Hot Reload no Windows
+    env_file:
+      - .env.local # Lê as chaves automaticamente
