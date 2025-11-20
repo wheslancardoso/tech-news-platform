@@ -2,9 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { NewsCard } from '@/components/news-card'
 import { generateDraft } from '@/actions/generate'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
+import { SubscribeForm } from '@/components/subscribe-form'
 
 export const revalidate = 0 
 
@@ -49,21 +49,8 @@ export default async function Home() {
               Um resumo diário de 5 minutos com tudo que você precisa saber para começar o dia bem informado.
             </p>
 
-            <div className="max-w-md mx-auto mt-10">
-              <div className="flex gap-2">
-                <Input 
-                  type="email" 
-                  placeholder="Seu melhor e-mail" 
-                  className="h-12 rounded-lg border-slate-300 text-base px-4 focus-visible:ring-black"
-                />
-                <Button size="lg" className="h-12 px-8 rounded-lg bg-black text-white hover:bg-zinc-800 font-medium">
-                  Inscrever-se
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3">
-                Junte-se a 10.000+ leitores inteligentes. Cancelamento a qualquer momento.
-              </p>
-            </div>
+            {/* Formulário de Inscrição */}
+            <SubscribeForm />
 
             {/* Hidden Dev Trigger */}
             <form action={generateDraft} className="opacity-0 hover:opacity-100 transition-opacity absolute top-0 right-0 p-4">
