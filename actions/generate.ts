@@ -14,10 +14,10 @@ const FEEDS = [
 ]
 
 export async function generateDraft(formData?: FormData) {
-  console.log('🚀 Iniciando geração de draft...')
+  console.log('🚀 Iniciando geração editorial Tech News...')
 
   try {
-    // 1. Ingestão: Ler Feeds RSS
+    // 1. Ingestão: Ler Feeds RSS com mais contexto
     const parser = new Parser()
     const feedItems: any[] = []
 
@@ -27,25 +27,26 @@ export async function generateDraft(formData?: FormData) {
         feedItems.push(...feed.items)
       } catch (error) {
         console.error(`Erro ao ler feed ${url}:`, error)
-        // Continua mesmo se um feed falhar
       }
     }
 
-    // Ordenar por data (mais recentes primeiro) e pegar os top 5
+    // Ordenar e pegar Top 8 (aumentamos para ter material para categorias)
     const sortedItems = feedItems
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
-      .slice(0, 5)
+      .slice(0, 8)
 
-    // Preparar dados para a IA
+    // Preparar dados ricos para a IA
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
-      pubDate: item.pubDate
+      // Tenta pegar o conteúdo mais completo possível
+      content: (item.contentSnippet || item.content || '').substring(0, 500), 
+      source: new URL(item.link).hostname
     }))
 
-    console.log(`✅ RSS processado. ${itemsForAI.length} itens encontrados.`)
+    console.log(`✅ RSS processado. ${itemsForAI.length} itens enviados para editoria.`)
 
-    // 2. O Editor: Chamada OpenAI
+    // 2. O Editor-Chefe: Chamada OpenAI
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     })
@@ -55,11 +56,33 @@ export async function generateDraft(formData?: FormData) {
       messages: [
         {
           role: "system",
-          content: "Você é um editor de tecnologia experiente. Gere uma newsletter matinal em Português do Brasil. O output deve ser EXCLUSIVAMENTE um JSON válido com a estrutura: { title: string, intro: string, sections: { headline: string, body: string, link: string }[] }."
+          content: `Você é o editor-chefe do 'Tech News'. Sua missão é criar uma newsletter editorial completa e profissional.
+          
+          DIRETRIZES EDITORIAIS:
+          1. NÃO faça apenas uma lista de links. O leitor deve se informar lendo APENAS a newsletter.
+          2. AGRUPE as notícias em categorias temáticas claras (ex: '🤖 INTELIGÊNCIA ARTIFICIAL', '💻 DESENVOLVIMENTO', '📱 MOBILE', '🚀 BIG TECH', '💰 MERCADO').
+          3. Para cada notícia, escreva uma 'story' jornalística de 2 a 3 parágrafos curtos, explicando o contexto e o impacto. Use tom objetivo mas envolvente.
+          4. Output OBRIGATÓRIO em JSON estrito seguindo esta estrutura exata:
+          {
+            "title": "Título chamativo da edição",
+            "intro": "Introdução curta sobre o destaque do dia",
+            "categories": [
+              {
+                "name": "NOME DA CATEGORIA",
+                "items": [
+                  {
+                    "headline": "Manchete da Notícia",
+                    "story": "Texto completo do resumo jornalístico (use \\n para quebras de parágrafo).",
+                    "link": "URL original"
+                  }
+                ]
+              }
+            ]
+          }`
         },
         {
           role: "user",
-          content: `Aqui estão as notícias mais recentes:\n${JSON.stringify(itemsForAI)}`
+          content: `Aqui estão as matérias brutas:\n${JSON.stringify(itemsForAI)}`
         }
       ],
       response_format: { type: "json_object" }
@@ -69,18 +92,18 @@ export async function generateDraft(formData?: FormData) {
     if (!aiContent) throw new Error('Falha ao gerar conteúdo com IA')
 
     const contentJson = JSON.parse(aiContent)
-    console.log('✅ Conteúdo gerado pela IA:', contentJson.title)
+    console.log('✅ Edição gerada:', contentJson.title)
 
-    // 3. Renderização: Gerar HTML com React Email
+    // 3. Renderização: Gerar HTML com React Email (Nova Estrutura)
     const htmlContent = await render(
       DailyNewsletter({
         title: contentJson.title,
         intro: contentJson.intro,
-        sections: contentJson.sections
+        categories: contentJson.categories
       })
     )
 
-    // 4. Persistência: Salvar no Supabase
+    // 4. Persistência
     const supabase = await createClient()
     
     const { error } = await supabase
@@ -88,7 +111,7 @@ export async function generateDraft(formData?: FormData) {
       .insert({
         title: contentJson.title,
         summary_intro: contentJson.intro,
-        content_json: contentJson,
+        content_json: contentJson, // Salva a nova estrutura JSON
         html_content: htmlContent,
         status: 'draft'
       })
@@ -98,12 +121,10 @@ export async function generateDraft(formData?: FormData) {
       throw new Error('Falha ao salvar draft')
     }
 
-    console.log('🎉 Newsletter salva com sucesso!')
+    console.log('🎉 Edição Tech News salva com sucesso!')
     revalidatePath('/')
     
   } catch (error) {
     console.error('❌ Erro fatal na geração:', error)
-    // Não relançamos o erro para não quebrar a UI se for chamado via form
-    // Em produção, deveríamos reportar para um sistema de logs (Sentry)
   }
 }

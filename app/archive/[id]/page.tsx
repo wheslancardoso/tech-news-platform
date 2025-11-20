@@ -28,6 +28,13 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
     notFound()
   }
 
+  // Extrair apenas o miolo do HTML para evitar conflito de tags <html>/<body>
+  let safeHtml = newsletter.html_content || '';
+  const bodyMatch = safeHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  if (bodyMatch && bodyMatch[1]) {
+    safeHtml = bodyMatch[1];
+  }
+
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
       {/* Header Unificado */}
@@ -91,7 +98,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
               prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
               prose-strong:text-slate-900
               prose-li:marker:text-slate-400"
-              dangerouslySetInnerHTML={{ __html: newsletter.html_content || '' }}
+              dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
 
             {/* CTA Final */}
