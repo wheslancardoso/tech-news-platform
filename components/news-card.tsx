@@ -12,16 +12,17 @@ interface NewsCardProps {
   title: string
   date: string
   intro?: string
-  status?: 'draft' | 'published' // Adicionado status
+  status?: 'draft' | 'published'
+  isAdmin?: boolean // Nova prop
 }
 
-export function NewsCard({ id, edition, title, date, intro, status = 'published' }: NewsCardProps) {
+export function NewsCard({ id, edition, title, date, intro, status = 'published', isAdmin = false }: NewsCardProps) {
   const dateObj = new Date(date)
   
   return (
     <div className="relative group h-full">
-      {/* Botão de Publicar (Visível apenas se draft) */}
-      <PublishButton id={id} status={status} />
+      {/* Botão de Publicar (Visível apenas se draft E admin) */}
+      {isAdmin && <PublishButton id={id} status={status} />}
 
       <Link href={`/archive/${id}`} className="block h-full">
         <article className="h-full bg-white border border-border transition-all duration-200 ease-in-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 flex flex-col rounded-lg overflow-hidden">
@@ -31,11 +32,13 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
                 {format(dateObj, "d MMM", { locale: ptBR })}
               </span>
               <div className="flex gap-2 items-center">
-                {status === 'draft' && (
+                {status === 'draft' && isAdmin && ( // Draft badge visível apenas para admin ou visível para todos? Geralmente draft não aparece para público.
                   <Badge variant="secondary" className="text-[10px] h-5 bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
                     Draft
                   </Badge>
                 )}
+                {/* Se for draft e não admin, talvez nem devesse renderizar, mas a filtragem acontece na query do banco */}
+                
                 <Badge variant="outline" className="text-[10px] font-normal px-2 py-0 h-5">
                   #{edition}
                 </Badge>

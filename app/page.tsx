@@ -5,16 +5,26 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
 import { SubscribeForm } from '@/components/subscribe-form'
+import { cookies } from 'next/headers'
 
 export const revalidate = 0 
 
 export default async function Home() {
   const supabase = await createClient()
+  const cookieStore = await cookies()
+  const isAdmin = cookieStore.has('admin_session')
 
-  const { data: newsletters } = await supabase
+  // Se for admin, busca tudo. Se não, apenas publicados.
+  let query = supabase
     .from('newsletters')
     .select('*')
     .order('edition_number', { ascending: false })
+  
+  if (!isAdmin) {
+    query = query.eq('status', 'published')
+  }
+
+  const { data: newsletters } = await query
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
@@ -52,12 +62,14 @@ export default async function Home() {
             {/* Formulário de Inscrição */}
             <SubscribeForm />
 
-            {/* Hidden Dev Trigger */}
-            <form action={generateDraft} className="opacity-0 hover:opacity-100 transition-opacity absolute top-0 right-0 p-4">
-               <Button type="submit" variant="ghost" size="sm" className="text-xs">
-                 (Dev) Gerar Edição
-               </Button>
-            </form>
+            {/* Floating Dev Trigger (APENAS ADMIN) */}
+            {isAdmin && (
+              <form action={generateDraft} className="opacity-0 hover:opacity-100 transition-opacity absolute top-0 right-0 p-4">
+                <Button type="submit" variant="ghost" size="sm" className="text-xs">
+                  (Dev) Gerar Edição
+                </Button>
+              </form>
+            )}
           </div>
         </section>
 
@@ -72,7 +84,12 @@ export default async function Home() {
             {!newsletters || newsletters.length === 0 ? (
               <div className="text-center py-24 border-2 border-dashed rounded-xl bg-white">
                 <p className="text-muted-foreground">Nenhuma edição encontrada.</p>
-                <p className="text-sm text-slate-400 mt-2">Use o botão oculto no canto superior direito para gerar conteúdo.</p>
+                {!isAdmin && (
+                  <p className="text-sm text-slate-400 mt-2">Volte amanhã para a primeira edição!</p>
+                )}
+                {isAdmin && (
+                  <p className="text-sm text-slate-400 mt-2">Use o botão flutuante para gerar conteúdo.</p>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -84,7 +101,8 @@ export default async function Home() {
                     title={news.title}
                     date={news.created_at}
                     intro={news.summary_intro}
-                    status={news.status} // Passando status para o card
+                    status={news.status}
+                    isAdmin={isAdmin} // Passando status de admin
                   />
                 ))}
               </div>
@@ -144,14 +162,16 @@ export default async function Home() {
           </div>
         </div>
       </footer>
-      {/* Floating Dev Trigger */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <form action={generateDraft}>
-          <Button type="submit" variant="secondary" className="shadow-lg opacity-75 hover:opacity-100 transition-opacity">
-            ⚡ (Dev) Gerar Edição
-          </Button>
-        </form>
-      </div>
+      {/* Floating Dev Trigger (APENAS ADMIN) */}
+      {isAdmin && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <form action={generateDraft}>
+            <Button type="submit" variant="secondary" className="shadow-lg opacity-75 hover:opacity-100 transition-opacity">
+              ⚡ (Dev) Gerar Edição
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
