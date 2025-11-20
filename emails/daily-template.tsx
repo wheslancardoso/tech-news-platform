@@ -60,7 +60,7 @@ export const DailyNewsletter = ({
 
             <Section style={footer}>
               <Text style={footerText}>
-                © 2025 Tech News Platform. Todos os direitos reservados.
+                © 2025 Tech News API. Todos os direitos reservados.
                 <br />
                 <Link href="#" style={footerLink}>Unsubscribe</Link>
               </Text>

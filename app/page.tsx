@@ -25,7 +25,7 @@ export default async function Home() {
             <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-xs">TN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">The News</span>
+            <span className="font-bold text-xl tracking-tighter">Tech News</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#archive" className="hover:text-black transition-colors">Edições</a>
@@ -118,7 +118,7 @@ export default async function Home() {
                 <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-[10px]">TN</span>
                 </div>
-                <span className="font-bold text-lg tracking-tight">The News</span>
+                <span className="font-bold text-lg tracking-tight">Tech News</span>
               </div>
               <p className="text-muted-foreground text-sm max-w-xs">
                 Curadoria de notícias de tecnologia feita para desenvolvedores e entusiastas. Sem spam, apenas conteúdo.
@@ -148,7 +148,7 @@ export default async function Home() {
           <Separator className="mb-8" />
           
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>© 2025 The News Platform. Todos os direitos reservados.</p>
+            <p>© 2025 Tech News API. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a href="#" className="hover:text-black">Privacidade</a>
               <a href="#" className="hover:text-black">Termos</a>
