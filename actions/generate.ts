@@ -116,11 +116,20 @@ export async function generateDraft(formData?: FormData) {
 
     const nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
     
+    // Gerar título padronizado
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+    const title = `Edição ${formattedDate}`; // Ex: Edição 20/11/25
+
     const { error } = await supabase
       .from('newsletters')
       .insert({
         edition_number: nextEditionNumber, // Força o número calculado
-        title: contentJson.title,
+        title: title, // Usa o título padronizado
         summary_intro: contentJson.intro,
         content_json: contentJson,
         html_content: htmlContent,
