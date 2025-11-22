@@ -15,6 +15,7 @@ import * as React from "react";
 interface NewsletterProps {
   title: string;
   intro: string;
+  quickTakes?: string[]; // Nova propriedade opcional
   categories: Array<{
     name: string;
     items: Array<{
@@ -28,6 +29,7 @@ interface NewsletterProps {
 export const DailyNewsletter = ({
   title = "Tech News Daily",
   intro = "O resumo mais completo do mercado de tecnologia.",
+  quickTakes = [],
   categories = [],
 }: NewsletterProps) => {
   return (
@@ -45,6 +47,20 @@ export const DailyNewsletter = ({
           <Section style={content}>
             <Heading style={h1}>{title}</Heading>
             <Text style={introText}>{intro}</Text>
+            
+            {/* Quick Takes - Giro Tech */}
+            {quickTakes && quickTakes.length > 0 && (
+              <Section style={quickTakesSection}>
+                <Heading as="h3" style={quickTakesTitle}>⚡ GIRO TECH</Heading>
+                <ul style={quickTakesList}>
+                  {quickTakes.map((take, index) => (
+                    <li key={index} style={quickTakesItem}>
+                      {take}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            )}
             
             <Hr style={hr} />
 
@@ -153,6 +169,34 @@ const introText = {
 const hr = {
   borderColor: "#e5e7eb",
   margin: "30px 0",
+};
+
+// Quick Takes Styles
+const quickTakesSection = {
+  backgroundColor: "#f4f4f5",
+  borderRadius: "8px",
+  padding: "20px",
+  marginBottom: "30px",
+};
+
+const quickTakesTitle = {
+  color: "#111827",
+  fontSize: "16px",
+  fontWeight: "bold",
+  margin: "0 0 15px 0",
+  textTransform: "uppercase" as const,
+};
+
+const quickTakesList = {
+  margin: "0",
+  padding: "0 0 0 20px",
+};
+
+const quickTakesItem = {
+  color: "#4b5563",
+  fontSize: "15px",
+  lineHeight: "24px",
+  marginBottom: "8px",
 };
 
 // Estilos de Categoria

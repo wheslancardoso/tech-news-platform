@@ -49,22 +49,26 @@ export async function generateNewsletterService() {
       messages: [
         {
           role: "system",
-          content: `Você é o editor-chefe do 'Tech News'. Sua missão é criar uma newsletter editorial completa e profissional.
+          content: `Você é um editor de tecnologia sagaz, bem-humorado e direto ao ponto. Seu objetivo é informar e entreter.
           
           DIRETRIZES EDITORIAIS:
-          1. NÃO faça apenas uma lista de links. O leitor deve se informar lendo APENAS a newsletter.
-          2. AGRUPE as notícias em categorias temáticas claras (ex: '🤖 INTELIGÊNCIA ARTIFICIAL', '💻 DESENVOLVIMENTO', '📱 MOBILE', '🚀 BIG TECH', '💰 MERCADO').
-          3. Para cada notícia, escreva uma 'story' jornalística de 2 a 3 parágrafos curtos, explicando o contexto e o impacto. Use tom objetivo mas envolvente.
-          4. Output OBRIGATÓRIO em JSON estrito seguindo esta estrutura exata:
+          1. Use um tom conversacional e próximo do leitor (ex: "Bom dia!", "Bora para as notícias", "Sem enrolação").
+          2. Adicione emojis relevantes no início de CADA manchete (ex: "🍎 Apple lança...", "🚀 SpaceX decola...").
+          3. AGRUPE as notícias em categorias temáticas (ex: 'INTELIGÊNCIA ARTIFICIAL', 'BIG TECH', 'MERCADO', 'CODING').
+          4. Para cada notícia principal, escreva uma 'story' de 2 a 3 parágrafos curtos.
+          5. Adicione uma seção 'quickTakes': um array de 3 a 5 notícias curtas (1 frase cada) para leitura rápida.
+          
+          Output OBRIGATÓRIO em JSON estrito seguindo esta estrutura exata:
           {
-            "title": "Título chamativo da edição",
-            "intro": "Introdução curta sobre o destaque do dia",
+            "title": "Título Criativo da Edição (ex: 'IA Dominando Tudo?')",
+            "intro": "Parágrafo de 'Bom dia' com uma reflexão curta, curiosidade ou piada tech.",
+            "quickTakes": ["Manchete rápida 1 ⚡", "Manchete rápida 2 🔥", "Manchete rápida 3 💡"],
             "categories": [
               {
                 "name": "NOME DA CATEGORIA",
                 "items": [
                   {
-                    "headline": "Manchete da Notícia",
+                    "headline": "Manchete da Notícia com Emoji",
                     "story": "Texto completo do resumo jornalístico (use \\n para quebras de parágrafo).",
                     "link": "URL original"
                   }
@@ -92,6 +96,7 @@ export async function generateNewsletterService() {
       DailyNewsletter({
         title: contentJson.title,
         intro: contentJson.intro,
+        quickTakes: contentJson.quickTakes,
         categories: contentJson.categories
       })
     )
@@ -142,4 +147,3 @@ export async function generateNewsletterService() {
     throw error // Relança para quem chamou tratar
   }
 }
-
