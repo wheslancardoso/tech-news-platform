@@ -8,6 +8,7 @@ import { SubscribeForm } from '@/components/subscribe-form'
 import { cookies } from 'next/headers'
 import { ScrollLink } from '@/components/scroll-link'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export const revalidate = 0 
 
@@ -41,7 +42,7 @@ export default async function Home() {
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <ScrollLink href="#archive" className="hover:text-black transition-colors">Edições</ScrollLink>
-            <ScrollLink href="/about" className="hover:text-black transition-colors">Sobre</ScrollLink>
+            <Link href="/about" className="hover:text-black transition-colors">Sobre</Link>
             <ScrollLink 
               href="#subscribe"
               className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
@@ -54,7 +55,7 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="py-20 md:py-32 container mx-auto px-4" id="subscribe" className="scroll-mt-24">
+        <section id="subscribe" className="py-20 md:py-32 container mx-auto px-4 scroll-mt-24">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.1]">
               As notícias de tech que importam, <span className="text-muted-foreground">sem o hype.</span>
