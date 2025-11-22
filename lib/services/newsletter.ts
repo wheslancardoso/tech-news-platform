@@ -48,46 +48,70 @@ const FEEDS = [
   'https://feed.infoq.com/'
 ]
 
+async function fetchTabNewsApi() {
+  try {
+    const response = await fetch('https://www.tabnews.com.br/api/v1/contents?strategy=relevant');
+    if (!response.ok) throw new Error('Failed to fetch TabNews API');
+    const data = await response.json();
+    
+    return data.map((item: any) => ({
+      title: item.title,
+      link: `https://www.tabnews.com.br/${item.owner_username}/${item.slug}`,
+      content: item.body || item.description || "",
+      pubDate: item.published_at,
+      source: 'TabNews (API)'
+    }));
+  } catch (error) {
+    console.error('Erro ao buscar TabNews API:', error);
+    return [];
+  }
+}
+
 export async function generateNewsletterService() {
   console.log('🚀 [Service] Iniciando geração editorial Tech News...')
 
   try {
-    // 1. Ingestão: Ler Feeds RSS
+    // 1. Ingestão: RSS + APIs
     const parser = new Parser()
     const feedItems: any[] = []
 
-    // Promise.allSettled para processar feeds em paralelo e ser mais rápido
-    const feedPromises = FEEDS.map(async (url) => {
+    // Processamento Paralelo de RSS e TabNews API
+    const [rssResults, tabNewsItems] = await Promise.all([
+      Promise.allSettled(FEEDS.map(async (url) => {
         try {
-            const feed = await parser.parseURL(url);
-            return feed.items;
+          const feed = await parser.parseURL(url);
+          return feed.items;
         } catch (error) {
-            console.error(`Erro ao ler feed ${url}:`, error);
-            return [];
+          console.error(`Erro ao ler feed ${url}:`, error);
+          return [];
         }
-    });
+      })),
+      fetchTabNewsApi()
+    ]);
 
-    const results = await Promise.allSettled(feedPromises);
-    
-    results.forEach(result => {
+    // Processar resultados do RSS
+    rssResults.forEach(result => {
         if (result.status === 'fulfilled') {
             feedItems.push(...result.value);
         }
     });
 
-    // Ordenar e pegar os TOP 150 itens mais recentes para dar contexto à IA
-    const sortedItems = feedItems
-      .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
+    // Combinar todas as fontes
+    const allItems = [...feedItems, ...tabNewsItems];
+
+    // Ordenar e pegar os TOP 150 itens mais recentes (RSS + API)
+    const sortedItems = allItems
+      .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
       .slice(0, 150)
 
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
       content: (item.contentSnippet || item.content || '').substring(0, 500), 
-      source: new URL(item.link).hostname
+      source: item.source || new URL(item.link).hostname
     }))
 
-    console.log(`✅ RSS processado. ${itemsForAI.length} itens enviados para editoria.`)
+    console.log(`✅ Ingestão concluída. ${itemsForAI.length} itens enviados para editoria.`)
 
     // 2. O Editor-Chefe: Chamada OpenAI
     const openai = new OpenAI({
@@ -111,6 +135,7 @@ export async function generateNewsletterService() {
           2. **FILTRO:** Ignore fofocas. Foque em: Código, IA Técnica, Vazamentos/Segurança, Cloud e Carreira Dev.
           3. **PROFUNDIDADE:** Escreva de 2 a 3 parágrafos por notícia. Explique o impacto técnico.
           4. **IDIOMA:** Português do Brasil (PT-BR) sempre.
+          5. **QUANTIDADE MÍNIMA:** Você DEVE preencher pelo menos 3 CATEGORIAS DIFERENTES, com 2 a 3 notícias EM CADA UMA. Não economize conteúdo. Se a notícia for boa, coloque-a.
           
           ESTRUTURA JSON OBRIGATÓRIA:
           {
