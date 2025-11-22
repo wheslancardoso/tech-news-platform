@@ -7,6 +7,7 @@ import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
 import { SubscribeForm } from '@/components/subscribe-form'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
+import { ScrollButton } from '@/components/scroll-button'
 
 export const revalidate = 0 
 
@@ -41,11 +42,7 @@ export default async function Home() {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#archive" className="hover:text-black transition-colors">Edições</a>
             <Link href="/about" className="hover:text-black transition-colors">Sobre</Link>
-            <Link href="#subscribe">
-              <Button size="sm" className="bg-black text-white hover:bg-zinc-800 rounded-full px-6">
-                Inscrever-se
-              </Button>
-            </Link>
+            <ScrollButton />
           </nav>
         </div>
       </header>
