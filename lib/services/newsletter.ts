@@ -5,7 +5,7 @@ import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
 
 const FEEDS = [
-  // 🇧🇷 ENGENHARIA & ARQUITETURA (BR)
+  // 🇧🇷 ENGENHARIA & ARQUITETURA
   'https://building.nubank.com.br/feed/',
   'https://medium.com/feed/mercadolibre-tech',
   'https://medium.com/feed/ifood-engineering',
@@ -13,36 +13,39 @@ const FEEDS = [
   'https://www.zup.com.br/blog/feed',
   'https://blog.stone.co/rss',
   'https://medium.com/feed/luizalabs',
+  'https://cwi.com.br/blog/feed/',
   
-  // 🇧🇷 COMUNIDADE & DEV (BR)
+  // 🇧🇷 DEV & COMUNIDADE
   'https://www.tabnews.com.br/rss',
   'https://akitaonrails.com/feed.atom',
-  // 'https://filipedeschamps.com.br/newsletter', // RSS não validado, removido por segurança
+  'http://mariofilho.com/feed',
+  'https://loiane.com/feed.xml',
   'https://braziljs.org/blog/feed.xml',
   'https://manualdousuario.net/feed/',
   
-  // 🛡️ SEGURANÇA (BR & GLOBAL)
-  'https://www.mentebinaria.com.br/rss/1-rss-noticias.xml/',
-  'https://blog.convisoappsec.com/feed/',
-  'https://googleprojectzero.blogspot.com/feeds/posts/default',
+  // 🛡️ SEGURANÇA (CRÍTICO PARA RECÊNCIA)
+  'https://feeds.feedburner.com/TheHackersNews',
+  'https://www.bleepingcomputer.com/feed/',
   'https://krebsonsecurity.com/feed/',
-  'https://thehackernews.com/feeds/posts/default',
+  'https://googleprojectzero.blogspot.com/feeds/posts/default',
+  'https://www.darkreading.com/rss.xml',
   
-  // ☁️ CLOUD & BIG TECH (GLOBAL)
-  'https://netflixtechblog.com/feed',
+  // ☁️ CLOUD & BIG TECH
   'https://aws.amazon.com/blogs/architecture/feed/',
   'https://sre.google/blog/index.xml',
+  'https://netflixtechblog.com/feed',
   'https://eng.uber.com/feed/',
   'https://blog.cloudflare.com/rss/',
   
-  // 🤖 IA (GLOBAL)
+  // 🤖 IA & DATA
   'https://openai.com/blog/rss.xml',
   'https://deepmind.google/blog/rss.xml',
   
-  // 🗞️ VOLUME (GLOBAL)
+  // 🗞️ VOLUME GERAL
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
-  'https://dev.to/feed'
+  'https://dev.to/feed',
+  'https://feed.infoq.com/'
 ]
 
 export async function generateNewsletterService() {
@@ -72,10 +75,10 @@ export async function generateNewsletterService() {
         }
     });
 
-    // Ordenar e pegar os TOP 100 itens mais recentes para dar contexto à IA
+    // Ordenar e pegar os TOP 150 itens mais recentes para dar contexto à IA
     const sortedItems = feedItems
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
-      .slice(0, 100)
+      .slice(0, 150)
 
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
