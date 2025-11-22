@@ -76,9 +76,12 @@ export const DailyNewsletter = ({
                 {/* Itens da Categoria */}
                 {category.items.map((item, itemIndex) => (
                   <div key={itemIndex} style={itemContainer}>
-                    <Heading as="h4" style={headline}>
-                      {item.headline}
-                    </Heading>
+                    {/* Headline como Link */}
+                    <Link href={item.link} style={headlineLink}>
+                      <Heading as="h4" style={headline}>
+                        {item.headline}
+                      </Heading>
+                    </Link>
                     
                     <Text style={storyText}>
                       {item.story}
@@ -124,12 +127,16 @@ const container = {
   margin: "0 auto",
   padding: "0",
   maxWidth: "600px",
+  borderRadius: "8px", // Adicionado
+  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", // Adicionado
 };
 
 const header = {
   backgroundColor: "#fbbf24", // Amber-400
   padding: "20px",
   textAlign: "center" as const,
+  borderTopLeftRadius: "8px", // Arredondar topo
+  borderTopRightRadius: "8px", // Arredondar topo
 };
 
 const headerTitle = {
@@ -211,17 +218,23 @@ const categoryHeaderContainer = {
 };
 
 const categoryTitle = {
-  color: "#fbbf24", // Amber-400 para combinar com header
+  color: "#fbbf24", 
   fontSize: "14px",
   fontWeight: "bold",
   textTransform: "uppercase" as const,
   letterSpacing: "1.5px",
   margin: "0",
+  marginTop: "10px", // Aumentado espaçamento
 };
 
 // Estilos de Item
 const itemContainer = {
   marginBottom: "25px",
+};
+
+const headlineLink = {
+  textDecoration: "none",
+  color: "inherit",
 };
 
 const headline = {
@@ -236,9 +249,9 @@ const headline = {
 const storyText = {
   color: "#4b5563",
   fontSize: "16px",
-  lineHeight: "26px",
+  lineHeight: "1.6", // Aumentado lineHeight
   margin: "0 0 12px",
-  whiteSpace: "pre-line" as const, // Permite quebras de linha vindas do JSON
+  whiteSpace: "pre-line" as const, 
 };
 
 const readMoreLink = {
@@ -260,6 +273,8 @@ const footer = {
   textAlign: "center" as const,
   marginTop: "40px",
   borderTop: "1px solid #e2e8f0",
+  borderBottomLeftRadius: "8px", // Arredondar rodapé
+  borderBottomRightRadius: "8px", // Arredondar rodapé
 };
 
 const footerText = {
