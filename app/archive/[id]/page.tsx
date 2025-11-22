@@ -5,7 +5,7 @@ import { ptBR } from 'date-fns/locale'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Facebook, Instagram, Twitter, Linkedin, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 interface ArchivePageProps {
@@ -117,47 +117,26 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
 
       {/* Footer */}
       <footer className="bg-white border-t py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-[10px]">TN</span>
-                </div>
-                <span className="font-bold text-lg tracking-tight">Tech News</span>
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex flex-col items-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-[10px]">TN</span>
               </div>
-              <p className="text-muted-foreground text-sm max-w-xs">
-                Curadoria de notícias de tecnologia feita para desenvolvedores e entusiastas. Sem spam, apenas conteúdo.
-              </p>
+              <span className="font-bold text-lg tracking-tight">Tech News</span>
             </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4 text-sm">Links</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link href="/" className="hover:text-black">Últimas Edições</Link></li>
-                <li><Link href="#" className="hover:text-black">Sobre Nós</Link></li>
-                <li><Link href="#" className="hover:text-black">Patrocine</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4 text-sm">Social</h4>
-              <div className="flex gap-4">
-                <Link href="#" className="text-muted-foreground hover:text-black"><Twitter size={20} /></Link>
-                <Link href="#" className="text-muted-foreground hover:text-black"><Instagram size={20} /></Link>
-                <Link href="#" className="text-muted-foreground hover:text-black"><Linkedin size={20} /></Link>
-                <Link href="#" className="text-muted-foreground hover:text-black"><Facebook size={20} /></Link>
-              </div>
-            </div>
+            <p className="text-muted-foreground text-sm max-w-md mx-auto">
+              Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
+            </p>
           </div>
           
-          <Separator className="mb-8" />
+          <Separator className="my-8" />
           
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
             <p>© 2025 Tech News API. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-black">Privacidade</Link>
-              <Link href="#" className="hover:text-black">Termos</Link>
+              <span className="cursor-pointer hover:text-black">Privacidade</span>
+              <span className="cursor-pointer hover:text-black">Termos</span>
             </div>
           </div>
         </div>
