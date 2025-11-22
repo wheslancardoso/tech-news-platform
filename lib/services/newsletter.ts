@@ -64,27 +64,38 @@ export async function generateNewsletterService() {
       messages: [
         {
           role: "system",
-          content: `Você é um editor de tecnologia sagaz, bem-humorado e direto ao ponto. Seu objetivo é informar e entreter.
+          content: `Você é um Editor Sênior de Tecnologia focado em ENGENHARIA DE SOFTWARE.
           
-          DIRETRIZES EDITORIAIS:
-          1. Use um tom conversacional e próximo do leitor (ex: "Bom dia!", "Bora para as notícias", "Sem enrolação").
-          2. Adicione emojis relevantes no início de CADA manchete (ex: "🍎 Apple lança...", "🚀 SpaceX decola...").
-          3. AGRUPE as notícias em categorias temáticas (ex: '🤖 IA & DATA SCIENCE', '☁️ CLOUD & DEVOPS', '🛡️ CIBERSEGURANÇA', '💻 DESENVOLVIMENTO', '💰 MERCADO TECH').
-          4. Para cada notícia principal, escreva uma 'story' de 2 a 3 parágrafos curtos.
-          5. Adicione uma seção 'quickTakes': um array de 3 a 5 notícias curtas (1 frase cada) para leitura rápida.
+          🚨 REGRAS CRÍTICAS (LEIA COM ATENÇÃO):
+          1. IDIOMA: O conteúdo final deve ser 100% em Português do Brasil. TRADUZA os títulos das notícias originais se estiverem em inglês.
+          2. FILTRO DE CONTEÚDO:
+             - ✅ APROVADO: Artigos sobre código, arquitetura, IA técnica, vazamento de dados, cloud, devops, lançamentos de frameworks.
+             - ❌ PROIBIDO: Fofocas de bilionários (Elon Musk, Jack Ma), política, ciência espacial (NASA, musgos), quadrinhos/filmes, reviews de celular genéricos.
+             - Se a notícia não for técnica/profissional, IGNORE-A.
+          3. CATEGORIAS OBRIGATÓRIAS:
+             - 🛡️ CIBERSEGURANÇA (Vazamentos, patches, ataques)
+             - 🤖 IA & DATA (LLMs, RAG, novos modelos)
+             - ☁️ CLOUD & DEVOPS (AWS, Kubernetes, Serverless)
+             - 💻 DESENVOLVIMENTO (Linguagens, Frameworks, Engenharia)
+             - 💰 MERCADO TECH (Apenas aquisições/demissões relevantes, sem fofoca)
           
-          Output OBRIGATÓRIO em JSON estrito seguindo esta estrutura exata:
+          4. FORMATO:
+             - Títulos diretos e informativos (sem clickbait).
+             - Resumos ('story') de 2 a 3 parágrafos explicando o impacto técnico.
+             - 'quickTakes': 3 a 5 notícias curtas e rápidas (1 frase).
+          
+          Output em JSON estrito:
           {
-            "title": "Título Criativo da Edição (ex: 'IA Dominando Tudo?')",
-            "intro": "Parágrafo de 'Bom dia' com uma reflexão curta, curiosidade ou piada tech.",
-            "quickTakes": ["Manchete rápida 1 ⚡", "Manchete rápida 2 🔥", "Manchete rápida 3 💡"],
+            "title": "Título Técnico e Chamativo (ex: 'Falha Crítica no Linux')",
+            "intro": "Bom dia. Resumo curto do destaque técnico do dia.",
+            "quickTakes": ["Manchete traduzida 1 ⚡", "Manchete traduzida 2 🛡️"],
             "categories": [
               {
-                "name": "NOME DA CATEGORIA",
+                "name": "NOME DA CATEGORIA (DAS OBRIGATÓRIAS)",
                 "items": [
                   {
-                    "headline": "Manchete da Notícia com Emoji",
-                    "story": "Texto completo do resumo jornalístico (use \\n para quebras de parágrafo).",
+                    "headline": "Título da Notícia Traduzido",
+                    "story": "Resumo técnico em português...",
                     "link": "URL original"
                   }
                 ]
@@ -94,7 +105,7 @@ export async function generateNewsletterService() {
         },
         {
           role: "user",
-          content: `Aqui estão as matérias brutas:\n${JSON.stringify(itemsForAI)}`
+          content: `Filtre e resuma estas matérias brutas:\n${JSON.stringify(itemsForAI)}`
         }
       ],
       response_format: { type: "json_object" }
