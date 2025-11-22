@@ -5,23 +5,62 @@ import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
 
 const FEEDS = [
-  // 🇧🇷 Destaques BR (Engenharia & Mercado)
-  'https://www.tabnews.com.br/rss',
+  // 🇧🇷 ENGENHARIA & ARQUITETURA (BRASIL)
   'https://building.nubank.com.br/feed/',
-  'https://medium.com/feed/ifood-engineering',
   'https://medium.com/feed/mercadolibre-tech',
-  'https://www.zup.com.br/feed',
-  'https://stackspot.com/blog/feed/',
+  'https://medium.com/feed/ifood-engineering',
   'https://medium.com/feed/quintoandar-tech-blog',
-  'https://blog.elo7.dev/feed/',
-  'https://medium.com/feed/picpay-tech',
-  'https://manualdousuario.net/feed/', // Foco em Privacidade/Segurança BR
+  'https://www.zup.com.br/blog/feed',
+  'https://blog.stone.co/rss',
+  'https://medium.com/feed/luizalabs',
+  'https://cwi.com.br/blog/feed/',
   
-  // 🇺🇸 Gringos (Tendências Globais - Mantendo alguns chave)
+  // 🇧🇷 COMUNIDADE & DEV (BRASIL)
+  'https://www.tabnews.com.br/rss', 
+  'https://akitaonrails.com/feed.atom',
+  'http://mariofilho.com/feed',
+  'https://loiane.com/feed.xml',
+  'https://macoratti.net/feed',
+  'https://braziljs.org/blog/feed.xml',
+  'https://willianjusten.com.br/feed.xml',
+  
+  // 🇧🇷 INFOSEC & SEGURANÇA (BRASIL)
+  'https://www.mentebinaria.com.br/rss/1-rss-noticias.xml/',
+  'https://seginfo.com.br/feed/',
+  'https://www.sidechannel.blog/en/rss',
+  'https://blog.convisoappsec.com/feed/',
+  'https://manualdousuario.net/feed/',
+  
+  // ☁️ CLOUD, SRE & BIG TECH (GLOBAL)
+  'https://netflixtechblog.com/feed',
+  'https://aws.amazon.com/blogs/architecture/feed/',
+  'https://cloud.google.com/feeds/gcp-technology-rss.xml',
+  'https://sre.google/blog/index.xml',
+  'https://eng.uber.com/feed/',
+  'https://engineering.atspotify.com/feed/',
+  'https://blog.cloudflare.com/rss/',
+  'https://stripe.com/blog/engineering/rss',
+  
+  // 🤖 IA & DATA SCIENCE (GLOBAL)
+  'https://openai.com/blog/rss.xml',
+  'https://deepmind.google/blog/rss.xml',
+  'https://karpathy.github.io/feed.xml',
+  'https://machinelearningmastery.com/feed/',
+  
+  // 🛡️ CIBERSEGURANÇA GLOBAL
+  'https://googleprojectzero.blogspot.com/feeds/posts/default',
+  'https://krebsonsecurity.com/feed/',
+  'https://www.schneier.com/feed/atom/',
+  'https://feeds.feedburner.com/TheHackersNews',
+  'https://www.troyhunt.com/rss/',
+  'https://www.darkreading.com/rss.xml',
+  'https://www.bleepingcomputer.com/feed/',
+  
+  // 🗞️ VOLUME & NOTÍCIAS GERAIS (GLOBAL)
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
-  'https://news.ycombinator.com/rss',
-  'https://www.bleepingcomputer.com/feed/' // Referência mundial em Segurança/InfoSec
+  'https://dev.to/feed',
+  'https://feed.infoq.com/'
 ]
 
 export async function generateNewsletterService() {
@@ -32,18 +71,29 @@ export async function generateNewsletterService() {
     const parser = new Parser()
     const feedItems: any[] = []
 
-    for (const url of FEEDS) {
-      try {
-        const feed = await parser.parseURL(url)
-        feedItems.push(...feed.items)
-      } catch (error) {
-        console.error(`Erro ao ler feed ${url}:`, error)
-      }
-    }
+    // Promise.allSettled para processar feeds em paralelo e ser mais rápido
+    const feedPromises = FEEDS.map(async (url) => {
+        try {
+            const feed = await parser.parseURL(url);
+            return feed.items;
+        } catch (error) {
+            console.error(`Erro ao ler feed ${url}:`, error);
+            return [];
+        }
+    });
 
+    const results = await Promise.allSettled(feedPromises);
+    
+    results.forEach(result => {
+        if (result.status === 'fulfilled') {
+            feedItems.push(...result.value);
+        }
+    });
+
+    // Ordenar e pegar os TOP 100 itens mais recentes para dar contexto à IA
     const sortedItems = feedItems
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
-      .slice(0, 8)
+      .slice(0, 100)
 
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
