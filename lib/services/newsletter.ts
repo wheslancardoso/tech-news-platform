@@ -5,8 +5,21 @@ import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
 
 const FEEDS = [
+  // 🇧🇷 Destaques BR (Engenharia & Mercado)
+  'https://www.tabnews.com.br/rss',
+  'https://building.nubank.com.br/feed/',
+  'https://medium.com/feed/ifood-engineering',
+  'https://medium.com/feed/mercadolibre-tech',
+  'https://www.zup.com.br/feed',
+  'https://stackspot.com/blog/feed/',
+  'https://medium.com/feed/quintoandar-tech-blog',
+  'https://blog.elo7.dev/feed/',
+  'https://medium.com/feed/picpay-tech',
+  
+  // 🇺🇸 Gringos (Tendências Globais - Mantendo alguns chave)
   'https://techcrunch.com/feed/',
-  'https://www.theverge.com/rss/index.xml'
+  'https://www.theverge.com/rss/index.xml',
+  'https://news.ycombinator.com/rss'
 ]
 
 export async function generateNewsletterService() {
