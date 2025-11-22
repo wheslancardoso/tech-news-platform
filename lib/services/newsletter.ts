@@ -15,11 +15,13 @@ const FEEDS = [
   'https://medium.com/feed/quintoandar-tech-blog',
   'https://blog.elo7.dev/feed/',
   'https://medium.com/feed/picpay-tech',
+  'https://manualdousuario.net/feed/', // Foco em Privacidade/Segurança BR
   
   // 🇺🇸 Gringos (Tendências Globais - Mantendo alguns chave)
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
-  'https://news.ycombinator.com/rss'
+  'https://news.ycombinator.com/rss',
+  'https://www.bleepingcomputer.com/feed/' // Referência mundial em Segurança/InfoSec
 ]
 
 export async function generateNewsletterService() {
@@ -67,7 +69,7 @@ export async function generateNewsletterService() {
           DIRETRIZES EDITORIAIS:
           1. Use um tom conversacional e próximo do leitor (ex: "Bom dia!", "Bora para as notícias", "Sem enrolação").
           2. Adicione emojis relevantes no início de CADA manchete (ex: "🍎 Apple lança...", "🚀 SpaceX decola...").
-          3. AGRUPE as notícias em categorias temáticas (ex: 'INTELIGÊNCIA ARTIFICIAL', 'BIG TECH', 'MERCADO', 'CODING').
+          3. AGRUPE as notícias em categorias temáticas (ex: '🤖 IA & DATA SCIENCE', '☁️ CLOUD & DEVOPS', '🛡️ CIBERSEGURANÇA', '💻 DESENVOLVIMENTO', '💰 MERCADO TECH').
           4. Para cada notícia principal, escreva uma 'story' de 2 a 3 parágrafos curtos.
           5. Adicione uma seção 'quickTakes': um array de 3 a 5 notícias curtas (1 frase cada) para leitura rápida.
           
