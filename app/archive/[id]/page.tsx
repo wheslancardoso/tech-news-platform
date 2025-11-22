@@ -105,9 +105,11 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
             <div className="mt-16 pt-10 border-t bg-slate-50 -mx-8 -mb-12 md:-mx-12 md:-mb-12 p-8 md:p-12 text-center rounded-b-xl">
               <h3 className="text-xl font-bold mb-2">Gostou desta edição?</h3>
               <p className="text-muted-foreground mb-6 text-sm">Receba conteúdo como este toda manhã na sua caixa de entrada.</p>
-              <Button className="bg-black text-white hover:bg-zinc-800 rounded-full px-8">
-                Inscrever-se Gratuitamente
-              </Button>
+              <Link href="/#subscribe">
+                <Button className="bg-black text-white hover:bg-zinc-800 rounded-full px-8">
+                  Inscrever-se Gratuitamente
+                </Button>
+              </Link>
             </div>
           </article>
         </div>
