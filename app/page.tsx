@@ -39,10 +39,12 @@ export default async function Home() {
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#archive" className="hover:text-black transition-colors">Edições</a>
-            <a href="#" className="hover:text-black transition-colors">Sobre</a>
-            <Button size="sm" className="bg-black text-white hover:bg-zinc-800 rounded-full px-6">
-              Inscrever-se
-            </Button>
+            <a href="/about" className="hover:text-black transition-colors">Sobre</a>
+            <a href="#subscribe">
+              <Button size="sm" className="bg-black text-white hover:bg-zinc-800 rounded-full px-6">
+                Inscrever-se
+              </Button>
+            </a>
           </nav>
         </div>
       </header>
@@ -59,8 +61,10 @@ export default async function Home() {
               Um resumo diário de 5 minutos com tudo que você precisa saber para começar o dia bem informado.
             </p>
 
-            {/* Formulário de Inscrição */}
-            <SubscribeForm />
+            <div className="max-w-md mx-auto mt-10" id="subscribe">
+              {/* Formulário de Inscrição */}
+              <SubscribeForm />
+            </div>
 
             {/* Floating Dev Trigger (APENAS ADMIN) */}
             {isAdmin && (
