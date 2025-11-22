@@ -30,23 +30,55 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
   }
 
   const supabase = await createClient()
+  const userEmail = validatedFields.data.email
 
-  // 2. Inserção no Supabase
-  const { error } = await supabase
+  // 2. Verificar status atual do assinante
+  const { data: existingSubscriber, error: fetchError } = await supabase
     .from('subscribers')
-    .insert({ email: validatedFields.data.email })
+    .select('id, status')
+    .eq('email', userEmail)
+    .single()
 
-  // 3. Tratamento de Erros
-  if (error) {
-    // Erro 23505 é violação de unicidade no Postgres (Unique Key)
-    if (error.code === '23505') {
+  if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = 0 rows found (ok)
+    console.error('Erro ao buscar assinante:', fetchError)
+    return {
+      success: false,
+      message: 'Ocorreu um erro ao verificar sua inscrição.',
+    }
+  }
+
+  if (existingSubscriber) {
+    if (existingSubscriber.status === 'active') {
       return {
-        success: true, // Retornamos true para não assustar o usuário, mas avisamos
+        success: true,
         message: 'Você já está inscrito na nossa lista! 🚀',
       }
-    }
+    } else {
+      // Reativar inscrição (Update)
+      const { error: updateError } = await supabase
+        .from('subscribers')
+        .update({ status: 'active' })
+        .eq('id', existingSubscriber.id)
 
-    console.error('Erro ao inscrever:', error)
+      if (updateError) {
+        console.error('Erro ao reativar:', updateError)
+        return { success: false, message: 'Erro ao reativar inscrição.' }
+      }
+
+      return {
+        success: true,
+        message: 'Sua inscrição foi reativada com sucesso! Bem-vindo(a) de volta. 🎉',
+      }
+    }
+  }
+
+  // 3. Inserção de novo assinante (Insert)
+  const { error: insertError } = await supabase
+    .from('subscribers')
+    .insert({ email: userEmail })
+
+  if (insertError) {
+    console.error('Erro ao inscrever:', insertError)
     return {
       success: false,
       message: 'Ocorreu um erro ao tentar se inscrever. Tente novamente.',
@@ -58,4 +90,3 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
     message: 'Inscrição realizada com sucesso! Bem-vindo(a). 🎉',
   }
 }
-
