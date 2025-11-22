@@ -99,8 +99,13 @@ export async function generateNewsletterService() {
     // Combinar todas as fontes
     const allItems = [...feedItems, ...tabNewsItems];
 
-    // Ordenar e pegar os TOP 150 itens mais recentes (RSS + API)
+    // Trava de 24h: Ignora notícias velhas para evitar repetição
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Ordenar e pegar os TOP 150 itens mais recentes (RSS + API) que sejam < 24h
     const sortedItems = allItems
+      .filter(item => new Date(item.pubDate || item.isoDate) > yesterday)
       .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
       .slice(0, 150)
 
