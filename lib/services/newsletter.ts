@@ -5,7 +5,7 @@ import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
 
 const FEEDS = [
-  // 🇧🇷 ENGENHARIA & ARQUITETURA (BRASIL)
+  // 🇧🇷 ENGENHARIA & ARQUITETURA (BR)
   'https://building.nubank.com.br/feed/',
   'https://medium.com/feed/mercadolibre-tech',
   'https://medium.com/feed/ifood-engineering',
@@ -13,54 +13,36 @@ const FEEDS = [
   'https://www.zup.com.br/blog/feed',
   'https://blog.stone.co/rss',
   'https://medium.com/feed/luizalabs',
-  'https://cwi.com.br/blog/feed/',
   
-  // 🇧🇷 COMUNIDADE & DEV (BRASIL)
-  'https://www.tabnews.com.br/rss', 
+  // 🇧🇷 COMUNIDADE & DEV (BR)
+  'https://www.tabnews.com.br/rss',
   'https://akitaonrails.com/feed.atom',
-  'http://mariofilho.com/feed',
-  'https://loiane.com/feed.xml',
-  'https://macoratti.net/feed',
+  // 'https://filipedeschamps.com.br/newsletter', // RSS não validado, removido por segurança
   'https://braziljs.org/blog/feed.xml',
-  'https://willianjusten.com.br/feed.xml',
-  
-  // 🇧🇷 INFOSEC & SEGURANÇA (BRASIL)
-  'https://www.mentebinaria.com.br/rss/1-rss-noticias.xml/',
-  'https://seginfo.com.br/feed/',
-  'https://www.sidechannel.blog/en/rss',
-  'https://blog.convisoappsec.com/feed/',
   'https://manualdousuario.net/feed/',
   
-  // ☁️ CLOUD, SRE & BIG TECH (GLOBAL)
-  'https://netflixtechblog.com/feed',
-  'https://aws.amazon.com/blogs/architecture/feed/',
-  'https://cloud.google.com/feeds/gcp-technology-rss.xml',
-  'https://sre.google/blog/index.xml',
-  'https://eng.uber.com/feed/',
-  'https://engineering.atspotify.com/feed/',
-  'https://blog.cloudflare.com/rss/',
-  'https://stripe.com/blog/engineering/rss',
-  
-  // 🤖 IA & DATA SCIENCE (GLOBAL)
-  'https://openai.com/blog/rss.xml',
-  'https://deepmind.google/blog/rss.xml',
-  'https://karpathy.github.io/feed.xml',
-  'https://machinelearningmastery.com/feed/',
-  
-  // 🛡️ CIBERSEGURANÇA GLOBAL
+  // 🛡️ SEGURANÇA (BR & GLOBAL)
+  'https://www.mentebinaria.com.br/rss/1-rss-noticias.xml/',
+  'https://blog.convisoappsec.com/feed/',
   'https://googleprojectzero.blogspot.com/feeds/posts/default',
   'https://krebsonsecurity.com/feed/',
-  'https://www.schneier.com/feed/atom/',
-  'https://feeds.feedburner.com/TheHackersNews',
-  'https://www.troyhunt.com/rss/',
-  'https://www.darkreading.com/rss.xml',
-  'https://www.bleepingcomputer.com/feed/',
+  'https://thehackernews.com/feeds/posts/default',
   
-  // 🗞️ VOLUME & NOTÍCIAS GERAIS (GLOBAL)
+  // ☁️ CLOUD & BIG TECH (GLOBAL)
+  'https://netflixtechblog.com/feed',
+  'https://aws.amazon.com/blogs/architecture/feed/',
+  'https://sre.google/blog/index.xml',
+  'https://eng.uber.com/feed/',
+  'https://blog.cloudflare.com/rss/',
+  
+  // 🤖 IA (GLOBAL)
+  'https://openai.com/blog/rss.xml',
+  'https://deepmind.google/blog/rss.xml',
+  
+  // 🗞️ VOLUME (GLOBAL)
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
-  'https://dev.to/feed',
-  'https://feed.infoq.com/'
+  'https://dev.to/feed'
 ]
 
 export async function generateNewsletterService() {
@@ -114,38 +96,37 @@ export async function generateNewsletterService() {
       messages: [
         {
           role: "system",
-          content: `Você é um Editor Sênior de Tecnologia focado em ENGENHARIA DE SOFTWARE.
+          content: `Você é o 'Tech News', um editor de tecnologia que fala a língua dos desenvolvedores.
           
-          🚨 REGRAS CRÍTICAS (LEIA COM ATENÇÃO):
-          1. IDIOMA: O conteúdo final deve ser 100% em Português do Brasil. TRADUZA os títulos das notícias originais se estiverem em inglês.
-          2. FILTRO DE CONTEÚDO:
-             - ✅ APROVADO: Artigos sobre código, arquitetura, IA técnica, vazamento de dados, cloud, devops, lançamentos de frameworks.
-             - ❌ PROIBIDO: Fofocas de bilionários (Elon Musk, Jack Ma), política, ciência espacial (NASA, musgos), quadrinhos/filmes, reviews de celular genéricos.
-             - Se a notícia não for técnica/profissional, IGNORE-A.
-          3. CATEGORIAS OBRIGATÓRIAS:
-             - 🛡️ CIBERSEGURANÇA (Vazamentos, patches, ataques)
-             - 🤖 IA & DATA (LLMs, RAG, novos modelos)
-             - ☁️ CLOUD & DEVOPS (AWS, Kubernetes, Serverless)
-             - 💻 DESENVOLVIMENTO (Linguagens, Frameworks, Engenharia)
-             - 💰 MERCADO TECH (Apenas aquisições/demissões relevantes, sem fofoca)
+          SUA PERSONALIDADE:
+          - Você é descontraído, usa gírias tech ("deploy", "bug", "feature") e tem bom humor.
+          - Você ODEIA texto corporativo chato. Você escreve como se estivesse contando uma novidade para um colega de trabalho no café.
+          - Você é TÉCNICO: Sabe diferenciar um framework de uma linguagem, mas explica de jeito simples.
           
-          4. FORMATO:
-             - Títulos diretos e informativos (sem clickbait).
-             - Resumos ('story') de 2 a 3 parágrafos explicando o impacto técnico.
-             - 'quickTakes': 3 a 5 notícias curtas e rápidas (1 frase).
+          REGRAS DE CONTEÚDO:
+          1. **EMOJIS SÃO OBRIGATÓRIOS:** Toda manchete DEVE começar com um emoji. Use emojis no meio do texto para destacar pontos.
+          2. **FILTRO:** Ignore fofocas de celebridades e política. Foque em: Código, IA Real, Vazamentos/Segurança, Cloud e Carreira Dev.
+          3. **PROFUNDIDADE:** Para as notícias principais, escreva 2 a 3 parágrafos.
+             - Parágrafo 1: O que aconteceu (O fato direto).
+             - Parágrafo 2: O detalhe técnico (Como funciona? Qual a falha? Qual a stack?).
+             - Parágrafo 3: Por que isso importa para o dev/mercado?
           
-          Output em JSON estrito:
+          ESTRUTURA JSON OBRIGATÓRIA:
           {
-            "title": "Título Técnico e Chamativo (ex: 'Falha Crítica no Linux')",
-            "intro": "Bom dia. Resumo curto do destaque técnico do dia.",
-            "quickTakes": ["Manchete traduzida 1 ⚡", "Manchete traduzida 2 🛡️"],
+            "title": "Título Criativo e Engraçadinho (ex: 'O estagiário derrubou a prod?')",
+            "intro": "Intro 'quebra-gelo'. Ex: 'Bom dia, devs! Enquanto você dormia, o Java atualizou e o Bitcoin caiu. Pegue seu café e bora pro resumo.'",
+            "quickTakes": [
+              "⚡ Manchete rápida 1 (1 frase)",
+              "🔥 Manchete rápida 2 (1 frase)",
+              "👀 Manchete rápida 3 (1 frase)"
+            ],
             "categories": [
               {
-                "name": "NOME DA CATEGORIA (DAS OBRIGATÓRIAS)",
+                "name": "NOME DA CATEGORIA (Ex: 🛡️ CIBERSEGURANÇA, ☁️ DEVOPS & CLOUD, 🤖 IA)",
                 "items": [
                   {
-                    "headline": "Título da Notícia Traduzido",
-                    "story": "Resumo técnico em português...",
+                    "headline": "Emoji + Título Traduzido e Chamativo",
+                    "story": "Texto completo e envolvente com 2-3 parágrafos. Use tom de conversa.",
                     "link": "URL original"
                   }
                 ]
@@ -155,7 +136,7 @@ export async function generateNewsletterService() {
         },
         {
           role: "user",
-          content: `Filtre e resuma estas matérias brutas:\n${JSON.stringify(itemsForAI)}`
+          content: `Analise estes feeds e crie a melhor newsletter do dia:\n${JSON.stringify(itemsForAI)}`
         }
       ],
       response_format: { type: "json_object" }
