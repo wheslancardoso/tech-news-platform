@@ -1,13 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { NewsCard } from '@/components/news-card'
 import { generateDraft } from '@/actions/generate'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
 import { SubscribeForm } from '@/components/subscribe-form'
 import { cookies } from 'next/headers'
-import Link from 'next/link'
-import { ScrollButton } from '@/components/scroll-button'
+import { ScrollLink } from '@/components/scroll-link'
+import { cn } from '@/lib/utils'
 
 export const revalidate = 0 
 
@@ -40,9 +40,14 @@ export default async function Home() {
             <span className="font-bold text-xl tracking-tighter">Tech News</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <a href="#archive" className="hover:text-black transition-colors">Edições</a>
-            <Link href="/about" className="hover:text-black transition-colors">Sobre</Link>
-            <ScrollButton />
+            <ScrollLink href="#archive" className="hover:text-black transition-colors">Edições</ScrollLink>
+            <ScrollLink href="/about" className="hover:text-black transition-colors">Sobre</ScrollLink>
+            <ScrollLink 
+              href="#subscribe"
+              className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
+            >
+              Inscrever-se
+            </ScrollLink>
           </nav>
         </div>
       </header>
