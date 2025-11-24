@@ -1,20 +1,23 @@
-# Usa uma imagem leve do Node 22 (compatível com seu Next.js 16)
+# Baseado no Node 22 Alpine (Leve e seguro)
 FROM node:22-alpine
 
-# Define o diretório de trabalho dentro do container
+# Diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos de dependência primeiro (para aproveitar cache)
+# Copia apenas os arquivos de dependência primeiro (Melhor cache)
 COPY package*.json ./
 
 # Instala as dependências
 RUN npm install
 
-# Copia o resto do projeto
+# Copia o restante do código
 COPY . .
 
-# Expõe a porta 3000
+# Expõe a porta do Next.js
 EXPOSE 3000
 
-# Comando para rodar em modo de desenvolvimento
+# Garante que o Next.js aceite conexões externas do Docker
+ENV HOSTNAME="0.0.0.0"
+
+# Comando de desenvolvimento
 CMD ["npm", "run", "dev"]
