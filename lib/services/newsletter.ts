@@ -13,29 +13,29 @@ const FEEDS = [
   'https://www.zup.com.br/blog/feed',
   'https://medium.com/feed/luizalabs',
   'https://cwi.com.br/blog/feed/',
-  
+
   // 🇧🇷 DEV & COMUNIDADE
   // Removido TabNews RSS (usando API) e links quebrados (Akita, Mario Filho)
   'https://loiane.com/feed.xml',
   'https://manualdousuario.net/feed/',
-  
+
   // 🛡️ SEGURANÇA
   'https://thehackernews.com/feeds/posts/default',
   'https://www.bleepingcomputer.com/feed/',
   'https://krebsonsecurity.com/feed/',
   'https://googleprojectzero.blogspot.com/feeds/posts/default',
   'https://www.darkreading.com/rss.xml',
-  
+
   // ☁️ CLOUD & BIG TECH
   'https://aws.amazon.com/blogs/architecture/feed/',
   // Removido SRE Google e Uber (404/Instáveis)
   'https://netflixtechblog.com/feed',
   'https://blog.cloudflare.com/rss/',
-  
+
   // 🤖 IA & DATA
   'https://openai.com/blog/rss.xml',
   // Removido DeepMind (404)
-  
+
   // 🗞️ VOLUME GERAL
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
@@ -48,12 +48,18 @@ async function fetchTabNewsApi() {
     const response = await fetch('https://www.tabnews.com.br/api/v1/contents?strategy=relevant', {
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'TechNews-Newsletter/1.0' // Identificação educada
+        // User-Agent de navegador para evitar bloqueios (403)
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
-    if (!response.ok) throw new Error('Failed to fetch TabNews API');
+
+    if (!response.ok) {
+      console.warn(`⚠️ TabNews API respondeu com status: ${response.status}`);
+      throw new Error(`Failed to fetch TabNews API: ${response.status}`);
+    }
+
     const data = await response.json();
-    
+
     return data.map((item: any) => ({
       title: item.title,
       link: `https://www.tabnews.com.br/${item.owner_username}/${item.slug}`,
@@ -72,7 +78,11 @@ export async function generateNewsletterService() {
 
   try {
     // 1. Ingestão: RSS + APIs
-    const parser = new Parser()
+    const parser = new Parser({
+      requestOptions: {
+        rejectUnauthorized: false // Ignora erros de certificado SSL (necessário para feeds como Netflix)
+      }
+    })
     const feedItems: any[] = []
 
     // Processamento Paralelo de RSS e TabNews API
@@ -91,9 +101,9 @@ export async function generateNewsletterService() {
 
     // Processar resultados do RSS
     rssResults.forEach(result => {
-        if (result.status === 'fulfilled') {
-            feedItems.push(...result.value);
-        }
+      if (result.status === 'fulfilled') {
+        feedItems.push(...result.value);
+      }
     });
 
     // Combinar todas as fontes
@@ -112,7 +122,7 @@ export async function generateNewsletterService() {
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
-      content: (item.contentSnippet || item.content || '').substring(0, 500), 
+      content: (item.contentSnippet || item.content || '').substring(0, 500),
       source: item.source || new URL(item.link).hostname
     }))
 
@@ -145,7 +155,7 @@ export async function generateNewsletterService() {
           ESTRUTURA JSON OBRIGATÓRIA:
           {
             "title": "Título Criativo e Engraçadinho (ex: 'O estagiário derrubou a prod?')",
-            "intro": "Intro 'quebra-gelo'. Ex: 'Bom dia, devs! Enquanto você dormia, o Java atualizou e o Bitcoin caiu. Pegue seu café e bora pro resumo.'",
+            "intro": "Escreva uma introdução ÚNICA de 1 parágrafo (max 2 linhas) conectando os 2 maiores destaques desta edição. Seja criativo e NÃO COPIE O EXEMPLO. Ex: 'Bom dia! Hoje o foco é segurança com o vazamento da X e a nova IA da Y...'",
             "quickTakes": [
               "⚡ Manchete rápida 1 (1 frase)",
               "🔥 Manchete rápida 2 (1 frase)",
@@ -200,7 +210,7 @@ export async function generateNewsletterService() {
       .single()
 
     const nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
-    
+
     const today = new Date();
     const formattedDate = today.toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -229,7 +239,7 @@ export async function generateNewsletterService() {
 
     console.log(`🎉 Edição #${nextEditionNumber} salva com sucesso!`)
     return { success: true, edition: nextEditionNumber }
-    
+
   } catch (error) {
     console.error('❌ Erro fatal na geração (Service):', error)
     throw error // Relança para quem chamou tratar
