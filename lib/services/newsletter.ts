@@ -15,7 +15,7 @@ const FEEDS = [
   'https://cwi.com.br/blog/feed/',
 
   // 🇧🇷 DEV & COMUNIDADE
-  // Removido TabNews RSS (usando API) e links quebrados (Akita, Mario Filho)
+  'https://www.tabnews.com.br/rss',
   'https://loiane.com/feed.xml',
   'https://manualdousuario.net/feed/',
 
@@ -43,78 +43,39 @@ const FEEDS = [
   // Removido InfoQ (406)
 ]
 
-async function fetchTabNewsApi() {
-  try {
-    const response = await fetch('https://www.tabnews.com.br/api/v1/contents?strategy=relevant', {
-      headers: {
-        'Content-Type': 'application/json',
-        // User-Agent de navegador para evitar bloqueios (403)
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
-    });
-
-    if (!response.ok) {
-      console.warn(`⚠️ TabNews API respondeu com status: ${response.status}`);
-      throw new Error(`Failed to fetch TabNews API: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return data.map((item: any) => ({
-      title: item.title,
-      link: `https://www.tabnews.com.br/${item.owner_username}/${item.slug}`,
-      content: item.body || item.description || "",
-      pubDate: item.published_at,
-      source: 'TabNews (API)'
-    }));
-  } catch (error) {
-    console.error('Erro ao buscar TabNews API:', error);
-    return [];
-  }
-}
-
 export async function generateNewsletterService() {
   console.log('🚀 [Service] Iniciando geração editorial Tech News...')
 
   try {
-    // 1. Ingestão: RSS + APIs
+    // 1. Ingestão: RSS
     const parser = new Parser({
       requestOptions: {
         rejectUnauthorized: false // Ignora erros de certificado SSL (necessário para feeds como Netflix)
       }
     })
-    const feedItems: any[] = []
 
-    // Processamento Paralelo de RSS e TabNews API
-    const [rssResults, tabNewsItems] = await Promise.all([
-      Promise.allSettled(FEEDS.map(async (url) => {
-        try {
-          const feed = await parser.parseURL(url);
-          return feed.items;
-        } catch (error) {
-          console.error(`Erro ao ler feed ${url}:`, error);
-          return [];
-        }
-      })),
-      fetchTabNewsApi()
-    ]);
-
-    // Processar resultados do RSS
-    rssResults.forEach(result => {
-      if (result.status === 'fulfilled') {
-        feedItems.push(...result.value);
+    // Processamento Paralelo de RSS
+    const feedPromises = FEEDS.map(async (url) => {
+      try {
+        const feed = await parser.parseURL(url);
+        return feed.items;
+      } catch (error) {
+        console.error(`Erro ao ler feed ${url}:`, error);
+        return [];
       }
     });
 
-    // Combinar todas as fontes
-    const allItems = [...feedItems, ...tabNewsItems];
+    const results = await Promise.allSettled(feedPromises);
+    const allFeedItems = results
+      .filter((result): result is PromiseFulfilledResult<any[]> => result.status === 'fulfilled')
+      .flatMap(result => result.value);
 
     // Trava de 24h: Ignora notícias velhas para evitar repetição
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Ordenar e pegar os TOP 150 itens mais recentes (RSS + API) que sejam < 24h
-    const sortedItems = allItems
+    // Ordenar e pegar os TOP 150 itens mais recentes (RSS) que sejam < 24h
+    const sortedItems = allFeedItems
       .filter(item => new Date(item.pubDate || item.isoDate) > yesterday)
       .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
       .slice(0, 150)

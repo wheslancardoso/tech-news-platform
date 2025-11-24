@@ -38,7 +38,7 @@ export const DailyNewsletter = ({
       <Preview>{title}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Header Amarelo */}
+          {/* Header Preto */}
           <Section style={header}>
             <Heading style={headerTitle}>TECH NEWS</Heading>
             <Text style={headerSub}>Daily Edition</Text>
@@ -132,7 +132,7 @@ const container = {
 };
 
 const header = {
-  backgroundColor: "#fbbf24", // Amber-400
+  backgroundColor: "#18181b", // Zinc 950/Preto Suave
   padding: "20px",
   textAlign: "center" as const,
   borderTopLeftRadius: "8px", // Arredondar topo
@@ -140,14 +140,14 @@ const header = {
 };
 
 const headerTitle = {
-  color: "#1e293b",
+  color: "#ffffff", // Branco
   fontSize: "32px",
   fontWeight: "bold",
   margin: "0",
 };
 
 const headerSub = {
-  color: "#475569",
+  color: "#d4d4d8", // Zinc 300/Cinza Claro
   fontSize: "14px",
   margin: "5px 0 0",
   textTransform: "uppercase" as const,
@@ -212,13 +212,13 @@ const categorySection = {
 };
 
 const categoryHeaderContainer = {
-  borderBottom: "2px solid #fbbf24",
+  borderBottom: "2px solid #18181b", // Preto
   marginBottom: "20px",
   paddingBottom: "5px",
 };
 
 const categoryTitle = {
-  color: "#fbbf24", 
+  color: "#18181b", // Preto
   fontSize: "14px",
   fontWeight: "bold",
   textTransform: "uppercase" as const,
@@ -255,9 +255,9 @@ const storyText = {
 };
 
 const readMoreLink = {
-  color: "#2563eb",
+  color: "#18181b", // Preto
   fontSize: "14px",
-  textDecoration: "none",
+  textDecoration: "underline",
   fontWeight: "500",
 };
 
@@ -284,6 +284,6 @@ const footerText = {
 };
 
 const footerLink = {
-  color: "#94a3b8",
+  color: "#18181b", // Preto
   textDecoration: "underline",
 };
