@@ -40,41 +40,54 @@ export async function publishNewsletter(newsletterId: string) {
   console.log(`📧 Preparando envio individual para ${subscribers.length} assinantes...`)
 
   try {
-    // 3. Enviar via Resend (Loop Individual para Personalização)
-    const emailPromises = subscribers.map(async (subscriber) => {
-      // Injeta o link de unsubscribe personalizado no HTML
-      const unsubscribeLink = `${APP_URL}/unsubscribe?token=${subscriber.unsubscribe_token}`
+    // 3. Enviar via Resend (Loop Sequencial para Respeitar Rate Limit)
+    let successCount = 0
+    let failCount = 0
+
+    for (let i = 0; i < subscribers.length; i++) {
+      const subscriber = subscribers[i]
       
-      // Substitui o placeholder do template (se houver) ou adiciona no final se não achar
-      // No nosso template atual, o link é href="#" na linha 65. Vamos substituir isso.
-      // Estratégia mais robusta: Substituir href="#" dentro do contexto do footer
-      
-      let personalizedHtml = newsletter.html_content.replace(
-        'href="#">Unsubscribe', 
-        `href="${unsubscribeLink}">Unsubscribe`
-      )
-      
-      // Fallback simples se o replace falhar (caso o template mude)
-      if (!personalizedHtml.includes(unsubscribeLink)) {
-         personalizedHtml = personalizedHtml.replace(
-           'Unsubscribe', 
-           `<a href="${unsubscribeLink}" style="color:#8898aa;text-decoration:underline">Unsubscribe</a>`
-         )
+      try {
+        // Injeta o link de unsubscribe personalizado no HTML
+        const unsubscribeLink = `${APP_URL}/unsubscribe?token=${subscriber.unsubscribe_token}`
+        
+        // Substitui o placeholder do template (se houver) ou adiciona no final se não achar
+        // No nosso template atual, o link é href="#" na linha 65. Vamos substituir isso.
+        // Estratégia mais robusta: Substituir href="#" dentro do contexto do footer
+        
+        let personalizedHtml = newsletter.html_content.replace(
+          'href="#">Unsubscribe', 
+          `href="${unsubscribeLink}">Unsubscribe`
+        )
+        
+        // Fallback simples se o replace falhar (caso o template mude)
+        if (!personalizedHtml.includes(unsubscribeLink)) {
+           personalizedHtml = personalizedHtml.replace(
+             'Unsubscribe', 
+             `<a href="${unsubscribeLink}" style="color:#8898aa;text-decoration:underline">Unsubscribe</a>`
+           )
+        }
+
+        await resend.emails.send({
+          from: 'Tech News <contato@news.technewsapi.com.br>',
+          to: subscriber.email,
+          subject: newsletter.title,
+          html: personalizedHtml,
+        })
+
+        successCount++
+        console.log(`✅ Email enviado para ${subscriber.email} (${successCount}/${subscribers.length})`)
+      } catch (emailError) {
+        failCount++
+        console.error(`❌ Falha ao enviar para ${subscriber.email}:`, emailError)
       }
 
-      return resend.emails.send({
-        from: 'Tech News <contato@news.technewsapi.com.br>',
-        to: subscriber.email,
-        subject: newsletter.title,
-        html: personalizedHtml,
-      })
-    })
-
-    // Aguarda todos os envios (Promise.allSettled é melhor para não falhar tudo se um der erro)
-    const results = await Promise.allSettled(emailPromises)
-    
-    const successCount = results.filter(r => r.status === 'fulfilled' && !r.value.error).length
-    const failCount = results.length - successCount
+      // Delay de 2 segundos entre cada envio para respeitar o rate limit (2 req/s)
+      // Não adiciona delay após o último envio
+      if (i < subscribers.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 2000))
+      }
+    }
     
     console.log(`✅ Envio concluído. Sucessos: ${successCount}, Falhas: ${failCount}`)
 

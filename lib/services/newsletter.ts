@@ -11,19 +11,15 @@ const FEEDS = [
   'https://medium.com/feed/ifood-engineering',
   'https://medium.com/feed/quintoandar-tech-blog',
   'https://www.zup.com.br/blog/feed',
-  'https://blog.stone.co/rss',
   'https://medium.com/feed/luizalabs',
   'https://cwi.com.br/blog/feed/',
   
   // 🇧🇷 DEV & COMUNIDADE
-  'https://www.tabnews.com.br/rss',
-  'https://akitaonrails.com/feed.atom',
-  'http://mariofilho.com/feed',
+  // Removido TabNews RSS (usando API) e links quebrados (Akita, Mario Filho)
   'https://loiane.com/feed.xml',
-  'https://braziljs.org/blog/feed.xml',
   'https://manualdousuario.net/feed/',
   
-  // 🛡️ SEGURANÇA (CRÍTICO PARA RECÊNCIA)
+  // 🛡️ SEGURANÇA
   'https://thehackernews.com/feeds/posts/default',
   'https://www.bleepingcomputer.com/feed/',
   'https://krebsonsecurity.com/feed/',
@@ -32,25 +28,29 @@ const FEEDS = [
   
   // ☁️ CLOUD & BIG TECH
   'https://aws.amazon.com/blogs/architecture/feed/',
-  'https://sre.google/blog/index.xml',
+  // Removido SRE Google e Uber (404/Instáveis)
   'https://netflixtechblog.com/feed',
-  'https://eng.uber.com/feed/',
   'https://blog.cloudflare.com/rss/',
   
   // 🤖 IA & DATA
   'https://openai.com/blog/rss.xml',
-  'https://deepmind.google/blog/rss.xml',
+  // Removido DeepMind (404)
   
   // 🗞️ VOLUME GERAL
   'https://techcrunch.com/feed/',
   'https://www.theverge.com/rss/index.xml',
-  'https://dev.to/feed',
-  'https://feed.infoq.com/'
+  'https://dev.to/feed'
+  // Removido InfoQ (406)
 ]
 
 async function fetchTabNewsApi() {
   try {
-    const response = await fetch('https://www.tabnews.com.br/api/v1/contents?strategy=relevant');
+    const response = await fetch('https://www.tabnews.com.br/api/v1/contents?strategy=relevant', {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'TechNews-Newsletter/1.0' // Identificação educada
+      }
+    });
     if (!response.ok) throw new Error('Failed to fetch TabNews API');
     const data = await response.json();
     
