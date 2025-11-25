@@ -199,7 +199,7 @@ export async function generateNewsletterService() {
     }
 
     console.log(`🎉 Edição #${nextEditionNumber} salva com sucesso!`)
-    return { success: true, edition: nextEditionNumber }
+    return { success: true, edition: nextEditionNumber, id: data.id }
 
   } catch (error) {
     console.error('❌ Erro fatal na geração (Service):', error)
