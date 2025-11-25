@@ -235,3 +235,4 @@ Agradecemos à comunidade por feedback valioso durante o desenvolvimento do MVP.
 *Última atualização: Janeiro 2025*
 
 
+
