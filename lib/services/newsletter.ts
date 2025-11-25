@@ -19,6 +19,13 @@ const FEEDS = [
   'https://loiane.com/feed.xml',
   'https://manualdousuario.net/feed/',
 
+  // 🇧🇷 NOTÍCIAS TECH
+  'https://tecnoblog.net/feed',
+  'https://feeds.feedburner.com/canaltechbr',
+  'https://olhardigital.com.br/rss',
+  'https://rss.tecmundo.com.br/feed',
+  'https://www.tudocelular.com/feed',
+
   // 🛡️ SEGURANÇA
   'https://thehackernews.com/feeds/posts/default',
   'https://www.bleepingcomputer.com/feed/',
