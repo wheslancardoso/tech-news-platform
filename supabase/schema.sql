@@ -23,10 +23,12 @@ create table subscribers (
   id uuid primary key default uuid_generate_v4(),
   email text unique not null,
   status subscriber_status default 'active',
+  unsubscribe_token uuid default uuid_generate_v4() not null,
   created_at timestamp with time zone default now()
 );
 
 -- Índices para performance
 create index idx_newsletters_status on newsletters(status);
+create index idx_newsletters_edition on newsletters(edition_number);
 create index idx_subscribers_email on subscribers(email);
-
+create index idx_subscribers_token on subscribers(unsubscribe_token);

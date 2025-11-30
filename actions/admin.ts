@@ -20,7 +20,7 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
     // Vamos fazer via RPC se possível, ou buscar e atualizar.
     // Como o volume de newsletters não deve ser gigante, buscar e atualizar em loop ou batch é aceitável para este MVP.
     // Melhor: Usar rpc se tiver, mas vamos tentar uma query raw ou lógica de JS para simplificar sem migrations complexas agora.
-    
+
     // Solução via JS (menos performática mas funciona sem mexer no SQL agora):
     const { data: newerNewsletters, error: fetchError } = await supabase
       .from('newsletters')
@@ -40,28 +40,51 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
       // Upsert funciona como update se o ID existir
       const { error: updateError } = await supabase
         .from('newsletters')
-        .upsert(updates, { onConflict: 'id' }) 
-        // Nota: upsert requer que passemos todos os campos not-null ou que eles tenham default.
-        // Se edition_number for o único campo alterado, precisamos garantir que o resto não quebre.
-        // Na verdade, 'upsert' substitui o registro ou faz merge. Para merge seguro, é melhor usar update individual ou RPC.
-        
+        .upsert(updates, { onConflict: 'id' })
+      // Nota: upsert requer que passemos todos os campos not-null ou que eles tenham default.
+      // Se edition_number for o único campo alterado, precisamos garantir que o resto não quebre.
+      // Na verdade, 'upsert' substitui o registro ou faz merge. Para merge seguro, é melhor usar update individual ou RPC.
+
       // Mudança de estratégia: Vamos fazer updates individuais em paralelo para segurança dos dados
-      const updatePromises = newerNewsletters.map(n => 
+      const updatePromises = newerNewsletters.map(n =>
         supabase
           .from('newsletters')
           .update({ edition_number: n.edition_number - 1 })
           .eq('id', n.id)
       )
-      
+
       await Promise.all(updatePromises)
     }
 
     revalidatePath('/')
     return { success: true, message: 'Edição excluída e índices reajustados.' }
-
   } catch (error) {
     console.error('Erro ao excluir:', error)
     return { success: false, message: 'Falha ao excluir edição.' }
+  }
+}
+
+export async function updateNewsletter(id: string, data: { title: string, summary_intro: string, html_content: string }) {
+  const supabase = await createClient()
+
+  try {
+    const { error } = await supabase
+      .from('newsletters')
+      .update({
+        title: data.title,
+        summary_intro: data.summary_intro,
+        html_content: data.html_content
+      })
+      .eq('id', id)
+
+    if (error) throw new Error('Erro ao atualizar newsletter')
+
+    revalidatePath(`/archive/${id}`)
+    revalidatePath('/')
+    return { success: true, message: 'Newsletter atualizada com sucesso.' }
+  } catch (error) {
+    console.error('Erro ao atualizar:', error)
+    return { success: false, message: 'Falha ao atualizar newsletter.' }
   }
 }
 

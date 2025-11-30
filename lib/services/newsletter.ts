@@ -81,16 +81,16 @@ export async function generateNewsletterService() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Ordenar e pegar os TOP 150 itens mais recentes (RSS) que sejam < 24h
+    // Ordenar e pegar os TOP 100 itens mais recentes (RSS) que sejam < 24h
     const sortedItems = allFeedItems
       .filter(item => new Date(item.pubDate || item.isoDate) > yesterday)
       .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
-      .slice(0, 150)
+      .slice(0, 100)
 
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
-      content: (item.contentSnippet || item.content || '').substring(0, 500),
+      content: (item.contentSnippet || item.content || '').substring(0, 2500),
       source: item.source || new URL(item.link).hostname
     }))
 
@@ -119,6 +119,7 @@ export async function generateNewsletterService() {
           3. **PROFUNDIDADE:** Escreva de 2 a 3 parágrafos por notícia. Explique o impacto técnico.
           4. **IDIOMA:** Português do Brasil (PT-BR) sempre.
           5. **QUANTIDADE MÍNIMA:** Você DEVE preencher pelo menos 3 CATEGORIAS DIFERENTES, com 2 a 3 notícias EM CADA UMA. Não economize conteúdo. Se a notícia for boa, coloque-a.
+          6. **DIVERSIDADE & RELEVÂNCIA:** Se houver muitas notícias relevantes, priorize a diversidade de temas. Não deixe assuntos críticos de segurança ou grandes lançamentos de fora.
           
           ESTRUTURA JSON OBRIGATÓRIA:
           {
