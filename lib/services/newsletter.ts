@@ -165,7 +165,8 @@ export async function generateNewsletterService() {
         intro: contentJson.intro,
         quickTakes: contentJson.quickTakes,
         categories: contentJson.categories
-      })
+      }),
+      { pretty: true }
     )
 
     // 4. Persistência e Título Padronizado

@@ -8,6 +8,9 @@ import { Separator } from '@/components/ui/separator'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface ArchivePageProps {
   params: Promise<{
     id: string
@@ -60,8 +63,8 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
         <div className="container mx-auto px-4 py-10 max-w-3xl">
           {/* Botão Voltar */}
           <div className="mb-8">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-sm text-muted-foreground hover:text-black transition-colors inline-flex items-center group"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
@@ -73,25 +76,25 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
             {/* Cabeçalho do Artigo */}
             <div className="mb-10 text-center border-b pb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
-                 <Badge variant="outline" className="uppercase tracking-widest text-[10px]">
-                    Edição #{newsletter.edition_number}
-                 </Badge>
-                 <span className="text-sm text-muted-foreground">
-                   {format(new Date(newsletter.created_at), "d 'de' MMMM, yyyy", { locale: ptBR })}
-                 </span>
+                <Badge variant="outline" className="uppercase tracking-widest text-[10px]">
+                  Edição #{newsletter.edition_number}
+                </Badge>
+                <span className="text-sm text-muted-foreground">
+                  {format(new Date(newsletter.created_at), "d 'de' MMMM, yyyy", { locale: ptBR })}
+                </span>
               </div>
-              
+
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
                 {newsletter.title}
               </h1>
-              
+
               <p className="text-lg text-slate-600 max-w-xl mx-auto font-light">
                 {newsletter.summary_intro}
               </p>
             </div>
 
             {/* Conteúdo HTML Renderizado */}
-            <div 
+            <div
               className="prose prose-zinc dark:prose-invert max-w-none 
               prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
               prose-p:text-slate-600 prose-p:leading-relaxed
@@ -129,9 +132,9 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
               Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
             </p>
           </div>
-          
+
           <Separator className="my-8" />
-          
+
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
             <p>© 2025 Tech News API. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">

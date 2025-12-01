@@ -1,14 +1,24 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 
-export async function deleteNewsletter(id: string, editionNumber: number) {
-  const supabase = await createClient()
+// Cliente Admin (Bypass RLS)
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
+type UpdateData = {
+  title: string
+  summary_intro: string
+  html_content: string
+}
+
+export async function deleteNewsletter(id: string, editionNumber: number) {
   try {
     // 1. Excluir a newsletter alvo
-    const { error: deleteError } = await supabase
+    const { error: deleteError } = await supabaseAdmin
       .from('newsletters')
       .delete()
       .eq('id', id)
@@ -16,13 +26,7 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
     if (deleteError) throw new Error('Erro ao excluir newsletter')
 
     // 2. Reajuste de Índice: Buscar newsletters posteriores para decrementar
-    // Infelizmente o Supabase (Postgrest) não tem um "update ... where ... decrement" atômico simples via JS client sem stored procedure.
-    // Vamos fazer via RPC se possível, ou buscar e atualizar.
-    // Como o volume de newsletters não deve ser gigante, buscar e atualizar em loop ou batch é aceitável para este MVP.
-    // Melhor: Usar rpc se tiver, mas vamos tentar uma query raw ou lógica de JS para simplificar sem migrations complexas agora.
-
-    // Solução via JS (menos performática mas funciona sem mexer no SQL agora):
-    const { data: newerNewsletters, error: fetchError } = await supabase
+    const { data: newerNewsletters, error: fetchError } = await supabaseAdmin
       .from('newsletters')
       .select('id, edition_number')
       .gt('edition_number', editionNumber)
@@ -31,23 +35,9 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
     if (fetchError) throw new Error('Erro ao buscar newsletters para reordenação')
 
     if (newerNewsletters && newerNewsletters.length > 0) {
-      // Atualizar um por um (idealmente seria batch, mas o supabase-js v2 facilita upsert)
-      const updates = newerNewsletters.map(n => ({
-        id: n.id,
-        edition_number: n.edition_number - 1
-      }))
-
-      // Upsert funciona como update se o ID existir
-      const { error: updateError } = await supabase
-        .from('newsletters')
-        .upsert(updates, { onConflict: 'id' })
-      // Nota: upsert requer que passemos todos os campos not-null ou que eles tenham default.
-      // Se edition_number for o único campo alterado, precisamos garantir que o resto não quebre.
-      // Na verdade, 'upsert' substitui o registro ou faz merge. Para merge seguro, é melhor usar update individual ou RPC.
-
-      // Mudança de estratégia: Vamos fazer updates individuais em paralelo para segurança dos dados
+      // Atualizar um por um em paralelo
       const updatePromises = newerNewsletters.map(n =>
-        supabase
+        supabaseAdmin
           .from('newsletters')
           .update({ edition_number: n.edition_number - 1 })
           .eq('id', n.id)
@@ -64,11 +54,9 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
   }
 }
 
-export async function updateNewsletter(id: string, data: { title: string, summary_intro: string, html_content: string }) {
-  const supabase = await createClient()
-
+export async function updateNewsletter(id: string, data: UpdateData) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('newsletters')
       .update({
         title: data.title,
@@ -77,14 +65,13 @@ export async function updateNewsletter(id: string, data: { title: string, summar
       })
       .eq('id', id)
 
-    if (error) throw new Error('Erro ao atualizar newsletter')
+    if (error) throw new Error('Falha ao atualizar newsletter: ' + error.message)
 
     revalidatePath(`/archive/${id}`)
     revalidatePath('/')
     return { success: true, message: 'Newsletter atualizada com sucesso.' }
   } catch (error) {
     console.error('Erro ao atualizar:', error)
-    return { success: false, message: 'Falha ao atualizar newsletter.' }
+    throw error // Re-throw para ser capturado pelo componente se necessário
   }
 }
-

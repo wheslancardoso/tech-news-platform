@@ -8,6 +8,19 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { cookies } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+function formatHtmlForEditor(html: string) {
+    if (!html) return '';
+    // Adiciona quebras de linha estratégicas para facilitar a leitura
+    return html
+        .replace(/>/g, '>\n') // Quebra linha após cada tag
+        .replace(/</g, '\n<') // Quebra linha antes de cada tag
+        .replace(/\n\n/g, '\n') // Remove duplicações
+        .trim();
+}
+
 export default async function EditNewsletterPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     const supabase = await createClient()
@@ -82,7 +95,7 @@ export default async function EditNewsletterPage({ params }: { params: Promise<{
                     <Textarea
                         id="html_content"
                         name="html_content"
-                        defaultValue={newsletter.html_content || ''}
+                        defaultValue={formatHtmlForEditor(newsletter.html_content || '')}
                         className="min-h-[500px] font-mono text-xs"
                     />
                 </div>
