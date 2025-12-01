@@ -85,12 +85,12 @@ export async function generateNewsletterService() {
     const sortedItems = allFeedItems
       .filter(item => new Date(item.pubDate || item.isoDate) > yesterday)
       .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
-      .slice(0, 100)
+      .slice(0, 70)
 
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
-      content: (item.contentSnippet || item.content || '').substring(0, 2500),
+      content: (item.contentSnippet || item.content || '').substring(0, 1200),
       source: item.source || new URL(item.link).hostname
     }))
 
