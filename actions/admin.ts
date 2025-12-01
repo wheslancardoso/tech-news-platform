@@ -9,10 +9,21 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-type UpdateData = {
+import { render } from '@react-email/render'
+import { DailyNewsletter } from '@/emails/daily-template'
+
+type NewsletterContent = {
   title: string
-  summary_intro: string
-  html_content: string
+  intro: string // Mapped to summary_intro in DB
+  quickTakes?: string[]
+  categories: Array<{
+    name: string
+    items: Array<{
+      headline: string
+      story: string
+      link: string
+    }>
+  }>
 }
 
 export async function deleteNewsletter(id: string, editionNumber: number) {
@@ -54,14 +65,26 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
   }
 }
 
-export async function updateNewsletter(id: string, data: UpdateData) {
+export async function updateNewsletter(id: string, data: NewsletterContent) {
   try {
+    // Regenerar HTML com base no JSON atualizado
+    const htmlContent = await render(
+      DailyNewsletter({
+        title: data.title,
+        intro: data.intro,
+        quickTakes: data.quickTakes,
+        categories: data.categories
+      }),
+      { pretty: true }
+    )
+
     const { error } = await supabaseAdmin
       .from('newsletters')
       .update({
         title: data.title,
-        summary_intro: data.summary_intro,
-        html_content: data.html_content
+        summary_intro: data.intro,
+        content_json: data, // Salva o JSON atualizado
+        html_content: htmlContent // Salva o HTML regenerado
       })
       .eq('id', id)
 
@@ -72,6 +95,6 @@ export async function updateNewsletter(id: string, data: UpdateData) {
     return { success: true, message: 'Newsletter atualizada com sucesso.' }
   } catch (error) {
     console.error('Erro ao atualizar:', error)
-    throw error // Re-throw para ser capturado pelo componente se necessário
+    throw error
   }
 }
