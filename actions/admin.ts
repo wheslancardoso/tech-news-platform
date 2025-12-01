@@ -3,11 +3,13 @@
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 
-// Cliente Admin (Bypass RLS)
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Cliente Admin (Bypass RLS) - Helper function to avoid build errors
+function getAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
@@ -27,6 +29,7 @@ type NewsletterContent = {
 }
 
 export async function deleteNewsletter(id: string, editionNumber: number) {
+  const supabaseAdmin = getAdminClient()
   try {
     // 1. Excluir a newsletter alvo
     const { error: deleteError } = await supabaseAdmin
@@ -66,6 +69,7 @@ export async function deleteNewsletter(id: string, editionNumber: number) {
 }
 
 export async function updateNewsletter(id: string, data: NewsletterContent) {
+  const supabaseAdmin = getAdminClient()
   try {
     // Regenerar HTML com base no JSON atualizado
     const htmlContent = await render(
