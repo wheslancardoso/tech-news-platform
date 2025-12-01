@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { publishNewsletter } from '@/actions/publish'
 import { Button } from '@/components/ui/button'
 import { Send, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface PublishButtonProps {
   id: string
@@ -25,12 +26,12 @@ export function PublishButton({ id, status }: PublishButtonProps) {
     try {
       const result = await publishNewsletter(id)
       if (result.success) {
-        alert(result.message) // Em um app real, usaríamos toast
+        toast.success(result.message)
       } else {
-        alert(`Erro: ${result.message}`)
+        toast.error(`Erro: ${result.message}`)
       }
     } catch (error) {
-      alert('Erro inesperado ao publicar.')
+      toast.error('Erro inesperado ao publicar.')
     } finally {
       setIsPublishing(false)
     }

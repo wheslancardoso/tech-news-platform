@@ -9,7 +9,7 @@ import { ScrollLink } from '@/components/scroll-link'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
-export const revalidate = 0 
+export const revalidate = 0
 
 export default async function Home() {
   const supabase = await createClient()
@@ -21,7 +21,7 @@ export default async function Home() {
     .from('newsletters')
     .select('*')
     .order('edition_number', { ascending: false })
-  
+
   if (!isAdmin) {
     query = query.eq('status', 'published')
   }
@@ -42,7 +42,7 @@ export default async function Home() {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <ScrollLink href="#archive" className="hover:text-black transition-colors">Edições</ScrollLink>
             <Link href="/about" className="hover:text-black transition-colors">Sobre</Link>
-            <ScrollLink 
+            <ScrollLink
               href="#subscribe"
               className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
             >
@@ -54,12 +54,13 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section id="subscribe" className="py-20 md:py-32 container mx-auto px-4 scroll-mt-24">
+        <section id="subscribe" className="relative py-20 md:py-32 container mx-auto px-4 scroll-mt-24 overflow-hidden">
+          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-grid-pattern [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.1]">
               As notícias de tech que importam, <span className="text-muted-foreground">sem o hype.</span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
               Um resumo diário de 5 minutos com tudo que você precisa saber para começar o dia bem informado.
             </p>
@@ -87,7 +88,7 @@ export default async function Home() {
               <h2 className="text-3xl font-bold tracking-tight">Edições Anteriores</h2>
               <Button variant="outline" className="hidden md:flex">Ver arquivo completo</Button>
             </div>
-            
+
             {!newsletters || newsletters.length === 0 ? (
               <div className="text-center py-24 border-2 border-dashed rounded-xl bg-white">
                 <p className="text-muted-foreground">Nenhuma edição encontrada.</p>
@@ -114,9 +115,9 @@ export default async function Home() {
                 ))}
               </div>
             )}
-            
+
             <div className="mt-12 text-center md:hidden">
-               <Button variant="outline" className="w-full">Ver arquivo completo</Button>
+              <Button variant="outline" className="w-full">Ver arquivo completo</Button>
             </div>
           </div>
         </section>
@@ -136,9 +137,9 @@ export default async function Home() {
               Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
             </p>
           </div>
-          
+
           <Separator className="my-8" />
-          
+
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
             <p>© 2025 Tech News API. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">

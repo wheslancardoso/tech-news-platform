@@ -1,9 +1,0 @@
-refactor(admin): Inicialização lazy do cliente Supabase Admin
-
-A inicialização do cliente Supabase Admin em `actions/admin.ts` foi refatorada para ser realizada através de uma função `getAdminClient()`.
-
-Principais Mudanças:
-
--   O cliente `supabaseAdmin` agora é instanciado via `getAdminClient()` dentro das funções `deleteNewsletter` e `updateNewsletter`.
-
-Esta mudança garante que o cliente seja inicializado apenas quando necessário, prevenindo possíveis erros relacionados ao ambiente e melhorando a resiliência em contextos como serverless functions ou processos de build.

@@ -9,6 +9,7 @@ import { PublishButton } from '@/components/publish-button'
 import { Button } from '@/components/ui/button'
 import { deleteNewsletter } from '@/actions/admin'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface NewsCardProps {
   id: string
@@ -35,8 +36,10 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
     setIsDeleting(true)
     const result = await deleteNewsletter(id, edition)
     if (!result.success) {
-      alert(result.message)
+      toast.error(result.message)
       setIsDeleting(false)
+    } else {
+      toast.success(result.message)
     }
   }
 
