@@ -14,7 +14,7 @@ export function SubscribeForm() {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <form action={action} className="flex gap-2">
+      <form action={action} className="flex flex-col sm:flex-row gap-3">
         <div className="flex-grow">
           <Input
             name="email"

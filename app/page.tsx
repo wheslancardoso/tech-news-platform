@@ -39,9 +39,9 @@ export default async function Home() {
             </div>
             <span className="font-bold text-xl tracking-tighter">Tech News</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <ScrollLink href="#archive" className="hover:text-black transition-colors">Edições</ScrollLink>
-            <Link href="/about" className="hover:text-black transition-colors">Sobre</Link>
+          <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
+            <ScrollLink href="#archive" className="hidden md:block hover:text-black transition-colors">Edições</ScrollLink>
+            <Link href="/about" className="hidden md:block hover:text-black transition-colors">Sobre</Link>
             <ScrollLink
               href="#subscribe"
               className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
@@ -54,14 +54,14 @@ export default async function Home() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section id="subscribe" className="relative py-20 md:py-32 container mx-auto px-4 scroll-mt-24 overflow-hidden">
+        <section id="subscribe" className="relative py-12 md:py-24 container mx-auto px-4 scroll-mt-24 overflow-hidden">
           <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-grid-pattern [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.1]">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-slate-900 leading-[1.1]">
               As notícias de tech que importam, <span className="text-muted-foreground">sem o hype.</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
               Um resumo diário de 5 minutos com tudo que você precisa saber para começar o dia bem informado.
             </p>
 
