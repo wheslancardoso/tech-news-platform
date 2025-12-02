@@ -16,15 +16,19 @@ export default async function Home() {
   const cookieStore = await cookies()
   const isAdmin = cookieStore.has('admin_session')
 
-  // Se for admin, busca tudo. Se não, apenas publicados.
+  // Início da Query
   let query = supabase
     .from('newsletters')
     .select('*')
     .order('edition_number', { ascending: false })
 
+  // Filtro condicional (se não for admin, só mostra publicados)
   if (!isAdmin) {
     query = query.eq('status', 'published')
   }
+
+  // Aplicar limite após o filtro para garantir os 6 mais recentes
+  query = query.limit(6)
 
   const { data: newsletters } = await query
 
@@ -86,7 +90,9 @@ export default async function Home() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-12">
               <h2 className="text-3xl font-bold tracking-tight">Edições Anteriores</h2>
-              <Button variant="outline" className="hidden md:flex">Ver arquivo completo</Button>
+              <Link href="/archive">
+                <Button variant="outline" className="hidden md:flex">Ver arquivo completo</Button>
+              </Link>
             </div>
 
             {!newsletters || newsletters.length === 0 ? (
@@ -117,7 +123,9 @@ export default async function Home() {
             )}
 
             <div className="mt-12 text-center md:hidden">
-              <Button variant="outline" className="w-full">Ver arquivo completo</Button>
+              <Link href="/archive">
+                <Button variant="outline" className="w-full">Ver arquivo completo</Button>
+              </Link>
             </div>
           </div>
         </section>
