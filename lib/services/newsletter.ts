@@ -64,11 +64,18 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
 
   // Palavras-chave críticas (+5 pontos cada)
   const criticalKeywords = [
+    // Segurança e Vulnerabilidades
     'security', 'vulnerability', 'vulnerabilities', 'cve', 'exploit', 'breach',
+    // Lançamentos e Atualizações
     'release', 'released', 'launch', 'launched', 'update', 'upgrade',
     'feature', 'features', 'new feature', 'new features',
+    // Performance e Otimização
     'performance', 'optimization', 'optimize', 'faster', 'speed',
-    'outage', 'downtime', 'incident', 'bug fix', 'patch'
+    // Incidentes e Correções
+    'outage', 'downtime', 'incident', 'bug fix', 'patch',
+    // Inteligência Artificial (mesma prioridade que segurança)
+    'ai', 'llm', 'gpt', 'model', 'deepseek', 'claude', 'gemini', 'llama',
+    'inference', 'benchmark', 'artificial intelligence', 'neural'
   ]
   
   criticalKeywords.forEach(keyword => {
@@ -86,7 +93,7 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
     'api', 'rest', 'graphql', 'microservice', 'microservices',
     'devops', 'ci/cd', 'github actions', 'gitlab', 'jenkins',
     'python', 'java', 'go', 'rust', 'php', 'ruby',
-    'ai', 'machine learning', 'ml', 'deep learning', 'llm', 'gpt'
+    'machine learning', 'ml', 'deep learning'
   ]
   
   techKeywords.forEach(keyword => {
