@@ -207,9 +207,9 @@ export async function generateNewsletterService() {
              - **Features principais** (se for lançamento, liste as 2-3 features mais importantes)
              - **Impacto técnico real** (ex: "afeta aplicações que usam JWT", "requer atualização imediata em produção")
           4. **IDIOMA:** Português do Brasil (PT-BR) sempre.
-          5. **QUANTIDADE MÍNIMA:** Você DEVE preencher pelo menos 3 CATEGORIAS DIFERENTES, com 2 a 3 notícias EM CADA UMA. Não economize conteúdo. Se a notícia for boa, coloque-a.
+          5. **QUANTIDADE MÍNIMA (OBRIGATÓRIO):** Você DEVE preencher OBRIGATORIAMENTE 4 categorias diferentes (🛡️ CIBERSEGURANÇA, 💻 DEV, 🤖 IA, ☁️ DEVOPS & CLOUD). Cada categoria deve ter 2 a 3 notícias. Se não houver notícias óbvias para uma categoria específica, procure itens correlatos na entrada que possam se encaixar. Não economize conteúdo. Se a notícia for boa, coloque-a.
           6. **DIVERSIDADE & RELEVÂNCIA:** Se houver muitas notícias relevantes, priorize a diversidade de temas. Não deixe assuntos críticos de segurança ou grandes lançamentos de fora.
-          7. **QUALIDADE > QUANTIDADE:** Prefira menos notícias, mas com análise técnica rica e útil. Cada item deve ser uma "Deep Dive" que realmente informa o desenvolvedor.
+          7. **QUALIDADE > QUANTIDADE:** Mantenha a profundidade técnica atual, mas garanta que o e-mail final pareça "cheio" e cubra todas as áreas. Cada item deve ser uma "Deep Dive" que realmente informa o desenvolvedor.
           
           ESTRUTURA JSON OBRIGATÓRIA:
           {
