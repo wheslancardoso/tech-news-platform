@@ -7,12 +7,12 @@ export default function AboutPage() {
     <div className="min-h-screen bg-slate-50 font-sans">
       <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-xs">TN</span>
             </div>
             <span className="font-bold text-xl tracking-tighter">Tech News</span>
-          </div>
+          </Link>
           <nav className="flex items-center">
             <Link href="/">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-black">
