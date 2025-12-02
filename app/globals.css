@@ -76,3 +76,23 @@
   background-image: radial-gradient(circle at 1px 1px, #e5e7eb 1px, transparent 0);
   background-size: 40px 40px;
 }
+
+/* Força o conteúdo do e-mail a ocupar 100% da largura da tela no Admin */
+.email-renderer-full {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.email-renderer-full table, .email-renderer-full td, .email-renderer-full div, .email-renderer-full img { 
+  width: 100% !important; 
+  max-width: 100% !important; 
+  height: auto !important; 
+  box-shadow: none !important; 
+  margin-left: 0 !important; 
+  margin-right: 0 !important; 
+}
+
+.email-renderer-full p { 
+  white-space: normal !important; /* Ignora quebras de linha do código e usa a largura da tela */ 
+  max-width: 100% !important; 
+}

@@ -50,6 +50,67 @@ const FEEDS = [
   // Removido InfoQ (406)
 ]
 
+/**
+ * Calcula a pontuação de relevância de um item de notícia baseado em palavras-chave.
+ * Itens com maior pontuação são mais relevantes para desenvolvedores.
+ * 
+ * @param item - Item do feed RSS com title e content
+ * @returns Pontuação numérica (maior = mais relevante)
+ */
+function scoreItem(item: { title?: string; content?: string; contentSnippet?: string }): number {
+  const text = `${item.title || ''} ${item.content || ''} ${item.contentSnippet || ''}`.toLowerCase()
+  
+  let score = 0
+
+  // Palavras-chave críticas (+5 pontos cada)
+  const criticalKeywords = [
+    'security', 'vulnerability', 'vulnerabilities', 'cve', 'exploit', 'breach',
+    'release', 'released', 'launch', 'launched', 'update', 'upgrade',
+    'feature', 'features', 'new feature', 'new features',
+    'performance', 'optimization', 'optimize', 'faster', 'speed',
+    'outage', 'downtime', 'incident', 'bug fix', 'patch'
+  ]
+  
+  criticalKeywords.forEach(keyword => {
+    if (text.includes(keyword)) {
+      score += 5
+    }
+  })
+
+  // Termos tech gerais (+2 pontos cada)
+  const techKeywords = [
+    'react', 'vue', 'angular', 'next.js', 'node.js', 'typescript', 'javascript',
+    'docker', 'kubernetes', 'k8s', 'container', 'containers',
+    'aws', 'azure', 'gcp', 'cloud', 'serverless', 'lambda',
+    'database', 'postgresql', 'mysql', 'mongodb', 'redis',
+    'api', 'rest', 'graphql', 'microservice', 'microservices',
+    'devops', 'ci/cd', 'github actions', 'gitlab', 'jenkins',
+    'python', 'java', 'go', 'rust', 'php', 'ruby',
+    'ai', 'machine learning', 'ml', 'deep learning', 'llm', 'gpt'
+  ]
+  
+  techKeywords.forEach(keyword => {
+    if (text.includes(keyword)) {
+      score += 2
+    }
+  })
+
+  // Termos de ruído (-5 pontos cada)
+  const noiseKeywords = [
+    'deal', 'sale', 'discount', 'promo', 'promotion',
+    'hiring', 'job', 'career', 'recruitment', 'apply now',
+    'podcast', 'interview', 'exclusive interview'
+  ]
+  
+  noiseKeywords.forEach(keyword => {
+    if (text.includes(keyword)) {
+      score -= 5
+    }
+  })
+
+  return score
+}
+
 export async function generateNewsletterService() {
   console.log('🚀 [Service] Iniciando geração editorial Tech News...')
 
@@ -81,20 +142,42 @@ export async function generateNewsletterService() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    // Ordenar e pegar os TOP 100 itens mais recentes (RSS) que sejam < 24h
-    const sortedItems = allFeedItems
+    // Filtrar itens das últimas 24h e calcular score de relevância
+    const itemsWithScore = allFeedItems
       .filter(item => new Date(item.pubDate || item.isoDate) > yesterday)
-      .sort((a, b) => new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime())
-      .slice(0, 70)
+      .map(item => ({
+        ...item,
+        score: scoreItem(item)
+      }))
 
+    // Ordenar por Score (decrescente) e depois por Data (mais recente primeiro)
+    // Pegar apenas os TOP 40 itens (A "Nata" do dia)
+    const sortedItems = itemsWithScore
+      .sort((a, b) => {
+        // Primeiro ordena por score (maior primeiro)
+        if (b.score !== a.score) {
+          return b.score - a.score
+        }
+        // Se o score for igual, ordena por data (mais recente primeiro)
+        return new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime()
+      })
+      .slice(0, 40)
+
+    // Aumento de Contexto: 3000 caracteres para os Top 40 itens selecionados
     const itemsForAI = sortedItems.map(item => ({
       title: item.title,
       link: item.link,
-      content: (item.contentSnippet || item.content || '').substring(0, 1200),
+      content: (item.contentSnippet || item.content || '').substring(0, 3000),
       source: item.source || new URL(item.link).hostname
     }))
 
-    console.log(`✅ Ingestão concluída. ${itemsForAI.length} itens enviados para editoria.`)
+    // Log de estatísticas de relevância
+    const avgScore = sortedItems.reduce((sum, item) => sum + item.score, 0) / sortedItems.length
+    const maxScore = Math.max(...sortedItems.map(item => item.score))
+    const minScore = Math.min(...sortedItems.map(item => item.score))
+    
+    console.log(`✅ Ingestão concluída. ${itemsForAI.length} itens selecionados (Top 40 por relevância).`)
+    console.log(`📊 Estatísticas de Score: Média=${avgScore.toFixed(1)}, Max=${maxScore}, Min=${minScore}`)
 
     // 2. O Editor-Chefe: Chamada OpenAI
     const openai = new OpenAI({
@@ -116,10 +199,17 @@ export async function generateNewsletterService() {
           REGRAS DE CONTEÚDO:
           1. **EMOJIS SÃO LEI:** Use emojis no início de cada manchete e no meio do texto para dar vida.
           2. **FILTRO:** Ignore fofocas. Foque em: Código, IA Técnica, Vazamentos/Segurança, Cloud e Carreira Dev.
-          3. **PROFUNDIDADE:** Escreva de 2 a 3 parágrafos por notícia. Explique o impacto técnico.
+          3. **PROFUNDIDADE TÉCNICA (CRÍTICO):** Escreva de 2 a 3 parágrafos por notícia. NÃO faça resumos genéricos. Extraia e mencione:
+             - **Números de versão** (ex: "React 19.0", "Node.js 22.1.0")
+             - **CVEs e vulnerabilidades** (ex: "CVE-2024-1234", "CVSS 9.8")
+             - **Métricas e números** (ex: "melhoria de 40% em performance", "redução de 2.3s no tempo de build")
+             - **Nomes técnicos específicos** (ex: "malware XLoader", "framework Next.js 15", "API GraphQL")
+             - **Features principais** (se for lançamento, liste as 2-3 features mais importantes)
+             - **Impacto técnico real** (ex: "afeta aplicações que usam JWT", "requer atualização imediata em produção")
           4. **IDIOMA:** Português do Brasil (PT-BR) sempre.
           5. **QUANTIDADE MÍNIMA:** Você DEVE preencher pelo menos 3 CATEGORIAS DIFERENTES, com 2 a 3 notícias EM CADA UMA. Não economize conteúdo. Se a notícia for boa, coloque-a.
           6. **DIVERSIDADE & RELEVÂNCIA:** Se houver muitas notícias relevantes, priorize a diversidade de temas. Não deixe assuntos críticos de segurança ou grandes lançamentos de fora.
+          7. **QUALIDADE > QUANTIDADE:** Prefira menos notícias, mas com análise técnica rica e útil. Cada item deve ser uma "Deep Dive" que realmente informa o desenvolvedor.
           
           ESTRUTURA JSON OBRIGATÓRIA:
           {

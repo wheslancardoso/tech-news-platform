@@ -84,23 +84,14 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                 </span>
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
                 {newsletter.title}
               </h1>
-
-              <p className="text-lg text-slate-600 max-w-xl mx-auto font-light">
-                {newsletter.summary_intro}
-              </p>
             </div>
 
             {/* Conteúdo HTML Renderizado */}
             <div
-              className="prose prose-zinc dark:prose-invert max-w-none 
-              prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900
-              prose-p:text-slate-600 prose-p:leading-relaxed
-              prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-slate-900
-              prose-li:marker:text-slate-400"
+              className="email-renderer-full prose prose-zinc max-w-none dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
 
