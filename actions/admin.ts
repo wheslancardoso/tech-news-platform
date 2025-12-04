@@ -2,6 +2,18 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+
+/**
+ * Server Action para logout do admin
+ * Deleta o cookie de sessão e redireciona para /login
+ */
+export async function handleLogout() {
+  const cookieStore = await cookies()
+  cookieStore.delete('admin_session')
+  redirect('/')
+}
 
 // Cliente Admin (Bypass RLS) - Helper function to avoid build errors
 function getAdminClient() {

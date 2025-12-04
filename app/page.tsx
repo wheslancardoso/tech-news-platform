@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NewsCard } from '@/components/news-card'
 import { generateDraft } from '@/actions/generate'
+import { handleLogout } from '@/actions/admin'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SubscribeForm } from '@/components/subscribe-form'
@@ -46,6 +47,16 @@ export default async function Home() {
           <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
             <ScrollLink href="#archive" className="hidden md:block hover:text-black transition-colors">Edições</ScrollLink>
             <Link href="/about" className="hidden md:block hover:text-black transition-colors">Sobre</Link>
+            {isAdmin && (
+              <form action={handleLogout}>
+                <button
+                  type="submit"
+                  className="text-xs flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                >
+                  Sair 🚪
+                </button>
+              </form>
+            )}
             <ScrollLink
               href="#subscribe"
               className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
