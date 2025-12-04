@@ -131,7 +131,6 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
 
   // Termos de ruído (-5 pontos cada)
   const noiseKeywords = [
-    'deal', 'sale', 'discount', 'promo', 'promotion',
     'hiring', 'job', 'career', 'recruitment', 'apply now',
     'podcast', 'interview', 'exclusive interview'
   ]
@@ -139,6 +138,21 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
   noiseKeywords.forEach(keyword => {
     if (text.includes(keyword)) {
       score -= 5
+    }
+  })
+
+  // Termos de Eletrônicos de Consumo (Ruído para Devs) -> -10 pontos
+  const consumerKeywords = [
+    'tv', 'television', 'galaxy watch', 'smartwatch', 'buds', 'headphones',
+    'headset', 'earbuds', 'promotion', 'deal', 'black friday', 'promo',
+    'refrigerator', 'fridge', 'air conditioner', 'vacuum', 'bixby',
+    'galaxy s', 'iphone', 'ipad', 'consumer', 'rumor', 'leak',
+    'sale', 'discount', 'review', 'unboxing'
+  ]
+
+  consumerKeywords.forEach(keyword => {
+    if (text.includes(keyword)) {
+      score -= 10
     }
   })
 
@@ -330,25 +344,37 @@ export async function generateNewsletterService() {
     console.log(`📦 Dividido em ${chunks.length} chunks de até ${CHUNK_SIZE} itens`)
 
     // ===== 3. MAP: Processar chunks em paralelo =====
-    const mapPrompt = `Você é um redator técnico de newsletter dev. Escreva em PT-BR.
+    const mapPrompt = `Você é um redator técnico de newsletter para DESENVOLVEDORES DE SOFTWARE. Escreva em PT-BR.
 
-TAREFA: Resuma CADA UM dos itens abaixo. NÃO PULE NENHUM. Gere exatamente ${CHUNK_SIZE} ou menos saídas (uma para cada input).
+TAREFA: Resuma os itens abaixo que forem RELEVANTES para engenharia de software.
 
-REGRAS:
+DEFINIÇÕES DE CATEGORIA:
+- 🛡️ CIBERSEGURANÇA = Vulnerabilidades, CVEs, malware, vazamentos, patches de segurança
+- 💻 DEV = Código, Frameworks, Linguagens, Libs, Open Source (NÃO inclua celulares, fones, TVs ou gadgets)
+- 🤖 IA = LLMs, modelos, benchmarks, ferramentas de IA para devs
+- ☁️ DEVOPS & CLOUD = AWS, Azure, GCP, Kubernetes, Docker, infra, outages
+- 💰 MERCADO = Aquisições, IPOs, layoffs de empresas tech
+
+REGRA DE EXCLUSÃO (CRÍTICO):
+- Se a notícia for sobre ELETRÔNICOS DE CONSUMO (smartphones, TVs, fones, smartwatches, gadgets), IGNORE-A.
+- Se for fofoca de mercado sem impacto técnico, IGNORE-A.
+- Se for review/unboxing de produto, IGNORE-A.
+- Retorne um array menor se necessário. Qualidade > Quantidade.
+
+REGRAS DE ESCRITA:
 - Use emojis no início de cada headline
 - Seja técnico: mencione versões, CVEs, métricas
 - Tom descontraído de dev (gírias: "deploy", "bug", "prod")
 - 1-2 parágrafos curtos por item
-- Classifique em: 🛡️ CIBERSEGURANÇA, 💻 DEV, 🤖 IA, ☁️ DEVOPS & CLOUD, 💰 MERCADO
 
-SAÍDA JSON OBRIGATÓRIA - Retorne um objeto com a propriedade "items" contendo o array:
+SAÍDA JSON:
 {
   "items": [
     {
       "category": "🛡️ CIBERSEGURANÇA",
-      "headline": "🔥 Título chamativo com emoji",
-      "story": "Texto técnico de 1-2 parágrafos.",
-      "link": "URL original"
+      "headline": "🔥 Título chamativo",
+      "story": "Texto técnico.",
+      "link": "URL"
     }
   ]
 }`
