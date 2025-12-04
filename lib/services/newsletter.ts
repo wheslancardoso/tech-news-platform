@@ -15,6 +15,22 @@ function createAdminClient() {
   )
 }
 
+/**
+ * Função auxiliar para encontrar o primeiro array dentro de um objeto JSON.
+ * Necessário porque a IA pode retornar { items: [...] }, { news: [...] }, etc.
+ */
+function findFirstArray(obj: any): any[] {
+  if (Array.isArray(obj)) return obj
+  if (typeof obj === 'object' && obj !== null) {
+    for (const key in obj) {
+      if (Array.isArray(obj[key])) {
+        return obj[key] // Retorna o primeiro array encontrado
+      }
+    }
+  }
+  return []
+}
+
 const FEEDS = [
   // 🇧🇷 ENGENHARIA & ARQUITETURA
   'https://building.nubank.com.br/feed/',
@@ -246,32 +262,35 @@ export async function ingestPostsService() {
 }
 
 /**
- * Serviço de Geração: Busca posts curados/pendentes do banco e gera a newsletter.
- * Prioriza posts aprovados (curadoria humana), depois pendentes ordenados por score.
+ * Serviço de Geração (Map-Reduce): Processa posts em chunks paralelos para garantir 100% de cobertura.
+ * 
+ * Fluxo:
+ * 1. Seleção: Busca 25 posts (approved > pending)
+ * 2. Chunking: Divide em arrays de 5 itens
+ * 3. Map: Processa cada chunk em paralelo (Promise.all)
+ * 4. Reduce: Consolida todos os itens gerados
+ * 5. Metadados: Chamada final leve para title, intro, quickTakes
+ * 6. Montagem: Combina tudo e gera HTML
  * 
  * @returns Dados da edição gerada
  */
 export async function generateNewsletterService() {
-  console.log('🚀 [Generate] Iniciando geração editorial Tech News...')
+  console.log('🚀 [Generate] Iniciando geração Map-Reduce...')
 
   try {
     const supabase = createAdminClient()
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-    // 1. Buscar posts do banco
-    // Prioridade 1: Posts aprovados manualmente
+    // ===== 1. SELEÇÃO: Buscar 25 posts =====
     const { data: approvedPosts, error: approvedError } = await supabase
       .from('posts')
       .select('*')
       .eq('status', 'approved')
       .order('score', { ascending: false })
 
-    if (approvedError) {
-      console.error('Erro ao buscar posts aprovados:', approvedError)
-      throw approvedError
-    }
+    if (approvedError) throw approvedError
 
-    // Prioridade 2: Posts pendentes (fallback automático)
-    const remainingSlots = 20 - (approvedPosts?.length || 0)
+    const remainingSlots = 25 - (approvedPosts?.length || 0)
     let pendingPosts: any[] = []
 
     if (remainingSlots > 0) {
@@ -282,15 +301,10 @@ export async function generateNewsletterService() {
         .order('score', { ascending: false })
         .limit(remainingSlots)
 
-      if (pendingError) {
-        console.error('Erro ao buscar posts pendentes:', pendingError)
-        throw pendingError
-      }
-
+      if (pendingError) throw pendingError
       pendingPosts = data || []
     }
 
-    // Combinar posts
     const allPosts = [...(approvedPosts || []), ...pendingPosts]
 
     if (allPosts.length === 0) {
@@ -303,80 +317,141 @@ export async function generateNewsletterService() {
     const itemsForAI = allPosts.map(post => ({
       title: post.title,
       link: post.url,
-      content: (post.content || '').substring(0, 3000),
+      content: (post.content || '').substring(0, 2000),
       source: post.source
     }))
 
-    // 2. O Editor-Chefe: Chamada OpenAI
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    })
+    // ===== 2. CHUNKING: Dividir em arrays de 5 =====
+    const CHUNK_SIZE = 5
+    const chunks: typeof itemsForAI[] = []
+    for (let i = 0; i < itemsForAI.length; i += CHUNK_SIZE) {
+      chunks.push(itemsForAI.slice(i, i + CHUNK_SIZE))
+    }
+    console.log(`📦 Dividido em ${chunks.length} chunks de até ${CHUNK_SIZE} itens`)
 
-    const completion = await openai.chat.completions.create({
+    // ===== 3. MAP: Processar chunks em paralelo =====
+    const mapPrompt = `Você é um redator técnico de newsletter dev. Escreva em PT-BR.
+
+TAREFA: Resuma CADA UM dos itens abaixo. NÃO PULE NENHUM. Gere exatamente ${CHUNK_SIZE} ou menos saídas (uma para cada input).
+
+REGRAS:
+- Use emojis no início de cada headline
+- Seja técnico: mencione versões, CVEs, métricas
+- Tom descontraído de dev (gírias: "deploy", "bug", "prod")
+- 1-2 parágrafos curtos por item
+- Classifique em: 🛡️ CIBERSEGURANÇA, 💻 DEV, 🤖 IA, ☁️ DEVOPS & CLOUD, 💰 MERCADO
+
+SAÍDA JSON OBRIGATÓRIA - Retorne um objeto com a propriedade "items" contendo o array:
+{
+  "items": [
+    {
+      "category": "🛡️ CIBERSEGURANÇA",
+      "headline": "🔥 Título chamativo com emoji",
+      "story": "Texto técnico de 1-2 parágrafos.",
+      "link": "URL original"
+    }
+  ]
+}`
+
+    console.log('⚡ [Map] Processando chunks em paralelo...')
+
+    const mapResults = await Promise.all(
+      chunks.map(async (chunk, index) => {
+        try {
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              { role: "system", content: mapPrompt },
+              { role: "user", content: `Processe estes ${chunk.length} itens:\n${JSON.stringify(chunk)}` }
+            ],
+            response_format: { type: "json_object" }
+          })
+
+          const rawContent = response.choices[0].message.content
+          if (!rawContent) return []
+
+          console.log(`  🔍 Chunk ${index + 1} Raw Response:`, rawContent.substring(0, 200))
+
+          const parsed = JSON.parse(rawContent)
+          const items = findFirstArray(parsed) // Usa o "sabujo" para encontrar o array
+          console.log(`  ✅ Chunk ${index + 1}: ${items.length} itens processados`)
+          return items
+        } catch (error) {
+          console.error(`  ❌ Chunk ${index + 1} falhou:`, error)
+          return []
+        }
+      })
+    )
+
+    // ===== 4. REDUCE: Consolidar todos os itens =====
+    const allItems = mapResults.flat()
+    console.log(`🔗 [Reduce] Total consolidado: ${allItems.length} itens`)
+
+    if (allItems.length === 0) {
+      throw new Error('Nenhum item foi processado. Verifique os logs de erro.')
+    }
+
+    // Agrupar por categoria
+    const categoriesMap = new Map<string, any[]>()
+    for (const item of allItems) {
+      const cat = item.category || '💻 DEV'
+      if (!categoriesMap.has(cat)) {
+        categoriesMap.set(cat, [])
+      }
+      categoriesMap.get(cat)!.push({
+        headline: item.headline,
+        story: item.story,
+        link: item.link
+      })
+    }
+
+    const categories = Array.from(categoriesMap.entries()).map(([name, items]) => ({
+      name,
+      items
+    }))
+
+    // ===== 5. METADADOS: Chamada final leve =====
+    console.log('📝 [Metadados] Gerando title, intro e quickTakes...')
+
+    const headlines = allItems.map(item => item.headline).join('\n')
+
+    const metaResponse = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: `Você é o 'Tech News', um editor de tecnologia que fala a língua dos desenvolvedores.
-          
-          SUA PERSONALIDADE:
-          - Você é descontraído, usa gírias tech ("deploy", "bug", "feature", "prod") e tem bom humor.
-          - Você escreve como se estivesse conversando com um colega dev no café. Zero "corporatês".
-          - Você é TÉCNICO: Explica o *porquê* das coisas, não apenas o *o quê*.
-          
-          REGRAS DE CONTEÚDO:
-          1. **EMOJIS SÃO LEI:** Use emojis no início de cada manchete e no meio do texto para dar vida.
-          2. **FILTRO:** Ignore fofocas. Foque em: Código, IA Técnica, Vazamentos/Segurança, Cloud e Carreira Dev.
-          3. **PROFUNDIDADE TÉCNICA (CRÍTICO):** Escreva de 2 a 3 parágrafos por notícia. NÃO faça resumos genéricos. Extraia e mencione:
-             - **Números de versão** (ex: "React 19.0", "Node.js 22.1.0")
-             - **CVEs e vulnerabilidades** (ex: "CVE-2024-1234", "CVSS 9.8")
-             - **Métricas e números** (ex: "melhoria de 40% em performance", "redução de 2.3s no tempo de build")
-             - **Nomes técnicos específicos** (ex: "malware XLoader", "framework Next.js 15", "API GraphQL")
-             - **Features principais** (se for lançamento, liste as 2-3 features mais importantes)
-             - **Impacto técnico real** (ex: "afeta aplicações que usam JWT", "requer atualização imediata em produção")
-          4. **IDIOMA:** Português do Brasil (PT-BR) sempre.
-          5. **QUANTIDADE MÍNIMA (OBRIGATÓRIO):** Você DEVE preencher OBRIGATORIAMENTE 4 categorias diferentes (🛡️ CIBERSEGURANÇA, 💻 DEV, 🤖 IA, ☁️ DEVOPS & CLOUD). Cada categoria deve ter 2 a 3 notícias. Se não houver notícias óbvias para uma categoria específica, procure itens correlatos na entrada que possam se encaixar. Não economize conteúdo. Se a notícia for boa, coloque-a.
-          6. **DIVERSIDADE & RELEVÂNCIA:** Se houver muitas notícias relevantes, priorize a diversidade de temas. Não deixe assuntos críticos de segurança ou grandes lançamentos de fora.
-          7. **QUALIDADE > QUANTIDADE:** Mantenha a profundidade técnica atual, mas garanta que o e-mail final pareça "cheio" e cubra todas as áreas. Cada item deve ser uma "Deep Dive" que realmente informa o desenvolvedor.
-          
-          ESTRUTURA JSON OBRIGATÓRIA:
-          {
-            "title": "Título Criativo e Engraçadinho (ex: 'O estagiário derrubou a prod?')",
-            "intro": "Escreva uma introdução ÚNICA de 1 parágrafo (max 2 linhas) conectando os 2 maiores destaques desta edição. Seja criativo e NÃO COPIE O EXEMPLO. Ex: 'Bom dia! Hoje o foco é segurança com o vazamento da X e a nova IA da Y...'",
-            "quickTakes": [
-              "⚡ Manchete rápida 1 (1 frase)",
-              "🔥 Manchete rápida 2 (1 frase)",
-              "👀 Manchete rápida 3 (1 frase)"
-            ],
-            "categories": [
-              {
-                "name": "NOME DA CATEGORIA (Use: 🛡️ CIBERSEGURANÇA, ☁️ DEVOPS & CLOUD, 🤖 IA, 💻 DEV, 💰 MERCADO)",
-                "items": [
-                  {
-                    "headline": "Emoji + Título Traduzido e Chamativo",
-                    "story": "Texto completo e envolvente com 2-3 parágrafos. Use tom de conversa.",
-                    "link": "URL original"
-                  }
-                ]
-              }
-            ]
-          }`
+          content: `Você é o editor-chefe do 'Tech News'. Gere APENAS metadados para a newsletter.
+
+SAÍDA JSON:
+{
+  "title": "Título criativo e engraçado (ex: 'O estagiário derrubou a prod?')",
+  "intro": "Introdução de 1-2 linhas conectando os 2 maiores destaques",
+  "quickTakes": ["⚡ Manchete 1", "🔥 Manchete 2", "👀 Manchete 3"]
+}`
         },
         {
           role: "user",
-          content: `Analise estes feeds e crie a melhor newsletter do dia:\n${JSON.stringify(itemsForAI)}`
+          content: `Baseado nestas ${allItems.length} headlines, gere os metadados:\n${headlines}`
         }
       ],
       response_format: { type: "json_object" }
     })
 
-    const aiContent = completion.choices[0].message.content
-    if (!aiContent) throw new Error('Falha ao gerar conteúdo com IA')
+    const metaContent = metaResponse.choices[0].message.content
+    if (!metaContent) throw new Error('Falha ao gerar metadados')
 
-    const contentJson = JSON.parse(aiContent)
-    console.log('✅ Edição gerada:', contentJson.title)
+    const metadata = JSON.parse(metaContent)
+    console.log('✅ Metadados gerados:', metadata.title)
 
-    // 3. Renderização
+    // ===== 6. MONTAGEM FINAL =====
+    const contentJson = {
+      title: metadata.title,
+      intro: metadata.intro,
+      quickTakes: metadata.quickTakes,
+      categories
+    }
+
+    // Renderização HTML
     const htmlContent = await render(
       DailyNewsletter({
         title: contentJson.title,
@@ -387,7 +462,7 @@ export async function generateNewsletterService() {
       { pretty: true }
     )
 
-    // 4. Persistência e Título Padronizado
+    // Persistência
     const { data: maxEditionData } = await supabase
       .from('newsletters')
       .select('edition_number')
@@ -397,13 +472,13 @@ export async function generateNewsletterService() {
 
     const nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
 
-    const today = new Date();
+    const today = new Date()
     const formattedDate = today.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: '2-digit'
-    });
-    const title = `Edição ${formattedDate}`;
+    })
+    const title = `Edição ${formattedDate}`
 
     const { data, error } = await supabase
       .from('newsletters')
@@ -423,7 +498,7 @@ export async function generateNewsletterService() {
       throw new Error('Falha ao salvar draft')
     }
 
-    // 5. Marcar posts usados como 'published'
+    // Marcar posts usados como 'published'
     const postIds = allPosts.map(post => post.id)
     const { error: updateError } = await supabase
       .from('posts')
@@ -436,11 +511,12 @@ export async function generateNewsletterService() {
       console.log(`📝 ${postIds.length} posts marcados como 'published'`)
     }
 
-    console.log(`🎉 Edição #${nextEditionNumber} salva com sucesso!`)
-    return { success: true, edition: nextEditionNumber, id: data.id }
+    console.log(`🎉 Edição #${nextEditionNumber} salva! ${allItems.length} itens processados via Map-Reduce.`)
+    return { success: true, edition: nextEditionNumber, id: data.id, itemCount: allItems.length }
 
   } catch (error) {
-    console.error('❌ Erro fatal na geração (Service):', error)
-    throw error // Relança para quem chamou tratar
+    console.error('❌ Erro fatal na geração (Map-Reduce):', error)
+    throw error
   }
 }
+
