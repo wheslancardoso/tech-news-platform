@@ -5,6 +5,14 @@ export const maxDuration = 300 // Estende o timeout para 300s (5min) para acomod
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  // Kill Switch: Controle via variável de ambiente
+  if (process.env.ENABLE_CRON_JOB !== 'true') {
+    return NextResponse.json(
+      { status: 'skipped', message: 'Cron Job disabled via env var' },
+      { status: 200 }
+    )
+  }
+
   const start = Date.now()
   console.log(`🕒 [CRON] Iniciando Job às: ${new Date().toISOString()}`)
 
