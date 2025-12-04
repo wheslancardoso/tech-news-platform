@@ -1,7 +1,7 @@
-import { generateNewsletterService } from '@/lib/services/newsletter'
+import { ingestPostsService } from '@/lib/services/newsletter'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const maxDuration = 300 // Estende o timeout para 300s (5min) para acomodar a geração da newsletter
+export const maxDuration = 300 // Estende o timeout para 300s (5min) para acomodar a ingestão
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   }
 
   const start = Date.now()
-  console.log(`🕒 [CRON] Iniciando Job às: ${new Date().toISOString()}`)
+  console.log(`🕒 [CRON] Iniciando Job de Ingestão às: ${new Date().toISOString()}`)
 
   const authHeader = request.headers.get('authorization')
 
@@ -28,29 +28,33 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log('🚀 [CRON] Autenticação OK. Iniciando serviço de geração...')
+    console.log('🚀 [CRON] Autenticação OK. Iniciando serviço de ingestão...')
 
-    const result = await generateNewsletterService()
+    const result = await ingestPostsService()
     const duration = (Date.now() - start) / 1000
-    console.log(`✅ [CRON] Sucesso na geração! Duração: ${duration}s. Edição: #${result.edition}`)
-    console.log(`📝 [CRON] Newsletter salva como draft. Publicação manual necessária no painel.`)
 
-    // Publicação Automática removida - Human-in-the-Loop requerido
-    // A publicação deve ser feita manualmente através do botão "Publicar" no painel admin
+    console.log(`✅ [CRON] Ingestão concluída! Duração: ${duration}s`)
+    console.log(`📊 [CRON] ${result.inserted} posts inseridos, ${result.skipped} ignorados`)
 
     return NextResponse.json({
       success: true,
-      message: 'Newsletter generated and saved as draft',
-      edition: result.edition,
-      duration,
-      status: 'draft'
+      message: 'Posts ingested successfully',
+      stats: {
+        total: result.total,
+        inserted: result.inserted,
+        skipped: result.skipped,
+        avgScore: result.avgScore,
+        maxScore: result.maxScore,
+        minScore: result.minScore
+      },
+      duration
     })
   } catch (error: any) {
     console.error('❌ [CRON] Erro Crítico:', error.message)
     console.error(error.stack)
 
     return NextResponse.json(
-      { success: false, message: 'Failed to generate newsletter', error: error.message },
+      { success: false, message: 'Failed to ingest posts', error: error.message },
       { status: 500 }
     )
   }

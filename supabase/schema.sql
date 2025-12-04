@@ -32,3 +32,21 @@ create index idx_newsletters_status on newsletters(status);
 create index idx_newsletters_edition on newsletters(edition_number);
 create index idx_subscribers_email on subscribers(email);
 create index idx_subscribers_token on subscribers(unsubscribe_token);
+
+-- Tabela de Posts (Curadoria de Notícias)
+create type post_status as enum ('pending', 'approved', 'rejected', 'published');
+
+create table posts (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  url text unique not null,
+  content text,
+  summary text,
+  source text,
+  score integer default 0,
+  status post_status default 'pending',
+  created_at timestamp with time zone default now()
+);
+
+create index idx_posts_status on posts(status);
+create index idx_posts_score on posts(score);

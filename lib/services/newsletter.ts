@@ -59,7 +59,7 @@ const FEEDS = [
  */
 function scoreItem(item: { title?: string; content?: string; contentSnippet?: string }): number {
   const text = `${item.title || ''} ${item.content || ''} ${item.contentSnippet || ''}`.toLowerCase()
-  
+
   let score = 0
 
   // Palavras-chave críticas (+5 pontos cada)
@@ -77,7 +77,7 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
     'ai', 'llm', 'gpt', 'model', 'deepseek', 'claude', 'gemini', 'llama',
     'inference', 'benchmark', 'artificial intelligence', 'neural'
   ]
-  
+
   criticalKeywords.forEach(keyword => {
     if (text.includes(keyword)) {
       score += 5
@@ -95,7 +95,7 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
     'python', 'java', 'go', 'rust', 'php', 'ruby',
     'machine learning', 'ml', 'deep learning'
   ]
-  
+
   techKeywords.forEach(keyword => {
     if (text.includes(keyword)) {
       score += 2
@@ -108,7 +108,7 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
     'hiring', 'job', 'career', 'recruitment', 'apply now',
     'podcast', 'interview', 'exclusive interview'
   ]
-  
+
   noiseKeywords.forEach(keyword => {
     if (text.includes(keyword)) {
       score -= 5
@@ -118,14 +118,22 @@ function scoreItem(item: { title?: string; content?: string; contentSnippet?: st
   return score
 }
 
-export async function generateNewsletterService() {
-  console.log('🚀 [Service] Iniciando geração editorial Tech News...')
+/**
+ * Serviço de Ingestão: Coleta notícias dos feeds RSS e salva no banco de dados.
+ * Este serviço NÃO gera a newsletter, apenas popula a tabela de posts para curadoria.
+ * 
+ * @returns Estatísticas de ingestão
+ */
+export async function ingestPostsService() {
+  console.log('🚀 [Ingest] Iniciando ingestão de feeds RSS...')
 
   try {
+    const supabase = await createClient()
+
     // 1. Ingestão: RSS
     const parser = new Parser({
       requestOptions: {
-        rejectUnauthorized: false // Ignora erros de certificado SSL (necessário para feeds como Netflix)
+        rejectUnauthorized: false
       }
     })
 
@@ -158,33 +166,135 @@ export async function generateNewsletterService() {
       }))
 
     // Ordenar por Score (decrescente) e depois por Data (mais recente primeiro)
-    // Pegar apenas os TOP 40 itens (A "Nata" do dia)
+    // Pegar apenas os TOP 100 itens para upsert
     const sortedItems = itemsWithScore
       .sort((a, b) => {
-        // Primeiro ordena por score (maior primeiro)
         if (b.score !== a.score) {
           return b.score - a.score
         }
-        // Se o score for igual, ordena por data (mais recente primeiro)
         return new Date(b.pubDate || b.isoDate).getTime() - new Date(a.pubDate || a.isoDate).getTime()
       })
-      .slice(0, 40)
+      .slice(0, 100)
 
-    // Aumento de Contexto: 3000 caracteres para os Top 40 itens selecionados
-    const itemsForAI = sortedItems.map(item => ({
-      title: item.title,
-      link: item.link,
-      content: (item.contentSnippet || item.content || '').substring(0, 3000),
-      source: item.source || new URL(item.link).hostname
-    }))
+    // Log de estatísticas
+    const avgScore = sortedItems.length > 0
+      ? sortedItems.reduce((sum, item) => sum + item.score, 0) / sortedItems.length
+      : 0
+    const maxScore = sortedItems.length > 0 ? Math.max(...sortedItems.map(item => item.score)) : 0
+    const minScore = sortedItems.length > 0 ? Math.min(...sortedItems.map(item => item.score)) : 0
 
-    // Log de estatísticas de relevância
-    const avgScore = sortedItems.reduce((sum, item) => sum + item.score, 0) / sortedItems.length
-    const maxScore = Math.max(...sortedItems.map(item => item.score))
-    const minScore = Math.min(...sortedItems.map(item => item.score))
-    
-    console.log(`✅ Ingestão concluída. ${itemsForAI.length} itens selecionados (Top 40 por relevância).`)
+    console.log(`✅ [Ingest] ${sortedItems.length} itens encontrados.`)
     console.log(`📊 Estatísticas de Score: Média=${avgScore.toFixed(1)}, Max=${maxScore}, Min=${minScore}`)
+
+    // 2. Upsert no Supabase
+    let inserted = 0
+    let skipped = 0
+
+    for (const item of sortedItems) {
+      const postData = {
+        title: item.title || 'Sem título',
+        url: item.link,
+        content: (item.contentSnippet || item.content || '').substring(0, 5000),
+        summary: (item.contentSnippet || '').substring(0, 500),
+        source: item.source || new URL(item.link).hostname,
+        score: item.score,
+        status: 'pending' as const
+      }
+
+      const { error } = await supabase
+        .from('posts')
+        .upsert(postData, {
+          onConflict: 'url',
+          ignoreDuplicates: true
+        })
+
+      if (error) {
+        console.warn(`⚠️ Erro ao inserir ${item.link}:`, error.message)
+        skipped++
+      } else {
+        inserted++
+      }
+    }
+
+    console.log(`🎉 [Ingest] Ingestão concluída! ${inserted} inseridos, ${skipped} ignorados/atualizados.`)
+
+    return {
+      success: true,
+      total: sortedItems.length,
+      inserted,
+      skipped,
+      avgScore: avgScore.toFixed(1),
+      maxScore,
+      minScore
+    }
+
+  } catch (error) {
+    console.error('❌ [Ingest] Erro fatal na ingestão:', error)
+    throw error
+  }
+}
+
+/**
+ * Serviço de Geração: Busca posts curados/pendentes do banco e gera a newsletter.
+ * Prioriza posts aprovados (curadoria humana), depois pendentes ordenados por score.
+ * 
+ * @returns Dados da edição gerada
+ */
+export async function generateNewsletterService() {
+  console.log('🚀 [Generate] Iniciando geração editorial Tech News...')
+
+  try {
+    const supabase = await createClient()
+
+    // 1. Buscar posts do banco
+    // Prioridade 1: Posts aprovados manualmente
+    const { data: approvedPosts, error: approvedError } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('status', 'approved')
+      .order('score', { ascending: false })
+
+    if (approvedError) {
+      console.error('Erro ao buscar posts aprovados:', approvedError)
+      throw approvedError
+    }
+
+    // Prioridade 2: Posts pendentes (fallback automático)
+    const remainingSlots = 20 - (approvedPosts?.length || 0)
+    let pendingPosts: any[] = []
+
+    if (remainingSlots > 0) {
+      const { data, error: pendingError } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('status', 'pending')
+        .order('score', { ascending: false })
+        .limit(remainingSlots)
+
+      if (pendingError) {
+        console.error('Erro ao buscar posts pendentes:', pendingError)
+        throw pendingError
+      }
+
+      pendingPosts = data || []
+    }
+
+    // Combinar posts
+    const allPosts = [...(approvedPosts || []), ...pendingPosts]
+
+    if (allPosts.length === 0) {
+      throw new Error('Nenhum post disponível para gerar newsletter. Execute a ingestão primeiro.')
+    }
+
+    console.log(`📊 Posts selecionados: ${approvedPosts?.length || 0} aprovados + ${pendingPosts.length} pendentes = ${allPosts.length} total`)
+
+    // Preparar dados para a IA
+    const itemsForAI = allPosts.map(post => ({
+      title: post.title,
+      link: post.url,
+      content: (post.content || '').substring(0, 3000),
+      source: post.source
+    }))
 
     // 2. O Editor-Chefe: Chamada OpenAI
     const openai = new OpenAI({
@@ -267,8 +377,6 @@ export async function generateNewsletterService() {
     )
 
     // 4. Persistência e Título Padronizado
-    const supabase = await createClient()
-
     const { data: maxEditionData } = await supabase
       .from('newsletters')
       .select('edition_number')
@@ -302,6 +410,19 @@ export async function generateNewsletterService() {
     if (error) {
       console.error('Erro ao salvar no Supabase:', error)
       throw new Error('Falha ao salvar draft')
+    }
+
+    // 5. Marcar posts usados como 'published'
+    const postIds = allPosts.map(post => post.id)
+    const { error: updateError } = await supabase
+      .from('posts')
+      .update({ status: 'published' })
+      .in('id', postIds)
+
+    if (updateError) {
+      console.warn('⚠️ Erro ao atualizar status dos posts:', updateError)
+    } else {
+      console.log(`📝 ${postIds.length} posts marcados como 'published'`)
     }
 
     console.log(`🎉 Edição #${nextEditionNumber} salva com sucesso!`)
