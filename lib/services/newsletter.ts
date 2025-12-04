@@ -1,8 +1,19 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import Parser from 'rss-parser'
 import OpenAI from 'openai'
 import { render } from '@react-email/render'
 import { DailyNewsletter } from '@/emails/daily-template'
+
+/**
+ * Cliente Supabase Admin (Service Role) para bypass de RLS.
+ * Usar apenas em código server-side (Cron Jobs, Server Actions).
+ */
+function createAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 const FEEDS = [
   // 🇧🇷 ENGENHARIA & ARQUITETURA
@@ -128,7 +139,7 @@ export async function ingestPostsService() {
   console.log('🚀 [Ingest] Iniciando ingestão de feeds RSS...')
 
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 1. Ingestão: RSS
     const parser = new Parser({
@@ -244,7 +255,7 @@ export async function generateNewsletterService() {
   console.log('🚀 [Generate] Iniciando geração editorial Tech News...')
 
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 1. Buscar posts do banco
     // Prioridade 1: Posts aprovados manualmente

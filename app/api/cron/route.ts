@@ -5,30 +5,42 @@ export const maxDuration = 300 // Estende o timeout para 300s (5min) para acomod
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
-  // Kill Switch: Controle via variável de ambiente
-  if (process.env.ENABLE_CRON_JOB !== 'true') {
-    return NextResponse.json(
-      { status: 'skipped', message: 'Cron Job disabled via env var' },
-      { status: 200 }
-    )
-  }
-
   const start = Date.now()
-  console.log(`🕒 [CRON] Iniciando Job de Ingestão às: ${new Date().toISOString()}`)
 
-  const authHeader = request.headers.get('authorization')
+  // Verifica parâmetro de força manual via URL (?force=true)
+  const forceRun = request.nextUrl.searchParams.get('force') === 'true'
 
-  // Segurança: Verifica o Bearer Token
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    console.warn(`🔒 [CRON] Acesso negado. Header recebido: ${authHeader ? 'Presente (Inválido)' : 'Ausente'}`)
-    return NextResponse.json(
-      { success: false, message: 'Unauthorized' },
-      { status: 401 }
-    )
+  // ===== MODO MANUAL (force=true) =====
+  // Bypass total: ignora ENABLE_CRON_JOB e Authorization
+  if (forceRun) {
+    console.log(`🔧 [CRON] Execução FORÇADA Manual às: ${new Date().toISOString()}`)
+  } else {
+    // ===== MODO AUTOMÁTICO (Cron Vercel) =====
+    // Verificações de segurança estritas
+
+    // 1. Kill Switch via env var
+    if (process.env.ENABLE_CRON_JOB !== 'true') {
+      return NextResponse.json(
+        { status: 'skipped', message: 'Cron Job disabled. Use ?force=true to run manually.' },
+        { status: 200 }
+      )
+    }
+
+    // 2. Verificação do Bearer Token
+    const authHeader = request.headers.get('authorization')
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      console.warn(`🔒 [CRON] Acesso negado. Header recebido: ${authHeader ? 'Presente (Inválido)' : 'Ausente'}`)
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    console.log(`🕒 [CRON] Iniciando Job Automático às: ${new Date().toISOString()}`)
   }
 
   try {
-    console.log('🚀 [CRON] Autenticação OK. Iniciando serviço de ingestão...')
+    console.log('🚀 [CRON] Iniciando serviço de ingestão...')
 
     const result = await ingestPostsService()
     const duration = (Date.now() - start) / 1000
