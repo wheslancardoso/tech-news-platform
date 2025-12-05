@@ -84,7 +84,7 @@ const FEEDS = [
  * @param item - Item do feed RSS com title e content
  * @returns Pontuação numérica (maior = mais relevante)
  */
-function scoreItem(item: { title?: string; content?: string; contentSnippet?: string }): number {
+export function scoreItem(item: { title?: string; content?: string; contentSnippet?: string }): number {
   const text = `${item.title || ''} ${item.content || ''} ${item.contentSnippet || ''}`.toLowerCase()
 
   let score = 0
