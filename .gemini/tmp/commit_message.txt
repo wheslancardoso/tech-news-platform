@@ -1,7 +1,0 @@
-feat(testing): Configura Vitest e React Testing Library
-
-Este commit adiciona a infraestrutura de testes ao projeto, integrando Vitest como o framework de teste e React Testing Library para testar componentes React.
-
-Foram incluídas as dependências `@testing-library/dom`, `@testing-library/jest-dom`, `@testing-library/react`, `@vitejs/plugin-react`, `jsdom` e `vitest` nas `devDependencies`.
-Novos scripts `test` e `test:run` foram adicionados ao `package.json` para facilitar a execução dos testes.
-O `package-lock.json` foi atualizado para refletir as novas dependências.
