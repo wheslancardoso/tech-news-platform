@@ -47,7 +47,7 @@ export const DailyNewsletter = ({
           <Section style={content}>
             <Heading style={h1}>{title}</Heading>
             <Text style={introText}>{intro}</Text>
-            
+
             {/* Quick Takes - Giro Tech */}
             {quickTakes && quickTakes.length > 0 && (
               <Section style={quickTakesSection}>
@@ -61,7 +61,7 @@ export const DailyNewsletter = ({
                 </ul>
               </Section>
             )}
-            
+
             <Hr style={hr} />
 
             {categories.map((category, catIndex) => (
@@ -82,15 +82,15 @@ export const DailyNewsletter = ({
                         {item.headline}
                       </Heading>
                     </Link>
-                    
+
                     <Text style={storyText}>
                       {item.story}
                     </Text>
-                    
+
                     <Link href={item.link} style={readMoreLink}>
                       Ler fonte original &rarr;
                     </Link>
-                    
+
                     {/* Separador entre itens, menos no último */}
                     {itemIndex < category.items.length - 1 && (
                       <div style={itemSeparator} />
@@ -251,7 +251,6 @@ const storyText = {
   fontSize: "16px",
   lineHeight: "1.6", // Aumentado lineHeight
   margin: "0 0 12px",
-  whiteSpace: "pre-line" as const, 
 };
 
 const readMoreLink = {
