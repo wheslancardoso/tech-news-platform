@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowLeft, Share2, ExternalLink, Calendar, Hash } from "lucide-react-native";
+import { ArrowLeft, Share2, ExternalLink, Calendar, Hash, Heart } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../components/ui/Button";
+import { useFavorites } from "../context/FavoritesContext";
 
 type NewsletterItem = {
     headline: string;
@@ -39,6 +40,8 @@ export default function NewsletterDetail() {
     const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const { isFavorite, toggleFavorite } = useFavorites();
+    const active = id ? isFavorite(id as string) : false;
 
     useEffect(() => {
         async function fetchNewsletter() {
@@ -107,9 +110,21 @@ export default function NewsletterDetail() {
                     <Text className="ml-1 text-base font-medium text-foreground">Voltar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={handleShare} className="p-2 rounded-full active:bg-muted">
-                    <Share2 size={24} color="#0f172a" />
-                </TouchableOpacity>
+                <View className="flex-row items-center gap-2">
+                    <TouchableOpacity
+                        onPress={() => id && toggleFavorite(id as string)}
+                        className="p-2 rounded-full active:bg-muted"
+                    >
+                        <Heart
+                            size={24}
+                            color={active ? "#ef4444" : "#0f172a"}
+                            fill={active ? "#ef4444" : "none"}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleShare} className="p-2 rounded-full active:bg-muted">
+                        <Share2 size={24} color="#0f172a" />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <ScrollView className="flex-1 px-4 py-6" contentContainerStyle={{ paddingBottom: 40 }}>

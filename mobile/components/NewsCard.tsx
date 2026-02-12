@@ -2,8 +2,9 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowRight } from "lucide-react-native";
+import { ArrowRight, Heart } from "lucide-react-native";
 import { cn } from "../lib/utils";
+import { useFavorites } from "../context/FavoritesContext";
 
 interface NewsCardProps {
     id: string;
@@ -16,6 +17,8 @@ interface NewsCardProps {
 }
 
 export function NewsCard({ id, edition, title, date, intro, status = "published", isAdmin = false }: NewsCardProps) {
+    const { isFavorite, toggleFavorite } = useFavorites();
+    const active = isFavorite(id);
     const dateObj = new Date(date);
 
     return (
@@ -36,6 +39,19 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                             <View className="h-5 rounded border border-border px-2 justify-center">
                                 <Text className="text-[10px] font-normal text-muted-foreground">#{edition}</Text>
                             </View>
+                            <TouchableOpacity
+                                onPress={(e) => {
+                                    e.stopPropagation();
+                                    toggleFavorite(id);
+                                }}
+                                className="ml-1 p-1 rounded-full active:bg-muted"
+                            >
+                                <Heart
+                                    size={18}
+                                    color={active ? "#ef4444" : "#64748b"}
+                                    fill={active ? "#ef4444" : "none"}
+                                />
+                            </TouchableOpacity>
                         </View>
                     </View>
 
