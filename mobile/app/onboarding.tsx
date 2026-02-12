@@ -3,12 +3,9 @@ import { View, Text, TouchableOpacity, Dimensions, FlatList, Platform } from "re
 import { Newspaper, Heart, Moon, Bell, ArrowRight } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");
-
-interface OnboardingProps {
-    onComplete: () => void;
-}
 
 const slides = [
     {
@@ -41,30 +38,30 @@ const slides = [
     },
 ];
 
-export function Onboarding({ onComplete }: OnboardingProps) {
+export default function OnboardingScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
+    const router = useRouter();
+
+    const completeOnboarding = async () => {
+        await AsyncStorage.setItem("onboarding_complete", "true");
+        router.replace("/(tabs)");
+    };
 
     const handleNext = async () => {
         if (currentIndex < slides.length - 1) {
             flatListRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true });
             setCurrentIndex(currentIndex + 1);
         } else {
-            await AsyncStorage.setItem("onboarding_complete", "true");
-            onComplete();
+            await completeOnboarding();
         }
-    };
-
-    const handleSkip = async () => {
-        await AsyncStorage.setItem("onboarding_complete", "true");
-        onComplete();
     };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }} edges={["top", "bottom"]}>
             {/* Skip button */}
             <View style={{ alignItems: "flex-end", paddingHorizontal: 20, paddingTop: 12 }}>
-                <TouchableOpacity onPress={handleSkip} style={{ padding: 8 }}>
+                <TouchableOpacity onPress={completeOnboarding} style={{ padding: 8 }}>
                     <Text style={{ fontSize: 14, color: "#94a3b8", fontWeight: "600" }}>Pular</Text>
                 </TouchableOpacity>
             </View>
