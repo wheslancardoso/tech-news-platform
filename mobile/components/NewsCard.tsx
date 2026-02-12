@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowRight, Heart, Clock } from "lucide-react-native";
 import { useFavorites } from "../context/FavoritesContext";
+import { useTheme } from "../context/ThemeContext";
 
 interface NewsCardProps {
     id: string;
@@ -17,8 +18,15 @@ interface NewsCardProps {
 
 export function NewsCard({ id, edition, title, date, intro, status = "published", isFirst = false }: NewsCardProps) {
     const { isFavorite, toggleFavorite } = useFavorites();
+    const { colors, isDark } = useTheme();
     const active = isFavorite(id);
     const dateObj = new Date(date);
+
+    const cardBg = isFirst
+        ? (isDark ? "#1e1e1e" : "#0f172a")
+        : (isDark ? "#171717" : "#ffffff");
+
+    const isFirstOrDark = isFirst || isDark;
 
     return (
         <Link href={`/${id}`} asChild>
@@ -27,34 +35,35 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                 style={{
                     marginBottom: 4,
                     borderRadius: 16,
-                    backgroundColor: isFirst ? "#0f172a" : "#ffffff",
+                    backgroundColor: cardBg,
                     shadowColor: "#000",
                     shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: isFirst ? 0.15 : 0.06,
+                    shadowOpacity: isFirst ? 0.15 : (isDark ? 0.3 : 0.06),
                     shadowRadius: isFirst ? 8 : 4,
                     elevation: isFirst ? 4 : 2,
+                    borderWidth: isDark && !isFirst ? 1 : 0,
+                    borderColor: colors.border,
                     overflow: "hidden",
                 }}
             >
                 <View style={{ padding: 18 }}>
-                    {/* Top Row: Date + Badges */}
+                    {/* Top Row */}
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                            <Clock size={12} color={isFirst ? "#94a3b8" : "#94a3b8"} />
+                            <Clock size={12} color={colors.textMuted} />
                             <Text style={{
                                 fontSize: 12,
                                 fontWeight: "600",
                                 textTransform: "uppercase",
                                 letterSpacing: 0.5,
-                                color: isFirst ? "#94a3b8" : "#94a3b8",
+                                color: colors.textMuted,
                             }}>
                                 {format(dateObj, "d MMM", { locale: ptBR })}
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-
                             <View style={{
-                                backgroundColor: isFirst ? "#1e293b" : "#f1f5f9",
+                                backgroundColor: isFirst ? "#1e293b" : colors.bgMuted,
                                 paddingHorizontal: 10,
                                 paddingVertical: 4,
                                 borderRadius: 8,
@@ -62,7 +71,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                                 <Text style={{
                                     fontSize: 11,
                                     fontWeight: "700",
-                                    color: isFirst ? "#cbd5e1" : "#64748b",
+                                    color: isFirstOrDark ? "#94a3b8" : "#64748b",
                                 }}>
                                     #{edition}
                                 </Text>
@@ -72,15 +81,12 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                                     e.stopPropagation();
                                     toggleFavorite(id);
                                 }}
-                                style={{
-                                    padding: 4,
-                                    borderRadius: 20,
-                                }}
+                                style={{ padding: 4, borderRadius: 20 }}
                                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                             >
                                 <Heart
                                     size={18}
-                                    color={active ? "#ef4444" : (isFirst ? "#475569" : "#94a3b8")}
+                                    color={active ? "#ef4444" : colors.textMuted}
                                     fill={active ? "#ef4444" : "none"}
                                 />
                             </TouchableOpacity>
@@ -91,7 +97,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                     <Text style={{
                         fontSize: isFirst ? 22 : 18,
                         fontWeight: "800",
-                        color: isFirst ? "#ffffff" : "#0f172a",
+                        color: isFirstOrDark ? "#ffffff" : "#0f172a",
                         lineHeight: isFirst ? 28 : 24,
                         marginBottom: 8,
                         letterSpacing: -0.3,
@@ -105,7 +111,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                         style={{
                             fontSize: 14,
                             lineHeight: 21,
-                            color: isFirst ? "#94a3b8" : "#64748b",
+                            color: isFirstOrDark ? "#94a3b8" : "#64748b",
                             marginBottom: 16,
                         }}
                     >
@@ -117,12 +123,12 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                         <Text style={{
                             fontSize: 13,
                             fontWeight: "700",
-                            color: isFirst ? "#38bdf8" : "#0f172a",
+                            color: isFirst ? "#38bdf8" : (isDark ? "#60a5fa" : "#0f172a"),
                             marginRight: 4,
                         }}>
                             Ler edição completa
                         </Text>
-                        <ArrowRight size={14} color={isFirst ? "#38bdf8" : "#0f172a"} />
+                        <ArrowRight size={14} color={isFirst ? "#38bdf8" : (isDark ? "#60a5fa" : "#0f172a")} />
                     </View>
                 </View>
             </TouchableOpacity>

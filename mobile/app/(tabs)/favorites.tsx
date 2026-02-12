@@ -1,11 +1,12 @@
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
 import { NewsCard } from "../../components/NewsCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useFocusEffect } from "expo-router";
-import { Heart, HeartOff } from "lucide-react-native";
+import { HeartOff } from "lucide-react-native";
 import { useFavorites } from "../../context/FavoritesContext";
+import { useTheme } from "../../context/ThemeContext";
 
 type Newsletter = {
     id: string;
@@ -18,6 +19,7 @@ type Newsletter = {
 
 export default function Favorites() {
     const { favorites } = useFavorites();
+    const { colors } = useTheme();
     const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,7 +46,6 @@ export default function Favorites() {
         }
     };
 
-    // Re-fetch every time the tab comes into focus or favorites change
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
@@ -53,7 +54,7 @@ export default function Favorites() {
     );
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }} edges={["top"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
             <Stack.Screen options={{ headerShown: false }} />
 
             {/* Header */}
@@ -61,9 +62,9 @@ export default function Favorites() {
                 paddingHorizontal: 20,
                 paddingTop: 16,
                 paddingBottom: 16,
-                backgroundColor: "#ffffff",
+                backgroundColor: colors.bgHeader,
                 borderBottomWidth: 1,
-                borderBottomColor: "#f1f5f9",
+                borderBottomColor: colors.border,
             }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <View style={{
@@ -74,11 +75,11 @@ export default function Favorites() {
                         borderRadius: 18,
                         backgroundColor: "#fef2f2",
                     }}>
-                        <Heart size={18} color="#ef4444" fill="#ef4444" />
+                        <Text style={{ fontSize: 18 }}>❤️</Text>
                     </View>
                     <View>
-                        <Text style={{ fontWeight: "800", fontSize: 20, color: "#0f172a", letterSpacing: -0.8 }}>Favoritos</Text>
-                        <Text style={{ fontSize: 11, color: "#94a3b8", fontWeight: "500" }}>
+                        <Text style={{ fontWeight: "800", fontSize: 20, color: colors.text, letterSpacing: -0.8 }}>Favoritos</Text>
+                        <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "500" }}>
                             {favorites.length} {favorites.length === 1 ? "edição salva" : "edições salvas"}
                         </Text>
                     </View>
@@ -112,17 +113,17 @@ export default function Favorites() {
                                 width: 80,
                                 height: 80,
                                 borderRadius: 40,
-                                backgroundColor: "#fef2f2",
+                                backgroundColor: colors.bgMuted,
                                 alignItems: "center",
                                 justifyContent: "center",
                                 marginBottom: 20,
                             }}>
-                                <HeartOff size={32} color="#fca5a5" />
+                                <HeartOff size={32} color={colors.textMuted} />
                             </View>
-                            <Text style={{ color: "#64748b", fontSize: 17, fontWeight: "700", marginBottom: 6 }}>
+                            <Text style={{ color: colors.textSecondary, fontSize: 17, fontWeight: "700", marginBottom: 6 }}>
                                 Nenhum favorito ainda
                             </Text>
-                            <Text style={{ color: "#94a3b8", fontSize: 14, textAlign: "center", paddingHorizontal: 40, lineHeight: 20 }}>
+                            <Text style={{ color: colors.textMuted, fontSize: 14, textAlign: "center", paddingHorizontal: 40, lineHeight: 20 }}>
                                 Toque no ❤️ nas edições para salvá-las aqui.
                             </Text>
                         </View>

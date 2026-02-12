@@ -1,11 +1,12 @@
-import { View, Text, FlatList, ActivityIndicator, RefreshControl, TextInput } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity } from "react-native";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "../../lib/supabase";
 import { NewsCard } from "../../components/NewsCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { Newspaper, Search, X } from "lucide-react-native";
-import { TouchableOpacity } from "react-native";
+import { useTheme } from "../../context/ThemeContext";
+import { AppMenu } from "../../components/AppMenu";
 
 type Newsletter = {
     id: string;
@@ -21,6 +22,8 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [search, setSearch] = useState("");
+    const [menuVisible, setMenuVisible] = useState(false);
+    const { colors, isDark } = useTheme();
 
     const fetchNewsletters = async () => {
         try {
@@ -62,69 +65,74 @@ export default function Home() {
     }, [newsletters, search]);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }} edges={["top"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
             <Stack.Screen options={{ headerShown: false }} />
+            <AppMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
 
             {/* Header */}
             <View style={{
                 paddingHorizontal: 20,
                 paddingTop: 16,
                 paddingBottom: 12,
-                backgroundColor: "#ffffff",
+                backgroundColor: colors.bgHeader,
                 borderBottomWidth: 1,
-                borderBottomColor: "#f1f5f9",
+                borderBottomColor: colors.border,
             }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <TouchableOpacity
+                        onPress={() => setMenuVisible(true)}
+                        activeOpacity={0.7}
+                        style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+                    >
                         <View style={{
                             height: 36,
                             width: 36,
                             alignItems: "center",
                             justifyContent: "center",
                             borderRadius: 18,
-                            backgroundColor: "#0f172a",
-                            shadowColor: "#0f172a",
+                            backgroundColor: colors.accent,
+                            shadowColor: colors.accent,
                             shadowOffset: { width: 0, height: 2 },
                             shadowOpacity: 0.15,
                             shadowRadius: 4,
                             elevation: 3,
                         }}>
-                            <Text style={{ color: "#fff", fontWeight: "800", fontSize: 12 }}>TN</Text>
+                            <Text style={{ color: isDark ? "#0a0a0a" : "#ffffff", fontWeight: "800", fontSize: 12 }}>TN</Text>
                         </View>
                         <View>
-                            <Text style={{ fontWeight: "800", fontSize: 20, color: "#0f172a", letterSpacing: -0.8 }}>Tech News</Text>
-                            <Text style={{ fontSize: 11, color: "#94a3b8", fontWeight: "500" }}>Curadoria diária de tech</Text>
+                            <Text style={{ fontWeight: "800", fontSize: 20, color: colors.text, letterSpacing: -0.8 }}>Tech News</Text>
+                            <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "500" }}>Curadoria diária de tech</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </View>
 
                 {/* Search Bar */}
                 <View style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    backgroundColor: "#f8fafc",
+                    backgroundColor: colors.searchBg,
                     borderRadius: 12,
                     paddingHorizontal: 12,
                     borderWidth: 1,
-                    borderColor: "#f1f5f9",
+                    borderColor: colors.searchBorder,
                 }}>
-                    <Search size={18} color="#94a3b8" />
+                    <Search size={18} color={colors.textMuted} />
                     <TextInput
                         placeholder="Buscar por edição ou tema..."
-                        placeholderTextColor="#94a3b8"
+                        placeholderTextColor={colors.textMuted}
                         value={search}
                         onChangeText={setSearch}
                         style={{
                             flex: 1,
                             height: 42,
                             fontSize: 14,
-                            color: "#0f172a",
+                            color: colors.text,
                             marginLeft: 8,
                         }}
                     />
                     {search.length > 0 && (
                         <TouchableOpacity onPress={() => setSearch("")} style={{ padding: 4 }}>
-                            <X size={16} color="#94a3b8" />
+                            <X size={16} color={colors.textMuted} />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -132,8 +140,8 @@ export default function Home() {
 
             {loading ? (
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                    <ActivityIndicator size="large" color="#0f172a" />
-                    <Text style={{ marginTop: 12, color: "#94a3b8", fontSize: 14 }}>Carregando edições...</Text>
+                    <ActivityIndicator size="large" color={colors.accent} />
+                    <Text style={{ marginTop: 12, color: colors.textMuted, fontSize: 14 }}>Carregando edições...</Text>
                 </View>
             ) : (
                 <FlatList
@@ -153,24 +161,24 @@ export default function Home() {
                         </View>
                     )}
                     contentContainerStyle={{ paddingVertical: 16, gap: 12 }}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0f172a" />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} />}
                     ListEmptyComponent={
                         <View style={{ alignItems: "center", paddingVertical: 60 }}>
                             <View style={{
                                 width: 64,
                                 height: 64,
                                 borderRadius: 32,
-                                backgroundColor: "#f1f5f9",
+                                backgroundColor: colors.bgMuted,
                                 alignItems: "center",
                                 justifyContent: "center",
                                 marginBottom: 16,
                             }}>
-                                <Newspaper size={28} color="#94a3b8" />
+                                <Newspaper size={28} color={colors.textMuted} />
                             </View>
-                            <Text style={{ color: "#64748b", fontSize: 16, fontWeight: "600" }}>
+                            <Text style={{ color: colors.textSecondary, fontSize: 16, fontWeight: "600" }}>
                                 {search ? "Nenhum resultado" : "Nenhuma edição ainda"}
                             </Text>
-                            <Text style={{ color: "#94a3b8", fontSize: 13, marginTop: 4 }}>
+                            <Text style={{ color: colors.textMuted, fontSize: 13, marginTop: 4 }}>
                                 {search ? `Sem resultados para "${search}"` : "Volte amanhã para a primeira edição!"}
                             </Text>
                         </View>
