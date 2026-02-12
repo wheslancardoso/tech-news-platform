@@ -8,26 +8,27 @@ import { View, ActivityIndicator } from "react-native";
 
 function OnboardingGate({ children }: { children: React.ReactNode }) {
     const [isReady, setIsReady] = useState(false);
-    const [needsOnboarding, setNeedsOnboarding] = useState(false);
     const router = useRouter();
     const segments = useSegments();
 
     useEffect(() => {
-        AsyncStorage.getItem("onboarding_complete").then((value) => {
-            setNeedsOnboarding(value !== "true");
-            setIsReady(true);
-        });
-    }, []);
+        const checkNavigation = async () => {
+            const value = await AsyncStorage.getItem("onboarding_complete");
+            const needsOnboarding = value !== "true";
+            const inOnboarding = segments[0] === "onboarding";
 
-    useEffect(() => {
-        if (!isReady) return;
+            if (needsOnboarding && !inOnboarding) {
+                router.replace("/onboarding");
+            } else if (!needsOnboarding && inOnboarding) {
+                // If they finished onboarding but are still on the onboarding screen, send them home
+                router.replace("/(tabs)");
+            }
 
-        const inOnboarding = segments[0] === "onboarding";
+            if (!isReady) setIsReady(true);
+        };
 
-        if (needsOnboarding && !inOnboarding) {
-            router.replace("/onboarding");
-        }
-    }, [isReady, needsOnboarding, segments]);
+        checkNavigation();
+    }, [segments, isReady]);
 
     if (!isReady) {
         return (
