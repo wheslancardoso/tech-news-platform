@@ -12,11 +12,10 @@ interface NewsCardProps {
     date: string;
     intro?: string;
     status?: "draft" | "published";
-    isAdmin?: boolean;
     isFirst?: boolean;
 }
 
-export function NewsCard({ id, edition, title, date, intro, status = "published", isAdmin = false, isFirst = false }: NewsCardProps) {
+export function NewsCard({ id, edition, title, date, intro, status = "published", isFirst = false }: NewsCardProps) {
     const { isFavorite, toggleFavorite } = useFavorites();
     const active = isFavorite(id);
     const dateObj = new Date(date);
@@ -53,16 +52,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                            {status === "draft" && isAdmin && (
-                                <View style={{
-                                    backgroundColor: "#fef3c7",
-                                    paddingHorizontal: 8,
-                                    paddingVertical: 3,
-                                    borderRadius: 6,
-                                }}>
-                                    <Text style={{ fontSize: 10, color: "#92400e", fontWeight: "700" }}>DRAFT</Text>
-                                </View>
-                            )}
+
                             <View style={{
                                 backgroundColor: isFirst ? "#1e293b" : "#f1f5f9",
                                 paddingHorizontal: 10,
