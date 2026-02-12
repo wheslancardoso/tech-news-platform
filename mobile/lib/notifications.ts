@@ -2,25 +2,16 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 
-// Lazy-load expo-notifications to avoid crash in Expo Go on Android
-let Notifications: typeof import("expo-notifications") | null = null;
+// Detect Expo Go BEFORE importing expo-notifications
+const isExpoGo = Constants.appOwnership === "expo";
 
-function getNotifications() {
-    if (!Notifications) {
-        try {
-            Notifications = require("expo-notifications");
-        } catch {
-            return null;
-        }
-    }
-    return Notifications;
-}
+// Only load expo-notifications in production/dev builds — NOT in Expo Go
+let N: typeof import("expo-notifications") | null = null;
 
-// Try to configure notification handler (fails silently in Expo Go)
-try {
-    const N = getNotifications();
-    if (N) {
-        N.setNotificationHandler({
+if (!isExpoGo) {
+    try {
+        N = require("expo-notifications");
+        N!.setNotificationHandler({
             handleNotification: async () => ({
                 shouldShowAlert: true,
                 shouldPlaySound: true,
@@ -29,21 +20,12 @@ try {
                 shouldShowList: true,
             }),
         });
+    } catch {
+        N = null;
     }
-} catch {
-    // Silently fail in Expo Go
 }
 
-const isExpoGo = Constants.appOwnership === "expo";
-
 export async function registerForPushNotifications(): Promise<string | null> {
-    // Skip entirely in Expo Go — push tokens don't work
-    if (isExpoGo) {
-        console.log("Notifications: skipped in Expo Go. Will work in production build.");
-        return null;
-    }
-
-    const N = getNotifications();
     if (!N) return null;
 
     try {
@@ -75,18 +57,13 @@ export async function registerForPushNotifications(): Promise<string | null> {
 }
 
 export async function sendLocalNotification(title: string, body: string) {
-    if (isExpoGo) return;
-    const N = getNotifications();
     if (!N) return;
-
     try {
         await N.scheduleNotificationAsync({
             content: { title, body, sound: true, data: { type: "new_edition" } },
             trigger: null,
         });
-    } catch {
-        // Silently fail
-    }
+    } catch { }
 }
 
 export async function checkAndNotifyNewEdition(latestEditionNumber: number) {
@@ -103,7 +80,5 @@ export async function checkAndNotifyNewEdition(latestEditionNumber: number) {
                 );
             }
         }
-    } catch {
-        // Silently fail
-    }
+    } catch { }
 }
