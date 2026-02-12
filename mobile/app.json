@@ -2,6 +2,7 @@
   "expo": {
     "name": "Tech News",
     "slug": "tech-news",
+    "scheme": "technews",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
