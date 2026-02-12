@@ -8,6 +8,7 @@ import { ArrowLeft, Share2, ExternalLink, Calendar, Hash, Heart, Zap } from "luc
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
+import { useRead } from "../context/ReadContext";
 
 type NewsletterItem = {
     headline: string;
@@ -42,6 +43,7 @@ export default function NewsletterDetail() {
     const router = useRouter();
     const { isFavorite, toggleFavorite } = useFavorites();
     const { colors, isDark } = useTheme();
+    const { markAsRead } = useRead();
     const active = id ? isFavorite(id as string) : false;
 
     useEffect(() => {
@@ -52,7 +54,10 @@ export default function NewsletterDetail() {
                 .select("*")
                 .eq("id", id)
                 .single();
-            if (!error && data) setNewsletter(data);
+            if (!error && data) {
+                setNewsletter(data);
+                markAsRead(id as string);
+            }
             setLoading(false);
         }
         fetchNewsletter();

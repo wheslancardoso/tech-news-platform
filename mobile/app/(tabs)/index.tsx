@@ -7,6 +7,7 @@ import { Stack } from "expo-router";
 import { Newspaper, Search, X } from "lucide-react-native";
 import { useTheme } from "../../context/ThemeContext";
 import { AppMenu } from "../../components/AppMenu";
+import { registerForPushNotifications, checkAndNotifyNewEdition } from "../../lib/notifications";
 
 type Newsletter = {
     id: string;
@@ -35,7 +36,13 @@ export default function Home() {
                 .limit(30);
 
             if (error) throw error;
-            if (data) setNewsletters(data);
+            if (data) {
+                setNewsletters(data);
+                // Check for new editions and notify
+                if (data.length > 0) {
+                    checkAndNotifyNewEdition(data[0].edition_number);
+                }
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -46,6 +53,7 @@ export default function Home() {
 
     useEffect(() => {
         fetchNewsletters();
+        registerForPushNotifications();
     }, []);
 
     const onRefresh = () => {

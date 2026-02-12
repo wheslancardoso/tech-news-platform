@@ -2,9 +2,10 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowRight, Heart, Clock } from "lucide-react-native";
+import { ArrowRight, Heart, Clock, CheckCircle } from "lucide-react-native";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
+import { useRead } from "../context/ReadContext";
 
 interface NewsCardProps {
     id: string;
@@ -19,7 +20,9 @@ interface NewsCardProps {
 export function NewsCard({ id, edition, title, date, intro, status = "published", isFirst = false }: NewsCardProps) {
     const { isFavorite, toggleFavorite } = useFavorites();
     const { colors, isDark } = useTheme();
+    const { isRead } = useRead();
     const active = isFavorite(id);
+    const read = isRead(id);
     const dateObj = new Date(date);
 
     const cardBg = isFirst
@@ -44,6 +47,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                     borderWidth: isDark && !isFirst ? 1 : 0,
                     borderColor: colors.border,
                     overflow: "hidden",
+                    opacity: read && !isFirst ? 0.75 : 1,
                 }}
             >
                 <View style={{ padding: 18 }}>
@@ -62,6 +66,21 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                            {/* Read Badge */}
+                            {read && (
+                                <View style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 3,
+                                    backgroundColor: isFirst ? "rgba(34,197,94,0.15)" : (isDark ? "rgba(34,197,94,0.15)" : "#f0fdf4"),
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 3,
+                                    borderRadius: 6,
+                                }}>
+                                    <CheckCircle size={10} color="#22c55e" />
+                                    <Text style={{ fontSize: 10, fontWeight: "700", color: "#22c55e" }}>LIDA</Text>
+                                </View>
+                            )}
                             <View style={{
                                 backgroundColor: isFirst ? "#1e293b" : colors.bgMuted,
                                 paddingHorizontal: 10,
@@ -126,7 +145,7 @@ export function NewsCard({ id, edition, title, date, intro, status = "published"
                             color: isFirst ? "#38bdf8" : (isDark ? "#60a5fa" : "#0f172a"),
                             marginRight: 4,
                         }}>
-                            Ler edição completa
+                            {read ? "Ler novamente" : "Ler edição completa"}
                         </Text>
                         <ArrowRight size={14} color={isFirst ? "#38bdf8" : (isDark ? "#60a5fa" : "#0f172a")} />
                     </View>
