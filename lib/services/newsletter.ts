@@ -31,51 +31,7 @@ function findFirstArray(obj: any): any[] {
   return []
 }
 
-const FEEDS = [
-  // 🇧🇷 ENGENHARIA & ARQUITETURA
-  'https://building.nubank.com.br/feed/',
-  'https://medium.com/feed/mercadolibre-tech',
-  'https://medium.com/feed/ifood-engineering',
-  'https://medium.com/feed/quintoandar-tech-blog',
-  'https://www.zup.com.br/blog/feed',
-  'https://medium.com/feed/luizalabs',
-  'https://cwi.com.br/blog/feed/',
-
-  // 🇧🇷 DEV & COMUNIDADE
-  'https://www.tabnews.com.br/rss',
-  'https://loiane.com/feed.xml',
-  'https://manualdousuario.net/feed/',
-
-  // 🇧🇷 NOTÍCIAS TECH
-  'https://tecnoblog.net/feed',
-  'https://feeds.feedburner.com/canaltechbr',
-  'https://olhardigital.com.br/rss',
-  'https://rss.tecmundo.com.br/feed',
-  'https://www.tudocelular.com/feed',
-
-  // 🛡️ SEGURANÇA
-  'https://thehackernews.com/feeds/posts/default',
-  'https://www.bleepingcomputer.com/feed/',
-  'https://krebsonsecurity.com/feed/',
-  'https://googleprojectzero.blogspot.com/feeds/posts/default',
-  'https://www.darkreading.com/rss.xml',
-
-  // ☁️ CLOUD & BIG TECH
-  'https://aws.amazon.com/blogs/architecture/feed/',
-  // Removido SRE Google e Uber (404/Instáveis)
-  'https://netflixtechblog.com/feed',
-  'https://blog.cloudflare.com/rss/',
-
-  // 🤖 IA & DATA
-  'https://openai.com/blog/rss.xml',
-  // Removido DeepMind (404)
-
-  // 🗞️ VOLUME GERAL
-  'https://techcrunch.com/feed/',
-  'https://www.theverge.com/rss/index.xml',
-  'https://dev.to/feed'
-  // Removido InfoQ (406)
-]
+// A lista de feeds agora é gerenciada dinamicamente via banco de dados (tabela public.sources)
 
 /**
  * Calcula a pontuação de relevância de um item de notícia baseado em palavras-chave.
@@ -171,7 +127,20 @@ export async function ingestPostsService() {
   try {
     const supabase = createAdminClient()
 
-    // 1. Ingestão: RSS
+    // 1. Ingestão: Buscar fontes ativas do banco
+    const { data: sources, error: sourcesError } = await supabase
+      .from('sources')
+      .select('rss_url')
+      .eq('is_active', true)
+
+    if (sourcesError) throw sourcesError
+    const activeFeeds = sources?.map(s => s.rss_url) || []
+
+    if (activeFeeds.length === 0) {
+      console.warn('⚠️ [Ingest] Nenhuma fonte ativa encontrada na tabela sources.')
+      return { success: false, total: 0, inserted: 0, skipped: 0 }
+    }
+
     const parser = new Parser({
       requestOptions: {
         rejectUnauthorized: false
@@ -179,7 +148,7 @@ export async function ingestPostsService() {
     })
 
     // Processamento Paralelo de RSS
-    const feedPromises = FEEDS.map(async (url) => {
+    const feedPromises = activeFeeds.map(async (url) => {
       try {
         const feed = await parser.parseURL(url);
         return feed.items;
