@@ -1,5 +1,4 @@
 import { unsubscribeUser } from '@/actions/unsubscribe'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { CheckCircle2, XCircle } from 'lucide-react'
 
@@ -23,33 +22,32 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans">
-      <div className="max-w-md w-full p-8 bg-white rounded-xl shadow-sm border text-center">
-        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 ${success ? 'bg-green-100' : 'bg-red-100'}`}>
+    <div className="min-h-screen flex items-center justify-center bg-background font-sans">
+      <div className="max-w-sm w-full p-8 bg-card border border-border text-center">
+        <div className={`w-14 h-14 flex items-center justify-center mx-auto mb-6 border ${success ? 'border-[hsl(120,100%,50%)]/30 bg-[hsl(120,100%,50%)]/10' : 'border-red-500/30 bg-red-500/10'}`}>
           {success ? (
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
+            <CheckCircle2 className="w-7 h-7 text-[hsl(120,100%,50%)]" />
           ) : (
-            <XCircle className="w-8 h-8 text-red-600" />
+            <XCircle className="w-7 h-7 text-red-400" />
           )}
         </div>
         
-        <h1 className="text-2xl font-bold mb-4 text-slate-900">
-          {success ? 'Inscrição Cancelada' : 'Ops, algo deu errado'}
+        <h1 className="text-xl font-black mb-2 text-foreground uppercase tracking-tight">
+          {success ? 'Inscrição Cancelada' : 'Ops, algo errado'}
         </h1>
         
-        <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+        <p className="text-muted-foreground mb-8 text-sm leading-relaxed">
           {success 
             ? 'Que pena ver você partir! Seu e-mail foi removido da nossa lista de envio.' 
             : message}
         </p>
 
         <Link href="/">
-          <Button className="w-full bg-black text-white hover:bg-zinc-800 h-12 text-base">
-            {success ? 'Inscrever-se Novamente' : 'Voltar para Home'}
-          </Button>
+          <button className="w-full h-12 bg-[hsl(186,100%,50%)] text-black font-black text-xs tracking-widest uppercase hover:bg-[hsl(186,100%,60%)] transition-colors">
+            {success ? 'INSCREVER-SE NOVAMENTE' : 'VOLTAR PARA HOME'}
+          </button>
         </Link>
       </div>
     </div>
   )
 }
-

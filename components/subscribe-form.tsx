@@ -2,8 +2,6 @@
 
 import { useActionState } from 'react'
 import { subscribe } from '@/actions/subscribe'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 
 export function SubscribeForm() {
@@ -13,51 +11,48 @@ export function SubscribeForm() {
   })
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <form action={action} className="flex flex-col sm:flex-row gap-3">
+    <div className="max-w-lg">
+      <form action={action} className="flex flex-col sm:flex-row gap-[2px]">
         <div className="flex-grow">
-          <Input
+          <input
             name="email"
             type="email"
-            placeholder="Seu melhor e-mail"
-            className="h-12 rounded-lg border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
+            placeholder="seu@email.com"
+            className="w-full h-12 bg-card border border-border px-4 text-sm font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-[hsl(186,100%,50%)] transition-colors"
             defaultValue=""
             disabled={isPending}
             required
           />
         </div>
-        <Button
+        <button
           type="submit"
-          size="lg"
-          className="h-12 px-8 rounded-lg bg-black text-white hover:bg-zinc-800 font-medium min-w-[140px] shadow-md"
           disabled={isPending}
+          className="h-12 px-8 bg-[hsl(186,100%,50%)] text-black font-black text-xs tracking-widest uppercase hover:bg-[hsl(186,100%,60%)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 min-w-[160px]"
         >
-          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Inscrever-se'}
-        </Button>
+          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'INSCREVER-SE'}
+        </button>
       </form>
 
       {/* Feedback Visual */}
-      <div className="h-6 mt-2 text-left">
+      <div className="h-6 mt-3">
         {state?.message && (
           <p
-            className={`text-sm font-medium ${state.success ? 'text-green-600' : 'text-red-500'
-              }`}
+            className={`text-xs font-mono tracking-wider ${state.success ? 'text-[hsl(120,100%,50%)]' : 'text-red-400'}`}
           >
-            {state.message}
+            {state.success ? '// ' : '!! '}{state.message}
           </p>
         )}
         {state?.errors?.email && (
-          <p className="text-sm text-red-500 font-medium">
-            {state.errors.email[0]}
+          <p className="text-xs font-mono text-red-400 tracking-wider">
+            !! {state.errors.email[0]}
           </p>
         )}
         {!state?.message && !state?.errors && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Junte-se a 10.000+ leitores inteligentes. Cancelamento a qualquer momento.
+          <p className="text-[10px] font-mono text-muted-foreground/50 tracking-wider">
+            // 10.000+ leitores · cancelamento a qualquer momento
           </p>
         )}
       </div>
     </div>
   )
 }
-

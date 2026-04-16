@@ -7,59 +7,38 @@
   --font-mono: var(--font-geist-mono);
 }
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
-  --radius: 0.5rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
-}
+/* ═══════════════════════════════════════════════════
+   FRESH NEWS — THE DIGITAL BROADSHEET
+   Design System: Neo-Brutalist Editorial Dark
+   ═══════════════════════════════════════════════════ */
 
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
+:root {
+  /* Dark mode as default — this IS the identity */
+  --background: 0 0% 5%;
+  --foreground: 0 0% 93%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 93%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 93%;
+  --primary: 186 100% 50%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 93%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 55%;
+  --accent: 0 0% 15%;
+  --accent-foreground: 0 0% 93%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 186 100% 50%;
+  --radius: 0px;
+  --chart-1: 186 100% 50%;
+  --chart-2: 120 100% 50%;
+  --chart-3: 0 100% 50%;
+  --chart-4: 280 70% 60%;
+  --chart-5: 40 100% 50%;
 }
 
 @layer base {
@@ -70,14 +49,100 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Kill all border-radius globally — brutalist identity */
+  *,
+  *::before,
+  *::after {
+    border-radius: 0 !important;
+  }
 }
 
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 5%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(186 100% 50%);
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: hsl(186 100% 50% / 0.3);
+  color: white;
+}
+
+/* ─── Grid Pattern (dark version) ─── */
 .bg-grid-pattern {
-  background-image: radial-gradient(circle at 1px 1px, #e5e7eb 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, hsl(0 0% 15%) 1px, transparent 0);
   background-size: 40px 40px;
 }
 
-/* Força o conteúdo do e-mail a ocupar 100% da largura da tela no Admin */
+/* ─── Noise texture overlay ─── */
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ─── Glow effects for niche accents ─── */
+.glow-cyan {
+  box-shadow: 0 0 20px hsl(186 100% 50% / 0.15), 0 0 60px hsl(186 100% 50% / 0.05);
+}
+.glow-red {
+  box-shadow: 0 0 20px hsl(0 100% 50% / 0.15), 0 0 60px hsl(0 100% 50% / 0.05);
+}
+.glow-green {
+  box-shadow: 0 0 20px hsl(120 100% 50% / 0.15), 0 0 60px hsl(120 100% 50% / 0.05);
+}
+
+/* ─── Scan line animation for hero ─── */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scanline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(186 100% 50% / 0.3), transparent);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+}
+
+/* ─── Pulse animation for live indicator ─── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.pulse-live {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ─── Editorial rule (thick dividers) ─── */
+.editorial-rule {
+  border-top: 2px solid hsl(0 0% 20%);
+}
+
+/* ─── Email renderer overrides (Admin) ─── */
 .email-renderer-full {
   width: 100% !important;
   max-width: none !important;
@@ -93,6 +158,6 @@
 }
 
 .email-renderer-full p { 
-  white-space: normal !important; /* Ignora quebras de linha do código e usa a largura da tela */ 
+  white-space: normal !important;
   max-width: 100% !important; 
 }

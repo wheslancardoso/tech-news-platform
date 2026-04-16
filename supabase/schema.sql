@@ -12,6 +12,8 @@ create table newsletters (
   content_json jsonb, -- Estrutura da IA
   html_content text, -- Email final renderizado
   status newsletter_status default 'draft',
+  category text default 'tech',
+  theme_config jsonb default '{}'::jsonb,
   created_at timestamp with time zone default now(),
   published_at timestamp with time zone
 );

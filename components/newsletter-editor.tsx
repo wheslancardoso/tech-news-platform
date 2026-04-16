@@ -70,7 +70,7 @@ export default function NewsletterEditor({ id, initialData, editionNumber }: New
 
     return (
         <form onSubmit={handleUpdate} className="space-y-8">
-            <div className="space-y-4 p-6 bg-white rounded-lg border shadow-sm">
+            <div className="space-y-4 p-6 bg-card border border-border">
                 <h2 className="text-xl font-bold">Informações Gerais</h2>
                 <div className="space-y-2">
                     <label className="text-sm font-medium">Título</label>
@@ -92,7 +92,7 @@ export default function NewsletterEditor({ id, initialData, editionNumber }: New
             </div>
 
             {/* Quick Takes */}
-            <div className="space-y-4 p-6 bg-white rounded-lg border shadow-sm">
+            <div className="space-y-4 p-6 bg-card border border-border">
                 <h2 className="text-xl font-bold">⚡ Giro Tech (Quick Takes)</h2>
                 {data.quickTakes?.map((take, index) => (
                     <div key={index} className="flex gap-2">
@@ -107,7 +107,7 @@ export default function NewsletterEditor({ id, initialData, editionNumber }: New
             {/* Categories */}
             <div className="space-y-6">
                 {data.categories.map((category, catIndex) => (
-                    <div key={catIndex} className="space-y-4 p-6 bg-white rounded-lg border shadow-sm">
+                    <div key={catIndex} className="space-y-4 p-6 bg-card border border-border">
                         <div className="flex items-center gap-2 mb-4">
                             <h2 className="text-xl font-bold">Categoria {catIndex + 1}</h2>
                             <Input
@@ -117,9 +117,9 @@ export default function NewsletterEditor({ id, initialData, editionNumber }: New
                             />
                         </div>
 
-                        <div className="space-y-6 pl-4 border-l-2 border-slate-100">
+                        <div className="space-y-6 pl-4 border-l-2 border-border">
                             {category.items.map((item, itemIndex) => (
-                                <div key={itemIndex} className="space-y-3 bg-slate-50 p-4 rounded-md">
+                                <div key={itemIndex} className="space-y-3 bg-accent p-4">
                                     <div className="flex justify-between items-center">
                                         <span className="text-xs font-bold text-muted-foreground uppercase">Notícia {itemIndex + 1}</span>
                                     </div>
@@ -156,7 +156,7 @@ export default function NewsletterEditor({ id, initialData, editionNumber }: New
                 ))}
             </div>
 
-            <div className="flex gap-4 pt-4 sticky bottom-4 bg-white/80 backdrop-blur p-4 border rounded-lg shadow-lg">
+            <div className="flex gap-4 pt-4 sticky bottom-4 bg-background/80 backdrop-blur-xl p-4 border border-border">
                 <Button type="submit" size="lg" disabled={loading}>
                     {loading ? 'Salvando...' : 'Salvar Alterações & Regenerar HTML'}
                 </Button>

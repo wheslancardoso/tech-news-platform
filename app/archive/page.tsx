@@ -1,11 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { NewsCard } from '@/components/news-card'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { ScrollLink } from '@/components/scroll-link'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
+import { ArrowLeft } from 'lucide-react'
 
 export const revalidate = 0
 
@@ -29,80 +27,77 @@ export default async function ArchiveIndexPage() {
     return (
         <div className="min-h-screen bg-background font-sans flex flex-col">
             {/* Header */}
-            <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">TN</span>
+            <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
+                <div className="container mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <div className="w-7 h-7 bg-[hsl(186,100%,50%)] flex items-center justify-center">
+                            <span className="text-black font-black text-[10px] tracking-tighter">FN</span>
                         </div>
-                        <span className="font-bold text-xl tracking-tighter">Tech News</span>
+                        <span className="font-black text-lg tracking-[-0.06em] uppercase text-foreground">Fresh News</span>
                     </Link>
-                    <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
-                        <Link href="/archive" className="hidden md:block hover:text-black transition-colors text-black font-semibold">Edições</Link>
-                        <Link href="/about" className="hidden md:block hover:text-black transition-colors">Sobre</Link>
+                    <nav className="flex items-center gap-6 text-xs font-medium tracking-wider uppercase text-muted-foreground">
+                        <Link href="/archive" className="hidden md:block text-foreground font-bold">Edições</Link>
+                        <Link href="/about" className="hidden md:block hover:text-foreground transition-colors">Sobre</Link>
                         <Link
                             href="/#subscribe"
-                            className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
+                            className="px-4 py-1.5 bg-[hsl(186,100%,50%)] text-black font-bold text-[11px] tracking-wider hover:bg-[hsl(186,100%,60%)] transition-colors"
                         >
-                            Inscrever-se
+                            INSCREVER-SE
                         </Link>
                     </nav>
                 </div>
             </header>
 
-            <main className="flex-grow bg-slate-50">
-                <section className="py-12 md:py-20 container mx-auto px-4">
-                    <div className="mb-12 text-center md:text-left">
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Arquivo de Edições</h1>
-                        <p className="text-muted-foreground mt-2">Explore todas as edições passadas do Tech News.</p>
+            <main className="flex-grow">
+                <section className="py-12 md:py-20 container mx-auto px-4 md:px-6">
+                    {/* Back link */}
+                    <Link href="/" className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors mb-8 tracking-wider uppercase group">
+                        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+                        VOLTAR
+                    </Link>
+
+                    <div className="mb-10">
+                        <span className="text-[10px] font-mono text-[hsl(186,100%,50%)] tracking-widest uppercase block mb-2">// ARQUIVO</span>
+                        <h1 className="text-2xl md:text-4xl font-black tracking-[-0.03em] text-foreground uppercase">Todas as Edições</h1>
+                        <p className="text-muted-foreground text-sm mt-2 font-light">Explore o histórico completo do Fresh News.</p>
                     </div>
 
                     {!newsletters || newsletters.length === 0 ? (
-                        <div className="text-center py-24 border-2 border-dashed rounded-xl bg-white">
-                            <p className="text-muted-foreground">Nenhuma edição encontrada.</p>
+                        <div className="text-center py-24 border border-dashed border-border bg-card">
+                            <p className="text-muted-foreground font-mono text-sm">// SEM SINAL</p>
+                            <p className="text-xs text-muted-foreground/60 mt-2">Nenhuma edição encontrada.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {newsletters.map((news) => (
-                                <NewsCard
-                                    key={news.id}
-                                    id={news.id}
-                                    edition={news.edition_number}
-                                    title={news.title}
-                                    date={news.created_at}
-                                    intro={news.summary_intro}
-                                    status={news.status}
-                                    isAdmin={isAdmin}
-                                />
-                            ))}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[2px] bg-border">
+                            {newsletters.map((news, index) => {
+                                const demoCategories = ['tech', 'ia', 'seguranca', 'dev', 'gearhead', 'eletronica'];
+                                return (
+                                    <NewsCard
+                                        key={news.id}
+                                        id={news.id}
+                                        edition={news.edition_number}
+                                        title={news.title}
+                                        date={news.created_at}
+                                        intro={news.summary_intro}
+                                        status={news.status}
+                                        isAdmin={isAdmin}
+                                        category={news.category || demoCategories[index % demoCategories.length]}
+                                        themeConfig={news.theme_config}
+                                    />
+                                )
+                            })}
                         </div>
                     )}
                 </section>
             </main>
 
             {/* Footer */}
-            <footer className="bg-white border-t py-12">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="flex flex-col items-center gap-2 mb-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                                <span className="text-white font-bold text-[10px]">TN</span>
-                            </div>
-                            <span className="font-bold text-lg tracking-tight">Tech News</span>
-                        </div>
-                        <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                            Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
-                        </p>
-                    </div>
-
-                    <Separator className="my-8" />
-
-                    <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-                        <p>© 2025 Tech News API. Todos os direitos reservados.</p>
-                        <div className="flex gap-4 mt-4 md:mt-0">
-                            <span className="cursor-pointer hover:text-black">Privacidade</span>
-                            <span className="cursor-pointer hover:text-black">Termos</span>
-                        </div>
+            <footer className="border-t-2 border-border py-8 bg-background">
+                <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-muted-foreground/50 font-mono tracking-wider">
+                    <p>© 2025 FRESH NEWS. TODOS OS DIREITOS RESERVADOS.</p>
+                    <div className="flex gap-6 mt-3 md:mt-0">
+                        <span className="cursor-pointer hover:text-foreground transition-colors">PRIVACIDADE</span>
+                        <span className="cursor-pointer hover:text-foreground transition-colors">TERMOS</span>
                     </div>
                 </div>
             </footer>

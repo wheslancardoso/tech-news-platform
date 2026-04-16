@@ -41,7 +41,7 @@ export function PublishButton({ id, status }: PublishButtonProps) {
     <Button
       size="sm"
       variant="secondary"
-      className="h-8 px-3 bg-white/90 backdrop-blur border shadow-sm hover:bg-white"
+      className="h-8 px-3 bg-card border border-border text-foreground hover:bg-accent text-[10px] font-mono tracking-wider uppercase"
       onClick={handlePublish}
       disabled={isPublishing}
     >

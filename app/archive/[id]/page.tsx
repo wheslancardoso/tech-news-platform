@@ -2,9 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
@@ -40,69 +37,82 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
-      {/* Header Unificado */}
-      <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">TN</span>
+      {/* Header */}
+      <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
+        <div className="container mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="w-7 h-7 bg-[hsl(186,100%,50%)] flex items-center justify-center">
+              <span className="text-black font-black text-[10px] tracking-tighter">FN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">Tech News</span>
+            <span className="font-black text-lg tracking-[-0.06em] uppercase text-foreground">Fresh News</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <Link href="/#archive" className="hover:text-black transition-colors">Edições</Link>
-            <Link href="#" className="hover:text-black transition-colors">Sobre</Link>
-            <Button size="sm" className="bg-black text-white hover:bg-zinc-800 rounded-full px-6">
-              Inscrever-se
-            </Button>
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium tracking-wider uppercase text-muted-foreground">
+            <Link href="/#archive" className="hover:text-foreground transition-colors">Edições</Link>
+            <Link href="/about" className="hover:text-foreground transition-colors">Sobre</Link>
+            <Link
+              href="/#subscribe"
+              className="px-4 py-1.5 bg-[hsl(186,100%,50%)] text-black font-bold text-[11px] tracking-wider hover:bg-[hsl(186,100%,60%)] transition-colors"
+            >
+              INSCREVER-SE
+            </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-grow bg-slate-50">
-        <div className="container mx-auto px-4 py-10 max-w-3xl">
+      <main className="flex-grow">
+        <div className="container mx-auto px-4 md:px-6 py-10 max-w-3xl">
           {/* Botão Voltar */}
-          <div className="mb-8">
-            <Link
-              href="/"
-              className="text-sm text-muted-foreground hover:text-black transition-colors inline-flex items-center group"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Voltar para edições
-            </Link>
-          </div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors mb-8 tracking-wider uppercase group"
+          >
+            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+            VOLTAR
+          </Link>
 
-          <article className="bg-white rounded-xl border shadow-sm p-8 md:p-12">
+          <article className="bg-card border border-border p-8 md:p-12">
             {/* Cabeçalho do Artigo */}
-            <div className="mb-10 text-center border-b pb-10">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <Badge variant="outline" className="uppercase tracking-widest text-[10px]">
-                  Edição #{newsletter.edition_number}
-                </Badge>
-                <span className="text-sm text-muted-foreground">
-                  {format(new Date(newsletter.created_at), "d 'de' MMMM, yyyy", { locale: ptBR })}
+            <div className="mb-10 pb-8 border-b border-border">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-[10px] font-mono font-bold tracking-widest px-2 py-0.5 uppercase text-[hsl(186,100%,50%)] border border-[hsl(186,100%,50%)]/30 bg-[hsl(186,100%,50%)]/10">
+                  EDIÇÃO #{newsletter.edition_number}
+                </span>
+                <span className="text-xs font-mono text-muted-foreground tracking-wider">
+                  {format(new Date(newsletter.created_at), "dd.MM.yyyy", { locale: ptBR })}
                 </span>
               </div>
 
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-black tracking-[-0.03em] text-foreground leading-tight">
                 {newsletter.title}
               </h1>
             </div>
 
             {/* Conteúdo HTML Renderizado */}
             <div
-              className="email-renderer-full prose prose-zinc max-w-none dark:prose-invert"
+              className="email-renderer-full prose prose-invert max-w-none
+                prose-headings:text-foreground prose-headings:font-black prose-headings:tracking-tight
+                prose-p:text-muted-foreground prose-p:leading-relaxed
+                prose-a:text-[hsl(186,100%,50%)] prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-foreground
+                prose-img:border prose-img:border-border
+                prose-code:text-[hsl(120,100%,50%)] prose-code:bg-card prose-code:px-1
+                prose-pre:bg-[hsl(0,0%,7%)] prose-pre:border prose-pre:border-border
+                prose-blockquote:border-l-[hsl(186,100%,50%)] prose-blockquote:text-muted-foreground
+                prose-li:text-muted-foreground
+                prose-hr:border-border
+              "
               dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
 
             {/* CTA Final */}
-            <div className="mt-16 pt-10 border-t bg-slate-50 -mx-8 -mb-12 md:-mx-12 md:-mb-12 p-8 md:p-12 text-center rounded-b-xl">
-              <h3 className="text-xl font-bold mb-2">Gostou desta edição?</h3>
+            <div className="mt-16 pt-8 border-t-2 border-border text-center">
+              <p className="text-[10px] font-mono text-[hsl(186,100%,50%)] tracking-widest uppercase mb-3">// TRANSMISSÃO ENCERRADA</p>
+              <h3 className="text-xl font-black text-foreground mb-2 uppercase tracking-tight">Gostou desta edição?</h3>
               <p className="text-muted-foreground mb-6 text-sm">Receba conteúdo como este toda manhã na sua caixa de entrada.</p>
               <Link href="/#subscribe">
-                <Button className="bg-black text-white hover:bg-zinc-800 rounded-full px-8">
-                  Inscrever-se Gratuitamente
-                </Button>
+                <button className="px-8 py-3 bg-[hsl(186,100%,50%)] text-black font-black text-xs tracking-widest uppercase hover:bg-[hsl(186,100%,60%)] transition-colors">
+                  INSCREVER-SE GRATUITAMENTE
+                </button>
               </Link>
             </div>
           </article>
@@ -110,28 +120,12 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex flex-col items-center gap-2 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-[10px]">TN</span>
-              </div>
-              <span className="font-bold text-lg tracking-tight">Tech News</span>
-            </div>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
-            </p>
-          </div>
-
-          <Separator className="my-8" />
-
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>© 2025 Tech News API. Todos os direitos reservados.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
-              <span className="cursor-pointer hover:text-black">Privacidade</span>
-              <span className="cursor-pointer hover:text-black">Termos</span>
-            </div>
+      <footer className="border-t-2 border-border py-8 bg-background">
+        <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-muted-foreground/50 font-mono tracking-wider">
+          <p>© 2025 FRESH NEWS. TODOS OS DIREITOS RESERVADOS.</p>
+          <div className="flex gap-6 mt-3 md:mt-0">
+            <span className="cursor-pointer hover:text-foreground transition-colors">PRIVACIDADE</span>
+            <span className="cursor-pointer hover:text-foreground transition-colors">TERMOS</span>
           </div>
         </div>
       </footer>
