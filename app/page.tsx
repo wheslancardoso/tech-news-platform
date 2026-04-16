@@ -149,6 +149,7 @@ export default async function Home() {
                       isAdmin={isAdmin}
                       category={news.category || demoCategories[index % demoCategories.length]}
                       themeConfig={news.theme_config}
+                      coverUrl={news.cover_url}
                     />
                   )
                 })}

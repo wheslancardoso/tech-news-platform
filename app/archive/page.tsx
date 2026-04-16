@@ -83,6 +83,7 @@ export default async function ArchiveIndexPage() {
                                         isAdmin={isAdmin}
                                         category={news.category || demoCategories[index % demoCategories.length]}
                                         themeConfig={news.theme_config}
+                                        coverUrl={news.cover_url}
                                     />
                                 )
                             })}

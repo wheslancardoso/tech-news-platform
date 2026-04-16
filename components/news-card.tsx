@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { deleteNewsletter } from '@/actions/admin'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { getThemeConfig, ThemeConfig } from '@/lib/chameleon-theme'
+import { getThemeConfig, type ThemeConfig } from '@/lib/chameleon-theme'
 
 interface NewsCardProps {
   id: string
@@ -21,10 +21,15 @@ interface NewsCardProps {
   status?: 'draft' | 'published'
   isAdmin?: boolean
   category?: string
-  themeConfig?: ThemeConfig
+  themeConfig?: Partial<ThemeConfig>
+  coverUrl?: string
 }
 
-export function NewsCard({ id, edition, title, date, intro, status = 'published', isAdmin = false, category = 'tech', themeConfig }: NewsCardProps) {
+export function NewsCard({
+  id, edition, title, date, intro,
+  status = 'published', isAdmin = false,
+  category = 'tech', themeConfig, coverUrl
+}: NewsCardProps) {
   const dateObj = new Date(date)
   const [isDeleting, setIsDeleting] = useState(false)
   const theme = getThemeConfig(category, themeConfig)
@@ -50,18 +55,43 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
   return (
     <div className="h-full">
       <article
-        className="h-full bg-card relative group transition-all duration-300 flex flex-col"
-        style={{
-          borderLeft: `3px solid ${theme.accent}`,
-        }}
+        className="h-full bg-card relative group transition-all duration-300 flex flex-col overflow-hidden"
+        style={{ borderLeft: `3px solid ${theme.accent}` }}
       >
-        {/* Hover glow effect */}
+        {/* Hover glow — niche-specific */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: `linear-gradient(135deg, ${theme.accent}08 0%, transparent 60%)`,
+            background: `linear-gradient(135deg, ${theme.accent}0A 0%, transparent 50%)`,
+            boxShadow: theme.cardGlow,
           }}
         />
+
+        {/* Cover Image (if exists) */}
+        {coverUrl && (
+          <div className="relative w-full aspect-[16/9] overflow-hidden border-b border-border">
+            <img
+              src={coverUrl}
+              alt={title}
+              className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-105"
+            />
+            {/* Gradient overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+            {/* Badge overlay on image */}
+            <div className="absolute top-3 left-3">
+              <span
+                className="text-[9px] font-mono font-bold tracking-widest px-2 py-0.5 uppercase backdrop-blur-sm"
+                style={{
+                  color: theme.accent,
+                  border: `1px solid ${theme.accent}40`,
+                  background: `rgba(0,0,0,0.6)`,
+                }}
+              >
+                {theme.icon} {theme.badgeLabel}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Link Principal (Overlay) */}
         <Link href={`/archive/${id}`} className="absolute inset-0 z-0">
@@ -73,17 +103,19 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
           {/* Header: Badge + Edition + Date */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              {/* Category Badge — camaleônico */}
-              <span
-                className="text-[10px] font-mono font-bold tracking-widest px-2 py-0.5 uppercase"
-                style={{
-                  color: theme.accent,
-                  border: `1px solid ${theme.accent}30`,
-                  background: `${theme.accent}10`,
-                }}
-              >
-                {theme.badgeLabel}
-              </span>
+              {/* Category Badge — camaleônico (shown only when no coverUrl) */}
+              {!coverUrl && (
+                <span
+                  className="text-[10px] font-mono font-bold tracking-widest px-2 py-0.5 uppercase"
+                  style={{
+                    color: theme.accent,
+                    border: `1px solid ${theme.accent}30`,
+                    background: `${theme.accent}10`,
+                  }}
+                >
+                  {theme.icon} {theme.badgeLabel}
+                </span>
+              )}
 
               <span className="text-[10px] font-mono text-muted-foreground tracking-wider uppercase">
                 {format(dateObj, "dd.MM.yy", { locale: ptBR })}
@@ -129,9 +161,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
           )}
 
           {/* Title */}
-          <h3
-            className={`text-lg md:text-xl font-black leading-tight tracking-[-0.02em] mb-3 text-foreground group-hover:text-white transition-colors ${theme.titleStyle || ''}`}
-          >
+          <h3 className="text-lg md:text-xl font-black leading-tight tracking-[-0.02em] mb-3 text-foreground group-hover:text-white transition-colors">
             {title}
           </h3>
 
@@ -152,10 +182,10 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
           </div>
         </div>
 
-        {/* Bottom accent bar */}
+        {/* Bottom accent bar — animated on hover */}
         <div
           className="h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out"
-          style={{ background: theme.accent }}
+          style={{ background: `linear-gradient(90deg, ${theme.accent}, ${theme.accentAlt})` }}
         />
       </article>
     </div>

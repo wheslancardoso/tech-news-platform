@@ -14,6 +14,7 @@ create table newsletters (
   status newsletter_status default 'draft',
   category text default 'tech',
   theme_config jsonb default '{}'::jsonb,
+  cover_url text,
   created_at timestamp with time zone default now(),
   published_at timestamp with time zone
 );
