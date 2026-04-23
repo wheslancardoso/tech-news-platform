@@ -50,6 +50,14 @@ const config: Config = {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        chameleon: {
+          primary: "var(--theme-primary, hsl(var(--primary)))",
+          bg: "var(--theme-bg, hsl(var(--background)))",
+          text: "var(--theme-text, hsl(var(--foreground)))",
+        },
+      },
+      fontFamily: {
+        chameleon: ["var(--theme-font)", "Inter", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

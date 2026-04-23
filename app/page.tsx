@@ -9,6 +9,7 @@ import { cookies } from 'next/headers'
 import { ScrollLink } from '@/components/scroll-link'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 export const revalidate = 0
 
@@ -32,6 +33,14 @@ export default async function Home() {
   query = query.limit(6)
 
   const { data: newsletters } = await query
+
+  // Query para os posts aprovados (O Mosaico)
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(9)
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
@@ -96,7 +105,56 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Archive Section */}
+        {/* Mosaico de Notícias (Posts) */}
+        <section id="feed" className="bg-white py-20 border-t">
+          <div className="container mx-auto px-4">
+            <div className="mb-12 text-center md:text-left">
+              <h2 className="text-3xl font-bold tracking-tight">Feed Ao Vivo</h2>
+              <p className="text-muted-foreground mt-2">As últimas notícias processadas pelo nosso Cérebro de IA.</p>
+            </div>
+
+            {!posts || posts.length === 0 ? (
+              <div className="text-center py-24 border-2 border-dashed rounded-xl bg-slate-50">
+                <p className="text-muted-foreground">O feed está vazio no momento.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {posts.map((post) => (
+                  <Link href={`/post/${post.id}`} key={post.id} className="group flex flex-col justify-between p-6 bg-white border border-slate-200 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full">
+                    
+                    {/* Indicador Sutil do Tema (Borda Lateral Esquerda) */}
+                    <div 
+                      className="absolute top-0 left-0 w-1.5 h-full transition-opacity opacity-0 group-hover:opacity-100" 
+                      style={{ backgroundColor: post.theme_config?.primary_color || '#000' }} 
+                    />
+                    
+                    <div className="mb-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                          {post.category || 'Tech'}
+                        </span>
+                        <div 
+                          className="w-2 h-2 rounded-full transition-transform group-hover:scale-150"
+                          style={{ backgroundColor: post.theme_config?.primary_color || '#ccc' }}
+                        />
+                      </div>
+                      <h3 className="text-xl font-bold leading-snug group-hover:text-slate-700 transition-colors">
+                        {post.title}
+                      </h3>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                      <span className="text-sm font-medium text-slate-400 group-hover:text-slate-600 transition-colors">Ler no modo Imersivo</span>
+                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-slate-600 transition-all" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Archive Section (Newsletters) */}
         <section id="archive" className="bg-slate-50 py-20 border-t">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-12">
