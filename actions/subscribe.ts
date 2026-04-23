@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 const subscribeSchema = z.object({
   email: z.string().email('Por favor, insira um e-mail válido.'),
+  phone: z.string().optional(),
 })
 
 export type SubscribeState = {
@@ -12,15 +13,17 @@ export type SubscribeState = {
   success?: boolean
   errors?: {
     email?: string[]
+    phone?: string[]
   }
 }
 
 export async function subscribe(prevState: SubscribeState, formData: FormData): Promise<SubscribeState> {
   const email = formData.get('email')
+  const phone = formData.get('phone')
   const preferences = formData.getAll('preferences') as string[]
 
   // 1. Validação com Zod
-  const validatedFields = subscribeSchema.safeParse({ email })
+  const validatedFields = subscribeSchema.safeParse({ email, phone })
 
   if (!validatedFields.success) {
     return {
@@ -32,6 +35,7 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
 
   const supabase = await createClient()
   const userEmail = validatedFields.data.email
+  const userPhone = validatedFields.data.phone
 
   // 2. Verificar status atual do assinante
   const { data: existingSubscriber, error: fetchError } = await supabase
@@ -58,7 +62,11 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
       // Reativar inscrição (Update)
       const { error: updateError } = await supabase
         .from('subscribers')
-        .update({ status: 'active', preferences: preferences })
+        .update({ 
+          status: 'active', 
+          preferences: preferences,
+          phone: userPhone 
+        })
         .eq('id', existingSubscriber.id)
 
       if (updateError) {
@@ -76,7 +84,11 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
   // 3. Inserção de novo assinante (Insert)
   const { error: insertError } = await supabase
     .from('subscribers')
-    .insert({ email: userEmail, preferences: preferences })
+    .insert({ 
+      email: userEmail, 
+      preferences: preferences,
+      phone: userPhone
+    })
 
   if (insertError) {
     console.error('Erro ao inscrever:', insertError)

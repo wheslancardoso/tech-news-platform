@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { distributeNewsletter } from '@/lib/services/distribution'
 
 export async function publishNewsletter(id: string) {
   const supabase = createAdminClient()
@@ -14,6 +15,12 @@ export async function publishNewsletter(id: string) {
   if (error) {
     throw new Error('Falha ao publicar a newsletter: ' + error.message)
   }
+
+  // Trigger distribution in background (async)
+  // Note: For large lists, consider moving to a Queue/Job system
+  distributeNewsletter(id).catch(err => {
+    console.error('Falha na distribuição da newsletter:', err)
+  })
 
   revalidatePath('/admin/posts')
   revalidatePath('/')

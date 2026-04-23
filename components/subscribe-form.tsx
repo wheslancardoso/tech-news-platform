@@ -28,26 +28,36 @@ export function SubscribeForm() {
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-grow">
-          <Input
-            name="email"
-            type="email"
-            placeholder="Seu melhor e-mail"
-            className="h-12 rounded-lg border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
-            defaultValue=""
+        <div className="flex flex-col gap-3">
+          <div className="flex-grow">
+            <Input
+              name="email"
+              type="email"
+              placeholder="Seu melhor e-mail"
+              className="h-12 rounded-none border-2 border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
+              defaultValue=""
+              disabled={isPending}
+              required
+            />
+          </div>
+          <div className="flex-grow">
+            <Input
+              name="phone"
+              type="tel"
+              placeholder="WhatsApp (ex: 5511999999999)"
+              className="h-12 rounded-none border-2 border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
+              defaultValue=""
+              disabled={isPending}
+            />
+          </div>
+          <Button
+            type="submit"
+            size="lg"
+            className="h-12 px-8 rounded-none bg-black text-white hover:bg-zinc-800 font-bold uppercase tracking-widest min-w-[140px] shadow-md transition-all active:scale-95"
             disabled={isPending}
-            required
-          />
-        </div>
-        <Button
-          type="submit"
-          size="lg"
-          className="h-12 px-8 rounded-lg bg-black text-white hover:bg-zinc-800 font-medium min-w-[140px] shadow-md"
-          disabled={isPending}
-        >
-          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Inscrever-se'}
-        </Button>
+          >
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Quero Receber 🚀'}
+          </Button>
         </div>
       </form>
 
