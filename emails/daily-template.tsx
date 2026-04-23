@@ -32,16 +32,26 @@ export const DailyNewsletter = ({
   quickTakes = [],
   categories = [],
 }: NewsletterProps) => {
+
+  const getCategoryColor = (name: string) => {
+    const upper = name.toUpperCase();
+    if (upper.includes('IA') || upper.includes('INTELIGÊNCIA')) return '#00F0FF'; // Cyan
+    if (upper.includes('DEV') || upper.includes('ENGENHARIA')) return '#00FF41'; // Matrix Green
+    if (upper.includes('SEC') || upper.includes('CIBER') || upper.includes('HACKER')) return '#FF0000'; // Red
+    if (upper.includes('STARTUP') || upper.includes('BUSINESS') || upper.includes('MERCADO')) return '#E10600'; // Racing Red
+    return '#ffffff'; // White default
+  };
+
   return (
     <Html>
       <Head />
       <Preview>{title}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Header Preto */}
+          {/* Header Brutalista */}
           <Section style={header}>
-            <Heading style={headerTitle}>TECH NEWS</Heading>
-            <Text style={headerSub}>Daily Edition</Text>
+            <Heading style={headerTitle}>FRESH NEWS</Heading>
+            <Text style={headerSub}>A Sua Zine Digital de Tecnologia</Text>
           </Section>
 
           <Section style={content}>
@@ -64,19 +74,21 @@ export const DailyNewsletter = ({
 
             <Hr style={hr} />
 
-            {categories.map((category, catIndex) => (
+            {categories.map((category, catIndex) => {
+              const catColor = getCategoryColor(category.name);
+              
+              return (
               <Section key={catIndex} style={categorySection}>
-                {/* Cabeçalho da Categoria */}
-                <div style={categoryHeaderContainer}>
-                  <Heading as="h3" style={categoryTitle}>
+                {/* Cabeçalho da Categoria com Cor Dinâmica */}
+                <div style={{ ...categoryHeaderContainer, borderBottomColor: catColor }}>
+                  <Heading as="h3" style={{ ...categoryTitle, color: catColor }}>
                     {category.name}
                   </Heading>
                 </div>
 
                 {/* Itens da Categoria */}
                 {category.items.map((item, itemIndex) => (
-                  <div key={itemIndex} style={itemContainer}>
-                    {/* Headline como Link */}
+                  <div key={itemIndex} style={{ ...itemContainer, borderLeftColor: catColor }}>
                     <Link href={item.link} style={headlineLink}>
                       <Heading as="h4" style={headline}>
                         {item.headline}
@@ -87,22 +99,21 @@ export const DailyNewsletter = ({
                       {item.story}
                     </Text>
 
-                    <Link href={item.link} style={readMoreLink}>
+                    <Link href={item.link} style={{ ...readMoreLink, color: catColor }}>
                       Ler fonte original &rarr;
                     </Link>
 
-                    {/* Separador entre itens, menos no último */}
                     {itemIndex < category.items.length - 1 && (
                       <div style={itemSeparator} />
                     )}
                   </div>
                 ))}
               </Section>
-            ))}
+            )})}
 
             <Section style={footer}>
               <Text style={footerText}>
-                © 2025 Tech News API. Todos os direitos reservados.
+                © 2026 Fresh News. Sem hype, só o que importa.
                 <br />
                 <Link href="#" style={footerLink}>Unsubscribe</Link>
               </Text>
@@ -118,40 +129,41 @@ export default DailyNewsletter;
 
 // Styles
 const main = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#0d0d0d", // Fundo super escuro
   fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {
-  backgroundColor: "#ffffff",
+  backgroundColor: "#131313", // Surface principal
   margin: "0 auto",
   padding: "0",
-  maxWidth: "600px",
-  borderRadius: "8px", // Adicionado
-  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", // Adicionado
+  maxWidth: "640px",
+  border: "2px solid #474747", // Editorial rule
+  borderRadius: "0px", // BRUTALISM
 };
 
 const header = {
-  backgroundColor: "#18181b", // Zinc 950/Preto Suave
-  padding: "20px",
+  backgroundColor: "#000000",
+  padding: "30px 20px",
   textAlign: "center" as const,
-  borderTopLeftRadius: "8px", // Arredondar topo
-  borderTopRightRadius: "8px", // Arredondar topo
+  borderBottom: "2px solid #474747",
 };
 
 const headerTitle = {
-  color: "#ffffff", // Branco
-  fontSize: "32px",
-  fontWeight: "bold",
+  color: "#ffffff",
+  fontSize: "40px",
+  fontWeight: "900",
   margin: "0",
+  letterSpacing: "-1px",
 };
 
 const headerSub = {
-  color: "#d4d4d8", // Zinc 300/Cinza Claro
+  color: "#c6c6c6",
   fontSize: "14px",
-  margin: "5px 0 0",
+  margin: "10px 0 0",
   textTransform: "uppercase" as const,
-  letterSpacing: "2px",
+  letterSpacing: "3px",
+  fontWeight: "bold",
 };
 
 const content = {
@@ -159,39 +171,44 @@ const content = {
 };
 
 const h1 = {
-  color: "#111827",
-  fontSize: "26px",
+  color: "#ffffff",
+  fontSize: "28px",
   fontWeight: "800",
   lineHeight: "1.3",
   margin: "0 0 20px",
+  letterSpacing: "-0.5px",
 };
 
 const introText = {
-  color: "#374151",
+  color: "#e5e2e1",
   fontSize: "18px",
   lineHeight: "28px",
-  margin: "0 0 20px",
+  margin: "0 0 30px",
+  fontStyle: "italic",
 };
 
 const hr = {
-  borderColor: "#e5e7eb",
-  margin: "30px 0",
+  borderColor: "#474747",
+  margin: "40px 0",
+  borderWidth: "1px",
+  borderStyle: "dashed",
 };
 
 // Quick Takes Styles
 const quickTakesSection = {
-  backgroundColor: "#f4f4f5",
-  borderRadius: "8px",
-  padding: "20px",
+  backgroundColor: "#1c1b1b",
+  border: "2px solid #474747",
+  padding: "24px",
   marginBottom: "30px",
 };
 
 const quickTakesTitle = {
-  color: "#111827",
+  color: "#ffffff",
   fontSize: "16px",
-  fontWeight: "bold",
+  fontWeight: "900",
   margin: "0 0 15px 0",
   textTransform: "uppercase" as const,
+  letterSpacing: "1px",
 };
 
 const quickTakesList = {
@@ -200,36 +217,39 @@ const quickTakesList = {
 };
 
 const quickTakesItem = {
-  color: "#4b5563",
+  color: "#c6c6c6",
   fontSize: "15px",
   lineHeight: "24px",
-  marginBottom: "8px",
+  marginBottom: "12px",
+  fontWeight: "500",
 };
 
 // Estilos de Categoria
 const categorySection = {
-  marginBottom: "40px",
+  marginBottom: "50px",
 };
 
 const categoryHeaderContainer = {
-  borderBottom: "2px solid #18181b", // Preto
-  marginBottom: "20px",
-  paddingBottom: "5px",
+  borderBottomWidth: "2px",
+  borderBottomStyle: "solid" as const,
+  marginBottom: "25px",
+  paddingBottom: "8px",
 };
 
 const categoryTitle = {
-  color: "#18181b", // Preto
-  fontSize: "14px",
-  fontWeight: "bold",
+  fontSize: "18px",
+  fontWeight: "900",
   textTransform: "uppercase" as const,
-  letterSpacing: "1.5px",
+  letterSpacing: "2px",
   margin: "0",
-  marginTop: "10px", // Aumentado espaçamento
 };
 
 // Estilos de Item
 const itemContainer = {
-  marginBottom: "25px",
+  marginBottom: "30px",
+  paddingLeft: "16px",
+  borderLeftWidth: "2px",
+  borderLeftStyle: "solid" as const,
 };
 
 const headlineLink = {
@@ -238,8 +258,8 @@ const headlineLink = {
 };
 
 const headline = {
-  color: "#111827",
-  fontSize: "20px",
+  color: "#ffffff",
+  fontSize: "22px",
   fontWeight: "bold",
   lineHeight: "1.4",
   marginTop: "0",
@@ -247,42 +267,46 @@ const headline = {
 };
 
 const storyText = {
-  color: "#4b5563",
+  color: "#b9cacb",
   fontSize: "16px",
-  lineHeight: "1.6", // Aumentado lineHeight
-  margin: "0 0 12px",
+  lineHeight: "1.6",
+  margin: "0 0 16px",
 };
 
 const readMoreLink = {
-  color: "#18181b", // Preto
   fontSize: "14px",
   textDecoration: "underline",
-  fontWeight: "500",
+  fontWeight: "bold",
+  textTransform: "uppercase" as const,
+  letterSpacing: "1px",
 };
 
 const itemSeparator = {
   height: "1px",
-  backgroundColor: "#f3f4f6",
-  margin: "20px 0",
+  backgroundColor: "#353534",
+  margin: "25px 0",
 };
 
 const footer = {
-  backgroundColor: "#f8fafc",
-  padding: "30px",
+  backgroundColor: "#0e0e0e",
+  padding: "40px",
   textAlign: "center" as const,
-  marginTop: "40px",
-  borderTop: "1px solid #e2e8f0",
-  borderBottomLeftRadius: "8px", // Arredondar rodapé
-  borderBottomRightRadius: "8px", // Arredondar rodapé
+  marginTop: "50px",
+  borderTop: "2px solid #474747",
 };
 
 const footerText = {
-  color: "#94a3b8",
+  color: "#919191",
   fontSize: "12px",
   lineHeight: "20px",
+  textTransform: "uppercase" as const,
+  letterSpacing: "1px",
 };
 
 const footerLink = {
-  color: "#18181b", // Preto
+  color: "#ffffff",
   textDecoration: "underline",
+  fontWeight: "bold",
+  marginTop: "10px",
+  display: "inline-block",
 };

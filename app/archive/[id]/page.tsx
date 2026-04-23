@@ -2,9 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
@@ -16,6 +13,15 @@ interface ArchivePageProps {
     id: string
   }>
 }
+
+const getCategoryColor = (name: string) => {
+  const upper = name.toUpperCase();
+  if (upper.includes('IA') || upper.includes('INTELIGÊNCIA')) return '#00F0FF';
+  if (upper.includes('DEV') || upper.includes('ENGENHARIA') || upper.includes('CODING')) return '#00FF41';
+  if (upper.includes('SEC') || upper.includes('CIBER') || upper.includes('HACKER')) return '#FF0000';
+  if (upper.includes('STARTUP') || upper.includes('BUSINESS') || upper.includes('MERCADO')) return '#E10600';
+  return '#ffffff';
+};
 
 export default async function ArchivePage({ params }: ArchivePageProps) {
   const { id } = await params
@@ -31,108 +37,139 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
     notFound()
   }
 
-  // Extrair apenas o miolo do HTML para evitar conflito de tags <html>/<body>
-  let safeHtml = newsletter.html_content || '';
-  const bodyMatch = safeHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  if (bodyMatch && bodyMatch[1]) {
-    safeHtml = bodyMatch[1];
-  }
+  const content = newsletter.content_json;
 
   return (
-    <div className="min-h-screen bg-background font-sans flex flex-col">
-      {/* Header Unificado */}
-      <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">FN</span>
+    <div className="bg-[#131313] min-h-screen text-[#e5e2e1] font-sans selection:bg-[#00f0ff] selection:text-black">
+      {/* HEADER EDITORIAL */}
+      <header className="border-b-2 border-[#474747] bg-[#0e0e0e] sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+            <div className="w-10 h-10 bg-white flex items-center justify-center rounded-none">
+              <span className="text-black font-black text-sm tracking-tighter">FN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">Fresh News</span>
+            <span className="font-black text-2xl tracking-tighter text-white uppercase">Fresh News</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <Link href="/#archive" className="hover:text-black transition-colors">Edições</Link>
-            <Link href="#" className="hover:text-black transition-colors">Sobre</Link>
-            <Button size="sm" className="bg-black text-white hover:bg-zinc-800 rounded-full px-6">
-              Inscrever-se
-            </Button>
+          <nav className="hidden md:flex items-center gap-8 text-sm font-bold tracking-widest uppercase">
+            <Link href="/" className="text-[#919191] hover:text-white transition-colors">Voltar à Home</Link>
+            <Link href="/#subscribe" className="bg-white text-black hover:bg-[#d4d4d4] px-6 py-3 rounded-none transition-colors border-2 border-transparent">
+              Assinar Zine
+            </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-grow bg-slate-50">
-        <div className="container mx-auto px-4 py-10 max-w-3xl">
-          {/* Botão Voltar */}
-          <div className="mb-8">
-            <Link
-              href="/"
-              className="text-sm text-muted-foreground hover:text-black transition-colors inline-flex items-center group"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Voltar para edições
-            </Link>
-          </div>
-
-          <article className="bg-white rounded-xl border shadow-sm p-8 md:p-12">
-            {/* Cabeçalho do Artigo */}
-            <div className="mb-10 text-center border-b pb-10">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <Badge variant="outline" className="uppercase tracking-widest text-[10px]">
-                  Edição #{newsletter.edition_number}
-                </Badge>
-                <span className="text-sm text-muted-foreground">
-                  {format(new Date(newsletter.created_at), "d 'de' MMMM, yyyy", { locale: ptBR })}
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-                {newsletter.title}
-              </h1>
-            </div>
-
-            {/* Conteúdo HTML Renderizado */}
-            <div
-              className="email-renderer-full prose prose-zinc max-w-none dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: safeHtml }}
-            />
-
-            {/* CTA Final */}
-            <div className="mt-16 pt-10 border-t bg-slate-50 -mx-8 -mb-12 md:-mx-12 md:-mb-12 p-8 md:p-12 text-center rounded-b-xl">
-              <h3 className="text-xl font-bold mb-2">Gostou desta edição?</h3>
-              <p className="text-muted-foreground mb-6 text-sm">Receba conteúdo como este toda manhã na sua caixa de entrada.</p>
-              <Link href="/#subscribe">
-                <Button className="bg-black text-white hover:bg-zinc-800 rounded-full px-8">
-                  Inscrever-se Gratuitamente
-                </Button>
-              </Link>
-            </div>
-          </article>
+      <main className="max-w-3xl mx-auto px-6 py-16">
+        
+        {/* INFO DA EDIÇÃO */}
+        <div className="flex flex-wrap items-center gap-4 mb-8">
+          <span className="px-3 py-1 text-xs font-bold bg-[#ffffff] text-[#000000] uppercase tracking-widest">
+            EDIÇÃO #{newsletter.edition_number}
+          </span>
+          <span className="px-3 py-1 text-xs font-mono border border-[#474747] text-[#c6c6c6] uppercase tracking-widest">
+            {format(new Date(newsletter.created_at), "dd MMM yyyy", { locale: ptBR })}
+          </span>
         </div>
+
+        {/* TÍTULO & INTRODUÇÃO */}
+        <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-8 text-white leading-tight">
+          {content.title}
+        </h1>
+        <p className="text-xl md:text-2xl font-light italic text-[#b9cacb] mb-16 leading-relaxed border-l-4 border-[#474747] pl-6">
+          "{content.intro}"
+        </p>
+
+        {/* QUICK TAKES */}
+        {content.quickTakes && content.quickTakes.length > 0 && (
+          <div className="bg-[#1c1b1b] border-2 border-[#474747] p-8 mb-16">
+            <h2 className="text-white font-black text-lg mb-6 uppercase tracking-widest flex items-center gap-3">
+              <span className="text-2xl">⚡</span> Giro Tech
+            </h2>
+            <ul className="space-y-4">
+              {content.quickTakes.map((take: string, idx: number) => (
+                <li key={idx} className="text-[#e5e2e1] text-lg font-medium leading-relaxed flex items-start">
+                  <span className="text-[#474747] mr-3 font-bold">/</span>
+                  {take}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* CATEGORIAS (BLOCOS PRINCIPAIS) */}
+        <div className="space-y-20">
+          {content.categories?.map((cat: any, catIdx: number) => {
+            const catColor = getCategoryColor(cat.name);
+            return (
+              <section key={catIdx} className="relative">
+                {/* Linha Decorativa da Categoria */}
+                <div className="h-1 w-full mb-8" style={{ backgroundColor: catColor }} />
+                
+                <h2 
+                  className="text-3xl font-black mb-10 uppercase tracking-widest"
+                  style={{ color: catColor }}
+                >
+                  {cat.name}
+                </h2>
+
+                <div className="space-y-12">
+                  {cat.items?.map((item: any, itemIdx: number) => (
+                    <article key={itemIdx} className="group relative pl-6 border-l-2 border-[#353534] hover:border-white transition-colors">
+                      {/* Efeito Hover Camaleão */}
+                      <div className="absolute left-[-2px] top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: catColor }} />
+                      
+                      <h3 className="text-2xl font-bold mb-4 text-white leading-snug group-hover:underline decoration-2 underline-offset-4">
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          {item.headline}
+                        </a>
+                      </h3>
+                      
+                      <p className="text-[#919191] text-lg leading-relaxed mb-6 font-medium">
+                        {item.story}
+                      </p>
+                      
+                      <a 
+                        href={item.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-sm font-bold uppercase tracking-widest transition-colors hover:text-white"
+                        style={{ color: catColor }}
+                      >
+                        Ler matéria completa <span className="ml-2 font-mono">-&gt;</span>
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+
+        {/* ASSINATURA FINAL */}
+        <div className="mt-24 pt-12 border-t-2 border-[#474747] text-center">
+          <h3 className="text-3xl font-black text-white mb-6 uppercase tracking-tight">O Fim da Edição</h3>
+          <p className="text-[#919191] text-lg mb-8 max-w-xl mx-auto">
+            Esta Zine foi destilada de fontes ruidosas. Assine para receber conteúdo cirúrgico direto no seu WhatsApp ou E-mail.
+          </p>
+          <Link href="/#subscribe" className="inline-flex bg-white text-black hover:bg-[#d4d4d4] px-10 py-5 font-black uppercase tracking-widest text-lg transition-colors rounded-none">
+            Receber Próximas Edições
+          </Link>
+        </div>
+
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex flex-col items-center gap-2 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-[10px]">FN</span>
-              </div>
-              <span className="font-bold text-lg tracking-tight">Fresh News</span>
+      {/* FOOTER */}
+      <footer className="bg-[#0e0e0e] border-t-2 border-[#474747] py-12 mt-12">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-white flex items-center justify-center rounded-none">
+              <span className="text-black font-black text-[10px]">FN</span>
             </div>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
-            </p>
+            <span className="font-bold text-sm tracking-widest uppercase text-white">Fresh News</span>
           </div>
-
-          <Separator className="my-8" />
-
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>© 2026 Fresh News Zine. Todos os direitos reservados.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
-              <span className="cursor-pointer hover:text-black">Privacidade</span>
-              <span className="cursor-pointer hover:text-black">Termos</span>
-            </div>
-          </div>
+          <p className="text-[#474747] text-xs font-mono uppercase tracking-widest">
+            © 2026 / Sem Hype, Só O Que Importa.
+          </p>
         </div>
       </footer>
     </div>
