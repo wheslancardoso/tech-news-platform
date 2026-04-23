@@ -9,9 +9,9 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">TN</span>
+              <span className="text-white font-bold text-xs">FN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">Tech News</span>
+            <span className="font-bold text-xl tracking-tighter">Fresh News</span>
           </Link>
           <nav className="flex items-center">
             <Link href="/">
@@ -30,7 +30,7 @@ export default function AboutPage() {
             Informação sem ruído.
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            O Tech News é um projeto inovador de curadoria de conteúdo, unindo jornalismo e inteligência artificial para combater a sobrecarga de informação.
+            O Fresh News é um projeto inovador de curadoria de conteúdo, unindo jornalismo e inteligência artificial para combater a sobrecarga de informação.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export default function AboutPage() {
 
       <footer className="bg-white border-t py-8 mt-12 text-center">
         <p className="text-sm text-muted-foreground">
-          © 2025 Tech News API. Feito com ❤️ e código.
+          © 2026 Fresh News Zine. Feito com ❤️ e código.
         </p>
       </footer>
     </div>

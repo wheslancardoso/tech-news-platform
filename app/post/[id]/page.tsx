@@ -20,11 +20,15 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
   const theme = post.theme_config || {}
   
+  const primary = theme.accent_color || theme.primary_color || 'hsl(var(--primary))'
+  const bg = theme.accent_color ? (theme.primary_color || 'hsl(var(--background))') : (theme.background_color || 'hsl(var(--background))')
+  const text = theme.text_color || 'hsl(var(--foreground))'
+
   // A Mágica do Chameleon Theme: Injetando as variáveis locais
   const cssVariables = {
-    '--theme-primary': theme.primary_color || 'hsl(var(--primary))',
-    '--theme-bg': theme.background_color || 'hsl(var(--background))',
-    '--theme-text': theme.text_color || 'hsl(var(--foreground))',
+    '--theme-primary': primary,
+    '--theme-bg': bg,
+    '--theme-text': text,
     '--theme-font': theme.font_style === 'Mono' ? 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' : theme.font_style === 'Serif' ? 'ui-serif, Georgia, Cambria, Times New Roman, Times, serif' : 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif',
   } as React.CSSProperties
 

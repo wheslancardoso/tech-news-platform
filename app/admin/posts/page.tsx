@@ -1,86 +1,109 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { approvePost, rejectPost } from '@/actions/posts'
+import { publishNewsletter, rejectNewsletter } from '@/actions/newsletters'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function AdminPostsPage() {
   const supabase = createAdminClient()
   
-  // Usando service role pra ler tudo sem depender do RLS (mas pegando apenas pending)
-  const { data: posts, error } = await supabase
-    .from('posts')
+  // Usando service role pra ler tudo sem depender do RLS
+  const { data: newsletters, error } = await supabase
+    .from('newsletters')
     .select('*')
-    .eq('status', 'pending')
-    .order('score', { ascending: false })
+    .eq('status', 'draft')
+    .order('created_at', { ascending: false })
 
   if (error) {
-    return <div className="p-4 text-red-500">Erro ao carregar posts: {error.message}</div>
+    return <div className="p-4 text-red-500">Erro ao carregar newsletters: {error.message}</div>
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Inbox de Curadoria</h1>
-      <p className="text-slate-500 mb-8">
-        Avalie as notícias capturadas. Posts aprovados seguirão o DNA visual estabelecido pela IA.
-      </p>
+    <div className="bg-[#131313] min-h-screen p-8 text-[#e5e2e1] font-sans">
+      <div className="max-w-5xl mx-auto">
+        <header className="mb-12 border-b-2 border-[#474747] pb-6">
+          <h1 className="text-5xl font-black tracking-tighter mb-2 text-white">INBOX DE CURADORIA</h1>
+          <p className="text-[#c6c6c6] text-lg font-light">
+            Avalie as notícias capturadas. O Cérebro de IA aguarda suas ordens para gerar as Zines Temáticas.
+          </p>
+        </header>
 
-      {posts?.length === 0 ? (
-        <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-xl">
-          <p className="text-slate-500 font-medium text-lg">Nenhum post pendente de curadoria. 🎉</p>
+      {newsletters?.length === 0 ? (
+        <div className="p-16 text-center border-2 border-dashed border-[#474747] bg-[#1c1b1b]">
+          <p className="text-[#c6c6c6] font-medium text-lg uppercase tracking-widest">Nenhuma Zine pendente de aprovação no Cérebro. 🧠</p>
         </div>
       ) : (
-        <div className="grid gap-6">
-          {posts?.map((post) => (
-            <div key={post.id} className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-6 items-start hover:shadow-md transition-shadow">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="px-2.5 py-1 text-xs font-semibold bg-indigo-100 text-indigo-800 rounded-full border border-indigo-200">
-                    Score: {post.score}
+        <div className="grid gap-8">
+          {newsletters?.map((newsletter) => {
+            return (
+            <div key={newsletter.id} className="bg-[#1c1b1b] border-2 border-[#474747] p-8 flex flex-col md:flex-row gap-8 items-start hover:border-white transition-colors relative overflow-hidden group">
+              
+              {/* Target DNA Indicator */}
+              <div className="absolute left-0 top-0 bottom-0 w-2 transition-all group-hover:w-3" style={{ backgroundColor: '#ffffff' }} />
+
+              <div className="flex-1 pl-4">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <span className="px-3 py-1 text-xs font-bold bg-[#ffffff] text-[#000000] uppercase tracking-wider">
+                    {newsletter.category || 'GERAL'}
                   </span>
-                  {post.theme_config && (
-                    <span className="px-2.5 py-1 text-xs font-semibold bg-emerald-50 text-emerald-800 rounded-full flex items-center gap-2 border border-emerald-200">
-                      <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: post.theme_config.primary_color || '#000' }}></span>
-                      DNA Gerado
-                    </span>
-                  )}
-                  <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">{post.source}</span>
+                  <span className="px-3 py-1 text-xs font-mono border border-[#474747] text-[#c6c6c6]">
+                    EDIÇÃO #{newsletter.edition_number}
+                  </span>
+                  <span className="text-xs text-[#919191] font-medium uppercase tracking-wider">
+                    {new Date(newsletter.created_at).toLocaleDateString('pt-BR')}
+                  </span>
                 </div>
                 
-                <h3 className="text-xl font-bold mb-2 text-slate-900">
-                  <a href={post.url} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors">
-                    {post.title}
-                  </a>
+                <h3 className="text-3xl font-bold mb-4 text-white leading-tight tracking-tight">
+                  {newsletter.title}
                 </h3>
                 
-                <p className="text-slate-600 mb-4 text-sm leading-relaxed">
-                  {post.summary}
+                <p className="text-[#e5e2e1] mb-6 text-base leading-relaxed max-w-3xl italic">
+                  "{newsletter.summary_intro}"
                 </p>
 
-                {post.whatsapp_summary && (
-                  <div className="bg-green-50 p-3 rounded-lg border border-green-100 mb-4">
-                    <p className="text-sm font-mono text-green-900 break-words flex gap-2">
-                      <span className="opacity-75">📱</span> <span>{post.whatsapp_summary}</span>
-                    </p>
+                {/* Lista de Manchetes (Posts Agrupados) */}
+                {newsletter.content_json?.categories?.length > 0 && (
+                  <div className="bg-[#2a2a2a] p-4 border-l-4 border-[#474747] mb-4">
+                    <p className="text-sm font-bold text-[#c6c6c6] mb-4 uppercase tracking-widest">Conteúdo da Edição:</p>
+                    
+                    <div className="space-y-6">
+                      {newsletter.content_json.categories.map((cat: any, catIdx: number) => (
+                        <div key={catIdx}>
+                          <h4 className="text-white font-bold text-sm mb-2 uppercase tracking-widest">{cat.name}</h4>
+                          <ul className="space-y-3">
+                            {cat.items?.map((item: any, idx: number) => (
+                              <li key={idx} className="text-sm text-[#e5e2e1] pl-2 border-l-2 border-[#474747]">
+                                <span className="font-bold text-white mr-2">{item.headline}</span>
+                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-[#919191] hover:text-white hover:underline text-xs">
+                                  [Ver Fonte]
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
 
-              <div className="flex md:flex-col gap-3 shrink-0 md:w-32">
-                <form action={approvePost.bind(null, post.id)}>
-                  <Button type="submit" className="w-full bg-black text-white hover:bg-emerald-600 gap-2 transition-colors">
-                    <Check className="w-4 h-4" /> Aprovar
+              <div className="flex md:flex-col gap-4 shrink-0 md:w-40 pt-2">
+                <form action={publishNewsletter.bind(null, newsletter.id)}>
+                  <Button type="submit" className="w-full bg-white text-black hover:bg-[#d4d4d4] rounded-none font-bold uppercase tracking-wider h-12">
+                    <Check className="w-4 h-4 mr-2" /> Publicar
                   </Button>
                 </form>
-                <form action={rejectPost.bind(null, post.id)}>
-                  <Button type="submit" variant="outline" className="w-full text-slate-700 hover:text-red-700 hover:bg-red-50 hover:border-red-200 gap-2 transition-colors">
-                    <X className="w-4 h-4" /> Rejeitar
+                <form action={rejectNewsletter.bind(null, newsletter.id)}>
+                  <Button type="submit" variant="outline" className="w-full bg-transparent text-[#e5e2e1] border-2 border-[#474747] hover:bg-[#93000a] hover:text-white hover:border-[#93000a] rounded-none font-bold uppercase tracking-wider h-12">
+                    <X className="w-4 h-4 mr-2" /> Rejeitar
                   </Button>
                 </form>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       )}
+      </div>
     </div>
   )
 }

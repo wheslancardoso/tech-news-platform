@@ -17,6 +17,7 @@ export type SubscribeState = {
 
 export async function subscribe(prevState: SubscribeState, formData: FormData): Promise<SubscribeState> {
   const email = formData.get('email')
+  const preferences = formData.getAll('preferences') as string[]
 
   // 1. Validação com Zod
   const validatedFields = subscribeSchema.safeParse({ email })
@@ -57,7 +58,7 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
       // Reativar inscrição (Update)
       const { error: updateError } = await supabase
         .from('subscribers')
-        .update({ status: 'active' })
+        .update({ status: 'active', preferences: preferences })
         .eq('id', existingSubscriber.id)
 
       if (updateError) {
@@ -75,7 +76,7 @@ export async function subscribe(prevState: SubscribeState, formData: FormData): 
   // 3. Inserção de novo assinante (Insert)
   const { error: insertError } = await supabase
     .from('subscribers')
-    .insert({ email: userEmail })
+    .insert({ email: userEmail, preferences: preferences })
 
   if (insertError) {
     console.error('Erro ao inscrever:', insertError)

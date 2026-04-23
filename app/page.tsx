@@ -13,7 +13,12 @@ import { ArrowRight } from 'lucide-react'
 
 export const revalidate = 0
 
-export default async function Home() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
+export default async function Home(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams
+  const selectedCategory = typeof searchParams.category === 'string' ? searchParams.category : null
+
   const supabase = await createClient()
   const cookieStore = await cookies()
   const isAdmin = cookieStore.has('admin_session')
@@ -22,25 +27,22 @@ export default async function Home() {
   let query = supabase
     .from('newsletters')
     .select('*')
+    .eq('status', 'published')
     .order('edition_number', { ascending: false })
 
-  // Filtro condicional (se não for admin, só mostra publicados)
-  if (!isAdmin) {
-    query = query.eq('status', 'published')
+  if (selectedCategory) {
+    query = query.eq('category', selectedCategory)
   }
 
-  // Aplicar limite após o filtro para garantir os 6 mais recentes
-  query = query.limit(6)
+  // Aplicar limite após o filtro
+  query = query.limit(12)
 
   const { data: newsletters } = await query
 
-  // Query para os posts aprovados (O Mosaico)
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('status', 'approved')
-    .order('created_at', { ascending: false })
-    .limit(9)
+  // Buscar todas as categorias disponíveis para montar o filtro
+  const { data: catData } = await supabase.from('newsletters').select('category').not('category', 'is', null)
+  const availableCategories = Array.from(new Set(catData?.map(n => n.category) || []))
+
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
@@ -49,22 +51,27 @@ export default async function Home() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">TN</span>
+              <span className="text-white font-bold text-xs">FN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">Tech News</span>
+            <span className="font-bold text-xl tracking-tighter">Fresh News</span>
           </Link>
           <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
             <ScrollLink href="#archive" className="hidden md:block hover:text-black transition-colors">Edições</ScrollLink>
             <Link href="/about" className="hidden md:block hover:text-black transition-colors">Sobre</Link>
             {isAdmin && (
-              <form action={handleLogout}>
-                <button
-                  type="submit"
-                  className="text-xs flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
-                >
-                  Sair 🚪
-                </button>
-              </form>
+              <div className="flex items-center gap-3">
+                <Link href="/admin/posts" className="text-xs font-bold flex items-center gap-2 px-3 py-1.5 rounded-md bg-black text-white hover:bg-zinc-800 transition-colors">
+                  Inbox 📥
+                </Link>
+                <form action={handleLogout}>
+                  <button
+                    type="submit"
+                    className="text-xs flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                  >
+                    Sair 🚪
+                  </button>
+                </form>
+              </div>
             )}
             <ScrollLink
               href="#subscribe"
@@ -105,63 +112,38 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Mosaico de Notícias (Posts) */}
-        <section id="feed" className="bg-white py-20 border-t">
-          <div className="container mx-auto px-4">
-            <div className="mb-12 text-center md:text-left">
-              <h2 className="text-3xl font-bold tracking-tight">Feed Ao Vivo</h2>
-              <p className="text-muted-foreground mt-2">As últimas notícias processadas pelo nosso Cérebro de IA.</p>
-            </div>
-
-            {!posts || posts.length === 0 ? (
-              <div className="text-center py-24 border-2 border-dashed rounded-xl bg-slate-50">
-                <p className="text-muted-foreground">O feed está vazio no momento.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
-                  <Link href={`/post/${post.id}`} key={post.id} className="group flex flex-col justify-between p-6 bg-white border border-slate-200 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full">
-                    
-                    {/* Indicador Sutil do Tema (Borda Lateral Esquerda) */}
-                    <div 
-                      className="absolute top-0 left-0 w-1.5 h-full transition-opacity opacity-0 group-hover:opacity-100" 
-                      style={{ backgroundColor: post.theme_config?.primary_color || '#000' }} 
-                    />
-                    
-                    <div className="mb-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                          {post.category || 'Tech'}
-                        </span>
-                        <div 
-                          className="w-2 h-2 rounded-full transition-transform group-hover:scale-150"
-                          style={{ backgroundColor: post.theme_config?.primary_color || '#ccc' }}
-                        />
-                      </div>
-                      <h3 className="text-xl font-bold leading-snug group-hover:text-slate-700 transition-colors">
-                        {post.title}
-                      </h3>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
-                      <span className="text-sm font-medium text-slate-400 group-hover:text-slate-600 transition-colors">Ler no modo Imersivo</span>
-                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-slate-600 transition-all" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-
         {/* Archive Section (Newsletters) */}
-        <section id="archive" className="bg-slate-50 py-20 border-t">
+        <section id="archive" className="bg-slate-50 py-20 border-t min-h-[50vh]">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl font-bold tracking-tight">Edições Anteriores</h2>
-              <Link href="/archive">
-                <Button variant="outline" className="hidden md:flex">Ver arquivo completo</Button>
-              </Link>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+              <h2 className="text-3xl font-bold tracking-tight">Edições Disponíveis</h2>
+              
+              {/* Category Filter */}
+              {availableCategories.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link 
+                    href="/" 
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
+                      !selectedCategory ? "bg-black text-white border-black" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                    )}
+                  >
+                    Todas
+                  </Link>
+                  {availableCategories.map(cat => (
+                    <Link 
+                      key={cat}
+                      href={`/?category=${encodeURIComponent(cat)}`}
+                      className={cn(
+                        "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
+                        selectedCategory === cat ? "bg-black text-white border-black" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                      )}
+                    >
+                      {cat.replace(/[^a-zA-ZÀ-ÿ0-9 ]/g, '').trim()}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
             {!newsletters || newsletters.length === 0 ? (
@@ -206,9 +188,9 @@ export default async function Home() {
           <div className="flex flex-col items-center gap-2 mb-4">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-[10px]">TN</span>
+                <span className="text-white font-bold text-[10px]">FN</span>
               </div>
-              <span className="font-bold text-lg tracking-tight">Tech News</span>
+              <span className="font-bold text-lg tracking-tight">Fresh News</span>
             </div>
             <p className="text-muted-foreground text-sm max-w-md mx-auto">
               Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
@@ -218,7 +200,7 @@ export default async function Home() {
           <Separator className="my-8" />
 
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>© 2025 Tech News API. Todos os direitos reservados.</p>
+            <p>© 2026 Fresh News Zine. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <span className="cursor-pointer hover:text-black">Privacidade</span>
               <span className="cursor-pointer hover:text-black">Termos</span>

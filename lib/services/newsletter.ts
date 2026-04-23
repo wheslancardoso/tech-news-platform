@@ -264,37 +264,21 @@ export async function generateNewsletterService() {
     const supabase = createAdminClient()
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-    // ===== 1. SELEÇÃO: Buscar 25 posts =====
-    const { data: approvedPosts, error: approvedError } = await supabase
+    // ===== 1. SELEÇÃO: Buscar 25 posts (pending ou approved) =====
+    const { data: allPosts, error: fetchError } = await supabase
       .from('posts')
       .select('*')
-      .eq('status', 'approved')
+      .in('status', ['pending', 'approved'])
       .order('score', { ascending: false })
+      .limit(25)
 
-    if (approvedError) throw approvedError
-
-    const remainingSlots = 25 - (approvedPosts?.length || 0)
-    let pendingPosts: any[] = []
-
-    if (remainingSlots > 0) {
-      const { data, error: pendingError } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('status', 'pending')
-        .order('score', { ascending: false })
-        .limit(remainingSlots)
-
-      if (pendingError) throw pendingError
-      pendingPosts = data || []
-    }
-
-    const allPosts = [...(approvedPosts || []), ...pendingPosts]
+    if (fetchError) throw fetchError
 
     if (allPosts.length === 0) {
       throw new Error('Nenhum post disponível para gerar newsletter. Execute a ingestão primeiro.')
     }
 
-    console.log(`📊 Posts selecionados: ${approvedPosts?.length || 0} aprovados + ${pendingPosts.length} pendentes = ${allPosts.length} total`)
+    console.log(`📊 Posts selecionados: ${allPosts.length} itens encontrados para geração.`)
 
     // Preparar dados para a IA
     const itemsForAI = allPosts.map(post => ({
@@ -405,59 +389,7 @@ SAÍDA JSON:
       items
     }))
 
-    // ===== 5. METADADOS: Chamada final leve =====
-    console.log('📝 [Metadados] Gerando title, intro e quickTakes...')
-
-    const headlines = allItems.map(item => item.headline).join('\n')
-
-    const metaResponse = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `Você é o editor-chefe do 'Tech News'. Gere APENAS metadados para a newsletter.
-
-SAÍDA JSON:
-{
-  "title": "Título criativo e engraçado (ex: 'O estagiário derrubou a prod?')",
-  "intro": "Introdução de 1-2 linhas conectando os 2 maiores destaques",
-  "quickTakes": ["⚡ Manchete 1", "🔥 Manchete 2", "👀 Manchete 3"]
-}`
-        },
-        {
-          role: "user",
-          content: `Baseado nestas ${allItems.length} headlines, gere os metadados:\n${headlines}`
-        }
-      ],
-      response_format: { type: "json_object" }
-    })
-
-    const metaContent = metaResponse.choices[0].message.content
-    if (!metaContent) throw new Error('Falha ao gerar metadados')
-
-    const metadata = JSON.parse(metaContent)
-    console.log('✅ Metadados gerados:', metadata.title)
-
-    // ===== 6. MONTAGEM FINAL =====
-    const contentJson = {
-      title: metadata.title,
-      intro: metadata.intro,
-      quickTakes: metadata.quickTakes,
-      categories
-    }
-
-    // Renderização HTML
-    const htmlContent = await render(
-      DailyNewsletter({
-        title: contentJson.title,
-        intro: contentJson.intro,
-        quickTakes: contentJson.quickTakes,
-        categories: contentJson.categories
-      }),
-      { pretty: true }
-    )
-
-    // Persistência
+    // Obter o número da última edição
     const { data: maxEditionData } = await supabase
       .from('newsletters')
       .select('edition_number')
@@ -465,32 +397,90 @@ SAÍDA JSON:
       .limit(1)
       .single()
 
-    const nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
+    let nextEditionNumber = (maxEditionData?.edition_number || 0) + 1
+    const generatedEditions = []
 
-    const today = new Date()
-    const formattedDate = today.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit'
-    })
-    const title = `Edição ${formattedDate}`
+    // ===== 5 & 6. METADADOS E MONTAGEM DA EDIÇÃO MESTRA =====
+    console.log(`📝 Gerando metadados da Edição Mestra...`)
 
-    const { data, error } = await supabase
-      .from('newsletters')
-      .insert({
-        edition_number: nextEditionNumber,
-        title: title,
-        summary_intro: contentJson.intro,
-        content_json: contentJson,
-        html_content: htmlContent,
-        status: 'draft'
+    const allHeadlines = categories.flatMap(cat => cat.items.map(item => item.headline)).join('\n')
+
+    try {
+      const metaResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `Você é o editor-chefe do 'Fresh News'. Gere metadados globais para a edição da newsletter.
+
+SAÍDA JSON:
+{
+  "title": "Título criativo e engraçado (ex: 'O estagiário derrubou a prod?')",
+  "intro": "Introdução de 1-2 linhas conectando os 2 maiores destaques do dia",
+  "quickTakes": ["⚡ Manchete 1", "🔥 Manchete 2", "👀 Manchete 3"]
+}`
+          },
+          {
+            role: "user",
+            content: `Baseado nestas ${allItems.length} headlines, gere os metadados:\n${allHeadlines}`
+          }
+        ],
+        response_format: { type: "json_object" }
       })
-      .select()
-      .single()
 
-    if (error) {
-      console.error('Erro ao salvar no Supabase:', error)
-      throw new Error('Falha ao salvar draft')
+      const metaContent = metaResponse.choices[0].message.content
+      if (!metaContent) throw new Error('Falha ao gerar metadados')
+
+      const metadata = JSON.parse(metaContent)
+
+      const contentJson = {
+        title: metadata.title,
+        intro: metadata.intro,
+        quickTakes: metadata.quickTakes,
+        categories: categories // Array com todas as categorias!
+      }
+
+      const htmlContent = await render(
+        DailyNewsletter({
+          title: contentJson.title,
+          intro: contentJson.intro,
+          quickTakes: contentJson.quickTakes,
+          categories: contentJson.categories
+        }),
+        { pretty: true }
+      )
+
+      const today = new Date()
+      const formattedDate = today.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      })
+      const title = `Edição de ${formattedDate}`
+
+      const { data, error } = await supabase
+        .from('newsletters')
+        .insert({
+          edition_number: nextEditionNumber,
+          title: title,
+          summary_intro: contentJson.intro,
+          content_json: contentJson,
+          html_content: htmlContent,
+          status: 'draft',
+          category: 'MASTER'
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`Erro ao salvar edição Mestra no Supabase:`, error)
+      } else {
+        generatedEditions.push(data.id)
+        nextEditionNumber++
+      }
+
+    } catch (err) {
+      console.error(`Erro processando edição Mestra:`, err)
     }
 
     // Marcar posts usados como 'published'
@@ -506,8 +496,8 @@ SAÍDA JSON:
       console.log(`📝 ${postIds.length} posts marcados como 'published'`)
     }
 
-    console.log(`🎉 Edição #${nextEditionNumber} salva! ${allItems.length} itens processados via Map-Reduce.`)
-    return { success: true, edition: nextEditionNumber, id: data.id, itemCount: allItems.length }
+    console.log(`🎉 ${generatedEditions.length} Edições geradas com sucesso!`)
+    return { success: true, editionsGenerated: generatedEditions.length, itemCount: allItems.length }
 
   } catch (error) {
     console.error('❌ Erro fatal na geração (Map-Reduce):', error)

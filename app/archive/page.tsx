@@ -33,9 +33,9 @@ export default async function ArchiveIndexPage() {
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                         <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">TN</span>
+                            <span className="text-white font-bold text-xs">FN</span>
                         </div>
-                        <span className="font-bold text-xl tracking-tighter">Tech News</span>
+                        <span className="font-bold text-xl tracking-tighter">Fresh News</span>
                     </Link>
                     <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
                         <Link href="/archive" className="hidden md:block hover:text-black transition-colors text-black font-semibold">Edições</Link>
@@ -54,7 +54,7 @@ export default async function ArchiveIndexPage() {
                 <section className="py-12 md:py-20 container mx-auto px-4">
                     <div className="mb-12 text-center md:text-left">
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">Arquivo de Edições</h1>
-                        <p className="text-muted-foreground mt-2">Explore todas as edições passadas do Tech News.</p>
+                        <p className="text-muted-foreground mt-2">Explore todas as edições passadas do Fresh News.</p>
                     </div>
 
                     {!newsletters || newsletters.length === 0 ? (
@@ -86,9 +86,9 @@ export default async function ArchiveIndexPage() {
                     <div className="flex flex-col items-center gap-2 mb-4">
                         <div className="flex items-center gap-2">
                             <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                                <span className="text-white font-bold text-[10px]">TN</span>
+                                <span className="text-white font-bold text-[10px]">FN</span>
                             </div>
-                            <span className="font-bold text-lg tracking-tight">Tech News</span>
+                            <span className="font-bold text-lg tracking-tight">Fresh News</span>
                         </div>
                         <p className="text-muted-foreground text-sm max-w-md mx-auto">
                             Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
@@ -98,7 +98,7 @@ export default async function ArchiveIndexPage() {
                     <Separator className="my-8" />
 
                     <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-                        <p>© 2025 Tech News API. Todos os direitos reservados.</p>
+                        <p>© 2026 Fresh News Zine. Todos os direitos reservados.</p>
                         <div className="flex gap-4 mt-4 md:mt-0">
                             <span className="cursor-pointer hover:text-black">Privacidade</span>
                             <span className="cursor-pointer hover:text-black">Termos</span>

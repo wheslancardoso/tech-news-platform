@@ -14,7 +14,21 @@ export function SubscribeForm() {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <form action={action} className="flex flex-col sm:flex-row gap-3">
+      <form action={action} className="flex flex-col gap-4">
+        
+        <div className="text-left text-sm font-medium text-slate-700 mb-1">
+          O que você quer receber? (Opcional)
+        </div>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {['💻 DEV', '🤖 IA', '🛡️ CIBERSEGURANÇA', '💰 MERCADO'].map(cat => (
+            <label key={cat} className="flex items-center gap-2 text-sm border border-slate-200 px-3 py-1.5 rounded-full cursor-pointer hover:bg-slate-50 transition-colors">
+              <input type="checkbox" name="preferences" value={cat} className="rounded border-slate-300 text-black focus:ring-black accent-black" />
+              <span>{cat}</span>
+            </label>
+          ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-grow">
           <Input
             name="email"
@@ -34,6 +48,7 @@ export function SubscribeForm() {
         >
           {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Inscrever-se'}
         </Button>
+        </div>
       </form>
 
       {/* Feedback Visual */}
