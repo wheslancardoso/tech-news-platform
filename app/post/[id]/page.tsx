@@ -45,7 +45,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           <div className="flex items-center gap-4 mb-6 text-sm font-bold tracking-widest uppercase opacity-80">
             <span className="text-chameleon-primary">{post.category || 'TECH NEWS'}</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black leading-[1.1] mb-6">
+          <h1 className={`text-4xl md:text-6xl font-black leading-[1.1] mb-6 ${theme.ui_effects?.includes('terminal_cursor') ? 'animate-terminal-cursor' : ''}`}>
             {post.title}
           </h1>
           <p className="text-xl md:text-2xl font-light opacity-90 leading-relaxed border-l-4 border-chameleon-primary pl-6">

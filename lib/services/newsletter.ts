@@ -280,8 +280,9 @@ export async function generateNewsletterService() {
 
     console.log(`📊 Posts selecionados: ${allPosts.length} itens encontrados para geração.`)
 
-    // Preparar dados para a IA
+    // Preparar dados para a IA (incluindo o ID para podermos atualizar o post depois)
     const itemsForAI = allPosts.map(post => ({
+      id: post.id,
       title: post.title,
       link: post.url,
       content: (post.content || '').substring(0, 2000),
@@ -297,42 +298,55 @@ export async function generateNewsletterService() {
     console.log(`📦 Dividido em ${chunks.length} chunks de até ${CHUNK_SIZE} itens`)
 
     // ===== 3. MAP: Processar chunks em paralelo =====
-    const mapPrompt = `Você é um redator técnico de newsletter para DESENVOLVEDORES DE SOFTWARE. Escreva em PT-BR.
+    const mapPrompt = `Você é um Editor de Tecnologia Sênior da Fresh News. Sua tarefa é processar notícias para desenvolvedores usando 4 personas especialistas.
 
-TAREFA: Resuma os itens abaixo que forem RELEVANTES para engenharia de software.
+# PERSONAS ESPECIALISTAS:
 
-DEFINIÇÕES DE CATEGORIA:
-- 🛡️ CIBERSEGURANÇA = Vulnerabilidades, CVEs, malware, vazamentos, patches de segurança
-- 💻 DEV = Código, Frameworks, Linguagens, Libs, Open Source (NÃO inclua celulares, fones, TVs ou gadgets)
-- 🤖 IA = LLMs, modelos, benchmarks, ferramentas de IA para devs
-- ☁️ DEVOPS & CLOUD = AWS, Azure, GCP, Kubernetes, Docker, infra, outages
-- 💰 MERCADO = Aquisições, IPOs, layoffs de empresas tech
+1. **IA (Neuralista-Chefe)**:
+   - Foco: LLMs, infra de GPUs, automação agêntica.
+   - Termos: 'inferência', 'latência', 'pesos do modelo', 'context window'.
+   - Accent: #00F0FF | Effects: ['neural_particles', 'glassmorphism', 'terminal_glow']
 
-REGRA DE EXCLUSÃO (CRÍTICO):
-- Se a notícia for sobre ELETRÔNICOS DE CONSUMO (smartphones, TVs, fones, smartwatches, gadgets), IGNORE-A.
-- Se for fofoca de mercado sem impacto técnico, IGNORE-A.
-- Se for review/unboxing de produto, IGNORE-A.
-- Retorne um array menor se necessário. Qualidade > Quantidade.
+2. **SEGURANÇA (Red Team)**:
+   - Foco: Exploits, CVEs, privacidade. Tom urgente, tático e pragmático.
+   - Estrutura: Qual é a falha? Quem é afetado? Existe patch/correção?
+   - Accent: #FF0000 | Effects: ['glitch_effect', 'scanlines', 'pulsing_borders']
 
-REGRAS DE ESCRITA:
-- Use emojis no início de cada headline
-- Seja técnico: mencione versões, CVEs, métricas
-- Tom descontraído de dev (gírias: "deploy", "bug", "prod")
-- 1-2 parágrafos curtos por item
+3. **DEV (Arquiteto Software Sênior)**:
+   - Foco: Frameworks, linguagens, performance, manutenção. Seja pragmático, evite hype.
+   - Accent: #00FF41 | Effects: ['terminal_cursor', 'scanlines', 'grainy_texture']
 
-SAÍDA JSON:
+4. **CLOUD (SRE / Cloud Architect)**:
+   - Foco: AWS, Azure, GCP, Kubernetes, DevOps, escalabilidade, custos.
+   - Accent: #BD00FF | Effects: ['glassmorphism', 'cloud_compute_grid']
+
+# REGRAS GERAIS:
+- Idioma: Português Brasileiro (pt-BR).
+- Exclua notícias de eletrônicos de consumo (celulares, TVs) ou fofocas corporativas sem impacto técnico.
+- Se a notícia for irrelevante, não a inclua no retorno.
+
+# SAÍDA JSON OBRIGATÓRIA (Retorne um objeto com a chave "items"):
 {
   "items": [
     {
-      "category": "🛡️ CIBERSEGURANÇA",
-      "headline": "🔥 Título chamativo",
-      "story": "Texto técnico.",
-      "link": "URL"
+      "id": "ID original fornecido",
+      "category": "AI | SEC | DEV | CLOUD",
+      "title": "Título impactante conforme a persona (Máx 60 chars)",
+      "summary": "Resumo técnico focado no impacto (Máx 280 chars)",
+      "whatsapp_summary": "Versão curta com emoji para WhatsApp (Máx 160 chars)",
+      "relevance_score": 0-100,
+      "theme_config": {
+        "dna": "TECH_HACKER",
+        "primary_color": "#0D0D0D",
+        "accent_color": "Hex da persona",
+        "font_style": "Mono",
+        "ui_effects": ["lista", "de", "efeitos", "conforme", "persona"]
+      }
     }
   ]
 }`
 
-    console.log('⚡ [Map] Processando chunks em paralelo...')
+    console.log('⚡ [Map] Processando chunks em paralelo com Personas Especialistas...')
 
     const mapResults = await Promise.all(
       chunks.map(async (chunk, index) => {
@@ -362,7 +376,7 @@ SAÍDA JSON:
       })
     )
 
-    // ===== 4. REDUCE: Consolidar todos os itens =====
+    // ===== 4. REDUCE: Consolidar todos os itens e atualizar o banco de dados =====
     const allItems = mapResults.flat()
     console.log(`🔗 [Reduce] Total consolidado: ${allItems.length} itens`)
 
@@ -370,17 +384,45 @@ SAÍDA JSON:
       throw new Error('Nenhum item foi processado. Verifique os logs de erro.')
     }
 
-    // Agrupar por categoria
+    // 4.1 Persistir Enriquecimento no Banco de Dados
+    console.log('💾 [Reduce] Atualizando posts com temas e resumos especializados...')
+    for (const item of allItems) {
+      if (!item.id) continue;
+
+      const updateData = {
+        title: item.title,
+        summary: item.summary,
+        whatsapp_summary: item.whatsapp_summary,
+        category: item.category,
+        score: item.relevance_score,
+        theme_config: item.theme_config,
+        // Mantemos como approved se já estava, ou pending se era pending
+      }
+
+      await supabase
+        .from('posts')
+        .update(updateData)
+        .eq('id', item.id)
+    }
+
+    // Agrupar por categoria para a newsletter
     const categoriesMap = new Map<string, any[]>()
     for (const item of allItems) {
-      const cat = item.category || '💻 DEV'
+      const cat = item.category === 'AI' ? '🤖 IA' : 
+                  item.category === 'SEC' ? '🛡️ SEGURANÇA' : 
+                  item.category === 'CLOUD' ? '☁️ CLOUD' : '💻 DEV'
+      
       if (!categoriesMap.has(cat)) {
         categoriesMap.set(cat, [])
       }
+
+      // Buscar o link original no array allPosts usando o id
+      const originalPost = allPosts.find(p => p.id === item.id)
+      
       categoriesMap.get(cat)!.push({
-        headline: item.headline,
-        story: item.story,
-        link: item.link
+        headline: item.title,
+        story: item.summary,
+        link: originalPost?.url || '#'
       })
     }
 
