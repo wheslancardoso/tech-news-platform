@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@300;700;900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { background-color: #0D0D0D; font-family: 'Inter', sans-serif; min-height: max(884px, 100dvh); }
+  .header-font { font-family: 'Space Grotesk', sans-serif; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0D0D0D; }
+  ::-webkit-scrollbar-thumb { background: #2A2A2A; }
+</style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      "colors": {"on-primary":"#00363a","surface-container":"#201f1f","tertiary-fixed":"#72ff70","outline":"#849495","tertiary-container":"#00fb40","tertiary":"#ddffd3","on-secondary-fixed-variant":"#930100","surface-variant":"#353534","on-tertiary":"#003907","error":"#ffb4ab","on-secondary-fixed":"#410000","secondary":"#ffb4a8","inverse-surface":"#e5e2e1","tertiary-fixed-dim":"#00e639","on-primary-container":"#006970","on-surface-variant":"#b9cacb","on-secondary":"#690100","on-background":"#e5e2e1","on-error-container":"#ffdad6","surface":"#0D0D0D","surface-bright":"#3a3939","on-tertiary-fixed-variant":"#00530e","secondary-fixed-dim":"#ffb4a8","secondary-container":"#ff5540","on-error":"#690005","on-tertiary-container":"#006e16","surface-dim":"#131313","surface-container-highest":"#353534","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-fixed":"#7df4ff","on-surface":"#e5e2e1","primary":"#dbfcff","outline-variant":"#3b494b","surface-tint":"#00dbe9","secondary-fixed":"#ffdad4","on-secondary-container":"#5c0000","on-primary-fixed-variant":"#004f54","on-primary-fixed":"#002022","surface-container-low":"#1c1b1b","inverse-primary":"#006970","inverse-on-surface":"#313030","primary-fixed-dim":"#00dbe9","on-tertiary-fixed":"#002203","primary-container":"#00f0ff","background":"#131313","surface-container-lowest":"#0e0e0e"},
+      "borderRadius": {"DEFAULT":"0px","lg":"0px","xl":"0px","full":"0px"}
+    }}
+  }
+</script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HEADER PADRONIZADO — NÃO ALTERAR ESTRUTURA     -->
+<!-- ═══════════════════════════════════════════════ -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#0D0D0D]/80 backdrop-blur-md border-b-2 border-zinc-800">
+  <button class="text-[#00F0FF] hover:opacity-80 transition-opacity">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <h1 class="text-2xl font-black text-[#00F0FF] tracking-tighter uppercase header-font">FRESH NEWS</h1>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px] font-black text-[#00F0FF] bg-[#00F0FF]/10 px-2 py-1 border border-[#00F0FF]/30 font-mono">29/04</span>
+    <button class="text-[#00F0FF] hover:opacity-80 transition-opacity">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </div>
+</header>
+<!-- ═══════════════════════════════════════════════ -->
+
+<main class="pt-24 pb-24 px-4 md:px-8 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-2 border-outline pb-6">
+<div>
+<span class="text-primary-container font-black uppercase tracking-[0.2em] text-xs mb-2 block">Administração de Sistema</span>
+<h2 class="header-font text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">PAINEL</h2>
+</div>
+<div class="mt-6 md:mt-0 flex gap-4">
+<button class="bg-white text-black px-6 py-3 font-black uppercase tracking-tighter hover:bg-primary-container transition-colors">PUBLICAR</button>
+<button class="border-2 border-white text-white px-6 py-3 font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-colors">REJEITAR</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+<div class="md:col-span-2 bg-surface-container p-6 border-l-4 border-primary-container">
+<p class="uppercase font-bold tracking-widest text-zinc-500 text-xs mb-4">Tráfego</p>
+<div class="flex items-baseline gap-2"><h3 class="header-font text-6xl font-black tracking-tighter">42.8K</h3><span class="text-tertiary-container font-bold text-sm">+12.4%</span></div>
+<p class="text-zinc-500 mt-2 font-bold uppercase text-[10px] tracking-widest">Leitores em tempo real</p>
+</div>
+<div class="bg-surface-container p-6">
+<p class="uppercase font-bold tracking-widest text-zinc-500 text-xs mb-4">Conversão</p>
+<h3 class="header-font text-4xl font-black tracking-tighter">8.2%</h3>
+<p class="text-zinc-500 mt-2 font-bold uppercase text-[10px] tracking-widest">Taxa de clique</p>
+</div>
+<div class="bg-surface-container p-6">
+<p class="uppercase font-bold tracking-widest text-zinc-500 text-xs mb-4">Sessão</p>
+<h3 class="header-font text-4xl font-black tracking-tighter">04:12</h3>
+<p class="text-zinc-500 mt-2 font-bold uppercase text-[10px] tracking-widest">Média editorial</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 space-y-8">
+<section>
+<div class="flex items-center gap-2 mb-6"><div class="w-3 h-3 bg-error animate-pulse"></div><h4 class="header-font text-2xl font-black uppercase tracking-tight italic">Controle de Edição Mestra</h4></div>
+<div class="space-y-4">
+<div class="group bg-surface-container p-4 flex gap-6 items-center border-2 border-transparent hover:border-zinc-800 transition-all">
+<div class="w-32 h-32 flex-shrink-0 grayscale group-hover:grayscale-0 transition-all"><img alt="Security Matrix" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXpwWHHSp15g7FNRmdbGkynpuBkt3ASEfe2B0U7eqj6M-xIM7KAusiMulgdyvpS56gOur1x4iRRFAbiipx-oXQuU_gVrIN7dGumo3oHkSnI7vitxDdxhBcN4bkIZilw5NgD19HUrMxzfehPIr6oBvE_cTM8WAmYvPxgkkEcpeLBa8uwdhEIrUaub1H6Sv5GrkUlvJR9mcIRZNdJDB6DlWGXWA84RfQ84bRJZ54VMyyTwc8_sgoJd50dRpEgADuBiUl9ntyZ3RBiRxU"/></div>
+<div class="flex-grow"><div class="flex justify-between items-start"><span class="text-tertiary-container font-bold text-[10px] uppercase tracking-widest mb-1 block">Cibersegurança</span><span class="text-zinc-600 font-mono text-[10px]">ID: #8829-X</span></div><h5 class="header-font text-xl font-bold uppercase leading-tight mb-2">A Ascensão da Criptografia Quântica em 2024</h5><div class="flex gap-4"><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface hover:text-primary-container hover:border-primary-container">Editar</button><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface hover:text-error hover:border-error">Remover</button><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface">Agendar</button></div></div>
+</div>
+<div class="group bg-surface-container p-4 flex gap-6 items-center border-2 border-transparent hover:border-zinc-800 transition-all">
+<div class="w-32 h-32 flex-shrink-0 grayscale group-hover:grayscale-0 transition-all"><img alt="Hardware Circuitry" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDddSjWfSIA2-09d9dlLpK9S_zWfuv3dbtaRhC2OhFrzb7i4unp7674GNbTKuhgjLvgYrw2fncUHaQ1stwrVeSZk_qUJJzDX-SIpsD5QNRkeLb_Iw_KPVkm7ywulxJ18gKNpzaBR7mqfJ9aEvOsFQAfwxBT-Qm7EzVsdgSHCNsZFQ-Aex0TgSXFIulMrWl0R8-4steEjR-AnML-YSOt9-CMnz4nGBZMbrOR5PIrxvKU8w0wl8rT857T2IdLq_NWs4PfCa-BPRZ9H8-R"/></div>
+<div class="flex-grow"><div class="flex justify-between items-start"><span class="text-secondary-container font-bold text-[10px] uppercase tracking-widest mb-1 block">Hardware</span><span class="text-zinc-600 font-mono text-[10px]">ID: #1104-Y</span></div><h5 class="header-font text-xl font-bold uppercase leading-tight mb-2">Arquitetura ARM: O Fim da Era x86 nos Desktops?</h5><div class="flex gap-4"><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface hover:text-primary-container hover:border-primary-container">Editar</button><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface hover:text-error hover:border-error">Remover</button><button class="text-[10px] font-black uppercase tracking-tighter border-b border-on-surface">Agendar</button></div></div>
+</div>
+</div>
+</section>
+</div>
+<div class="space-y-8">
+<section class="bg-surface-container p-6 border-t-2 border-outline">
+<h4 class="header-font text-lg font-black uppercase mb-6 tracking-tight">Status do Sistema</h4>
+<ul class="space-y-4">
+<li class="flex justify-between items-center text-[11px] font-bold uppercase"><span class="text-zinc-500">Servidores Cloud</span><span class="text-tertiary-container">OPERANTE</span></li>
+<li class="flex justify-between items-center text-[11px] font-bold uppercase"><span class="text-zinc-500">API de Distribuição</span><span class="text-tertiary-container">ESTÁVEL</span></li>
+<li class="flex justify-between items-center text-[11px] font-bold uppercase"><span class="text-zinc-500">Indexação de Busca</span><span class="text-secondary-container">LENTO</span></li>
+<li class="flex justify-between items-center text-[11px] font-bold uppercase"><span class="text-zinc-500">Banco de Dados</span><span class="text-tertiary-container">OK</span></li>
+</ul>
+</section>
+<section class="bg-[#1a1a1a] p-6 border-2 border-primary-container">
+<h4 class="header-font text-lg font-black uppercase mb-4 tracking-tight text-primary-container">Ação Necessária</h4>
+<p class="text-xs text-zinc-400 mb-6 leading-relaxed">A edição de amanhã está com 85% de preenchimento. É necessário aprovar 2 artigos pendentes na fila de Cibersegurança.</p>
+<button class="w-full bg-primary-container text-on-primary py-3 font-black uppercase tracking-tighter hover:opacity-90 transition-opacity">Verificar Fila</button>
+</section>
+</div>
+</div>
+</main>
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-[#0D0D0D]/90 backdrop-blur-xl border-t-2 border-zinc-800">
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full" href="#"><span class="material-symbols-outlined">rss_feed</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">FEED</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full" href="#"><span class="material-symbols-outlined">auto_stories</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">EDIÇÕES</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full" href="#"><span class="material-symbols-outlined">tune</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">PREFERÊNCIAS</span></a>
+<a class="flex flex-col items-center justify-center text-[#00F0FF] border-t-2 border-[#00F0FF] h-full transition-all" href="#"><span class="material-symbols-outlined">dashboard</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">PAINEL</span></a>
+</nav>
+</body></html>

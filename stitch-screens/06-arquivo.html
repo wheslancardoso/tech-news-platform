@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@900&family=Inter:wght@400;700;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      "colors": {"on-primary":"#00363a","surface-container":"#201f1f","tertiary-fixed":"#72ff70","outline":"#849495","tertiary-container":"#00fb40","tertiary":"#ddffd3","on-secondary-fixed-variant":"#930100","surface-variant":"#353534","on-tertiary":"#003907","error":"#ffb4ab","on-secondary-fixed":"#410000","secondary":"#ffb4a8","inverse-surface":"#e5e2e1","tertiary-fixed-dim":"#00e639","on-primary-container":"#006970","on-surface-variant":"#b9cacb","on-secondary":"#690100","on-background":"#e5e2e1","on-error-container":"#ffdad6","surface":"#131313","surface-bright":"#3a3939","on-tertiary-fixed-variant":"#00530e","secondary-fixed-dim":"#ffb4a8","secondary-container":"#ff5540","on-error":"#690005","on-tertiary-container":"#006e16","surface-dim":"#131313","surface-container-highest":"#353534","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-fixed":"#7df4ff","on-surface":"#e5e2e1","primary":"#dbfcff","outline-variant":"#3b494b","surface-tint":"#00dbe9","secondary-fixed":"#ffdad4","on-secondary-container":"#5c0000","on-primary-fixed-variant":"#004f54","on-primary-fixed":"#002022","surface-container-low":"#1c1b1b","inverse-primary":"#006970","inverse-on-surface":"#313030","primary-fixed-dim":"#00dbe9","on-tertiary-fixed":"#002203","primary-container":"#00f0ff","background":"#131313","surface-container-lowest":"#0e0e0e"},
+      "borderRadius": {"DEFAULT":"0px","lg":"0px","xl":"0px","full":"0px"},
+      "fontFamily": {"headline":["Geist Sans","sans-serif"],"display":["Space Grotesk","sans-serif"],"body":["Inter","sans-serif"],"label":["Inter","sans-serif"]}
+    }}
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { background-color: #0D0D0D; color: #e5e2e1; font-family: 'Inter', sans-serif; }
+  .text-neon { color: #00F0FF; text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+</style>
+</head>
+<body class="bg-surface-container-lowest min-h-screen">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HEADER PADRONIZADO — NÃO ALTERAR ESTRUTURA     -->
+<!-- ═══════════════════════════════════════════════ -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#0D0D0D]/80 backdrop-blur-md border-b-2 border-zinc-800">
+  <button class="text-[#00F0FF] hover:opacity-80 active:scale-[0.98] transition-colors">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <h1 class="text-2xl font-black text-[#00F0FF] tracking-tighter uppercase font-headline">FRESH NEWS</h1>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px] font-black text-[#00F0FF] bg-[#00F0FF]/10 px-2 py-1 border border-[#00F0FF]/30 font-mono">29/04</span>
+    <button class="text-[#00F0FF] hover:opacity-80 active:scale-[0.98] transition-colors">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </div>
+</header>
+<!-- ═══════════════════════════════════════════════ -->
+
+<main class="pt-24 pb-32 px-4 max-w-7xl mx-auto">
+<div class="mb-12 border-l-8 border-[#00F0FF] pl-6 py-2">
+<h2 class="text-5xl font-black font-headline tracking-tighter uppercase leading-none md:text-7xl">ARQUIVO DE <br/> <span class="text-[#00F0FF]">EDIÇÕES</span></h2>
+<p class="mt-4 text-zinc-500 font-body uppercase tracking-[0.2em] text-xs">Registros Históricos &amp; Documentação de Ciclos</p>
+</div>
+<section class="mb-12 group cursor-pointer">
+<div class="relative bg-surface-container border-2 border-zinc-800 p-1">
+<div class="relative overflow-hidden aspect-[16/9]">
+<img class="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmMnDZQvm3fHh_Efg7mUsMqJD7jQU3_gdqmtnqrtqbuHfQfsqChzU7fvNgxwHzYwRJ3y9Qie1SoPTL41f9p1YFRk93OeauG0Q7upEp7F2YogdlF2bhZPWFZzyzmt9TBPgujfln2eQTxzEbH0bWZNWNTHeenEy0SRWuLTLGOwwat4X8Mw1fO5bRinw_FPIkGqR5SA9ny3OilCn5IKGJmx1IZwK2VeeEbsJw9oVHndkXZYAQ061YGH-gbSt6Lgd_alUBygWy_3xZGbIw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex items-center gap-3 mb-2"><span class="bg-[#00F0FF] text-[#00363a] px-2 py-0.5 text-xs font-black font-headline uppercase">LATEST</span><span class="text-white font-mono text-lg">#141</span></div>
+<h3 class="text-3xl font-black font-headline uppercase leading-tight text-white">A Ascensão da Singularidade Sintética</h3>
+</div>
+</div>
+</div>
+</section>
+<div class="space-y-4">
+<div class="flex items-center gap-4 mb-8"><span class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">Arquivo Completo</span><div class="h-px flex-grow bg-zinc-800"></div></div>
+<div class="group flex items-center justify-between py-6 border-b border-zinc-800 hover:bg-zinc-900/40 px-4 transition-all cursor-pointer">
+<div class="flex items-baseline gap-6"><span class="text-3xl font-mono text-zinc-700 group-hover:text-[#00F0FF] transition-colors">140</span><h4 class="text-xl font-black font-headline uppercase group-hover:translate-x-2 transition-transform">Protocolos de Defesa em Redes Neurais</h4></div>
+<div class="hidden md:flex items-center gap-4"><span class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">MAR 2024</span><span class="material-symbols-outlined text-zinc-800 group-hover:text-[#00F0FF]">arrow_outward</span></div>
+</div>
+<div class="group flex items-center justify-between py-6 border-b border-zinc-800 hover:bg-zinc-900/40 px-4 transition-all cursor-pointer">
+<div class="flex items-baseline gap-6"><span class="text-3xl font-mono text-zinc-700 group-hover:text-[#00F0FF] transition-colors">139</span><h4 class="text-xl font-black font-headline uppercase group-hover:translate-x-2 transition-transform">O Inverno Cripto Terminou?</h4></div>
+<div class="hidden md:flex items-center gap-4"><span class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">FEV 2024</span><span class="material-symbols-outlined text-zinc-800 group-hover:text-[#00F0FF]">arrow_outward</span></div>
+</div>
+<div class="group flex items-center justify-between py-6 border-b border-zinc-800 hover:bg-zinc-900/40 px-4 transition-all cursor-pointer">
+<div class="flex items-baseline gap-6"><span class="text-3xl font-mono text-zinc-700 group-hover:text-[#00F0FF] transition-colors">138</span><h4 class="text-xl font-black font-headline uppercase group-hover:translate-x-2 transition-transform">Guia de Hardware Aberto</h4></div>
+<div class="hidden md:flex items-center gap-4"><span class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">JAN 2024</span><span class="material-symbols-outlined text-zinc-800 group-hover:text-[#00F0FF]">arrow_outward</span></div>
+</div>
+<button class="w-full mt-12 py-5 border-2 border-zinc-800 font-headline uppercase font-black text-sm tracking-[0.2em] hover:bg-[#00F0FF] hover:text-[#00363a] hover:border-[#00F0FF] transition-all">CARREGAR MAIS REGISTROS</button>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-[#0D0D0D]/90 backdrop-blur-xl border-t-2 border-zinc-800">
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-all" href="#"><span class="material-symbols-outlined mb-1">rss_feed</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest">Feed</span></a>
+<a class="flex flex-col items-center justify-center text-[#00F0FF] border-t-2 border-[#00F0FF] h-full w-full bg-zinc-900/20 transition-all" href="#"><span class="material-symbols-outlined mb-1">auto_stories</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest">Edições</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-all" href="#"><span class="material-symbols-outlined mb-1">tune</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest">Preferências</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-all" href="#"><span class="material-symbols-outlined mb-1">dashboard</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest">Painel</span></a>
+</nav>
+</body></html>

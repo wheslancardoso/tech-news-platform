@@ -1,0 +1,100 @@
+<html class="dark"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@300;700&family=Geist+Sans:wght@900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#ddffd3","on-error": "#690005","on-primary-fixed": "#002022","tertiary-container": "#00fb40","inverse-surface": "#e5e2e1","outline": "#849495","on-primary-fixed-variant": "#004f54","inverse-on-surface": "#313030","on-secondary-container": "#5c0000","surface-tint": "#00dbe9","on-surface": "#e5e2e1","outline-variant": "#3b494b","secondary-fixed-dim": "#ffb4a8","surface-container-low": "#1c1b1b","surface-dim": "#131313","primary-container": "#00f0ff","on-secondary-fixed": "#410000","background": "#131313","on-secondary-fixed-variant": "#930100","secondary-container": "#ff5540","on-surface-variant": "#b9cacb","surface-bright": "#3a3939","error": "#ffb4ab","on-secondary": "#690100","surface-container-lowest": "#0e0e0e","secondary": "#ffb4a8","on-background": "#e5e2e1","inverse-primary": "#006970","on-error-container": "#ffdad6","tertiary-fixed": "#72ff70","on-tertiary-fixed-variant": "#00530e","error-container": "#93000a","surface-variant": "#353534","primary-fixed": "#7df4ff","on-tertiary-container": "#006e16","primary": "#dbfcff","on-tertiary-fixed": "#002203","surface-container-highest": "#353534","on-primary": "#00363a","surface-container": "#201f1f","primary-fixed-dim": "#00dbe9","on-tertiary": "#003907","tertiary-fixed-dim": "#00e639","surface-container-high": "#2a2a2a","surface": "#0D0D0D","on-primary-container": "#006970","secondary-fixed": "#ffdad4"
+          },
+          "borderRadius": {"none": "0px","DEFAULT": "0px","lg": "0px","xl": "0px","full": "9999px"},
+          "fontFamily": {"headline": ["Geist Sans", "sans-serif"],"display": ["Geist Sans", "sans-serif"],"body": ["Inter", "sans-serif"],"label": ["Inter", "sans-serif"]}
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { background-color: #0D0D0D; color: #e5e2e1; font-family: 'Inter', sans-serif; }
+    .neo-broadsheet-title { font-family: 'Geist Sans', sans-serif; font-weight: 900; letter-spacing: -0.04em; }
+    .glass-nav { background: rgba(13, 13, 13, 0.7); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  </style>
+</head>
+<body class="bg-[#0D0D0D] min-h-screen">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HEADER PADRONIZADO — NÃO ALTERAR ESTRUTURA     -->
+<!-- ═══════════════════════════════════════════════ -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#0D0D0D]/80 backdrop-blur-md border-b-2 border-zinc-800">
+  <button class="text-[#00F0FF] hover:opacity-80 active:scale-[0.98] transition-all">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <h1 class="text-2xl font-black text-[#00F0FF] tracking-tighter uppercase neo-broadsheet-title">FRESH NEWS</h1>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px] font-black text-[#00F0FF] bg-[#00F0FF]/10 px-2 py-1 border border-[#00F0FF]/30 font-mono">29/04</span>
+    <button class="text-[#00F0FF] hover:opacity-80 active:scale-[0.98] transition-all">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </div>
+</header>
+<!-- ═══════════════════════════════════════════════ -->
+
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto">
+<!-- Breaking News Hero -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-0 border-2 border-zinc-800 mb-12 group">
+<div class="lg:col-span-7 relative h-80 lg:h-auto overflow-hidden">
+<img alt="Inteligência Artificial Visualização" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5fLYOQGeux6ESf7fgJPS-Lp94_M8ub-oP72IWtV4JRgN4Yi-DKe5BStfA0whsFFQZ5GUGwUIts3J4DSzvHoTxz_GxBXmzkuy9syPOwE3YfZwHdD1oQ5p9cVnx29_p2WaJaURFOBtiiDs75SgNT13H2R-8ufyUfBSMK7uE6y_ZpZYP8JKJm3tMQHK1zvyaBDWMbnUEB-zgoRTW4e3CLDBXwM57N-EEo005X3welPRPwJdpuWehHqENU-hXUNgnxuKqxcMSMGSaqQrD"/>
+<div class="absolute top-0 left-0 bg-[#00F0FF] text-[#0D0D0D] px-4 py-1 font-black uppercase tracking-tighter text-sm">DESTAQUE: IA</div>
+</div>
+<div class="lg:col-span-5 p-8 bg-[#111111] flex flex-col justify-center border-t-2 lg:border-t-0 lg:border-l-2 border-zinc-800">
+<span class="text-[#00F0FF] font-bold text-xs tracking-widest uppercase mb-4">Sexta-feira, 24 Mai 2024</span>
+<h2 class="neo-broadsheet-title text-4xl md:text-6xl leading-[0.85] text-white mb-8 uppercase">O DESPERTAR DOS MODELOS AUTÔNOMOS.</h2>
+<button class="self-start px-6 py-3 bg-[#00F0FF] text-[#0D0D0D] font-black uppercase tracking-tighter hover:opacity-90 transition-all active:scale-95">LER AGORA</button>
+</div>
+</section>
+<!-- Bento Grid Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<article class="bg-[#111111] border-t-4 border-[#00FF41] p-6 flex flex-col h-full border-x-2 border-b-2 border-zinc-800/20">
+<span class="text-[#00FF41] font-black text-[10px] tracking-widest uppercase mb-4">Cibersegurança</span>
+<h3 class="neo-broadsheet-title text-2xl text-white leading-tight mb-8 uppercase">Protocolo Zero-Day em Cloud Híbrida.</h3>
+<div class="mt-auto flex items-center justify-between"><span class="text-zinc-600 text-[10px] font-bold uppercase">5 MIN LEITURA</span><span class="material-symbols-outlined text-[#00FF41] text-sm">arrow_forward</span></div>
+</article>
+<article class="bg-[#111111] border-t-4 border-[#00F0FF] p-6 flex flex-col h-full border-x-2 border-b-2 border-zinc-800/20">
+<span class="text-[#00F0FF] font-black text-[10px] tracking-widest uppercase mb-4">Desenvolvimento</span>
+<h3 class="neo-broadsheet-title text-2xl text-white leading-tight mb-8 uppercase">Compiladores Baseados em Grafos.</h3>
+<div class="mt-auto flex items-center justify-between"><span class="text-zinc-600 text-[10px] font-bold uppercase">8 MIN LEITURA</span><span class="material-symbols-outlined text-[#00F0FF] text-sm">arrow_forward</span></div>
+</article>
+<article class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 bg-[#111111] border-t-4 border-[#E10600] border-x-2 border-b-2 border-zinc-800/20 overflow-hidden">
+<div class="h-48 md:h-full relative"><img alt="Infraestrutura Cloud" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9IWiM-ELjIpGLL5YcVnuHmvZrH54eyrMmQQJosSUkJD4g90d_Je5EzyLMkDN1-XVMXt5J40u4Zq8k2jG4tQMLymI8DT_JWV0i0zHOG9xttEoM2pUq4ObLTvl1tv4yfmNMAc6pcMsIoDCcFqczFkAOCYcG7FNsZRdiNSRa26Q92VwD2Dqjj42Oke6_b2Xo-npGKp-g84c9Fx5o3JsraXvk1ZXKzh9JvWetdhFMB8tzpZp7phxSJcOZoucHjcWKUl9BdXvnAMFVOmFl"/></div>
+<div class="p-6 flex flex-col"><span class="text-[#E10600] font-black text-[10px] tracking-widest uppercase mb-4">Cloud Computing</span><h3 class="neo-broadsheet-title text-2xl text-white leading-tight mb-8 uppercase">Migração em Massa: O Fim do On-Premise?</h3><div class="mt-auto"><a class="text-[#E10600] text-[10px] font-black uppercase tracking-tighter border-b-2 border-[#E10600] pb-1" href="#">Ver Relatório Completo</a></div></div>
+</article>
+<article class="bg-[#111111] border-t-4 border-zinc-700 p-6 flex flex-col h-full border-x-2 border-b-2 border-zinc-800/20">
+<span class="text-zinc-500 font-black text-[10px] tracking-widest uppercase mb-4">Hardware</span>
+<h3 class="neo-broadsheet-title text-2xl text-white leading-tight mb-8 uppercase">Chips Quânticos em Escala Comercial.</h3>
+<div class="mt-auto flex items-center justify-between"><span class="text-zinc-600 text-[10px] font-bold uppercase">12 MIN LEITURA</span><span class="material-symbols-outlined text-zinc-500 text-sm">arrow_forward</span></div>
+</article>
+<article class="md:col-span-2 bg-[#111111] border-2 border-[#00F0FF] p-8 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -right-12 -top-12 w-48 h-48 bg-[#00F0FF]/10 rotate-12 group-hover:bg-[#00F0FF]/20 transition-all"></div>
+<div><span class="bg-[#00F0FF] text-[#0D0D0D] px-2 py-0.5 text-[10px] font-black uppercase mb-6 inline-block">Newsletter Especial</span><h3 class="neo-broadsheet-title text-3xl text-white leading-none uppercase mb-4">Inscreva-se na Binary Review.</h3></div>
+<div class="mt-8 flex gap-2"><input class="flex-1 bg-transparent border-b-2 border-zinc-800 py-2 text-sm text-[#00F0FF] focus:outline-none focus:border-[#00F0FF] font-mono" placeholder="ENDEREÇO DE EMAIL" type="email"/><button class="bg-[#00F0FF] text-[#0D0D0D] px-4 font-black uppercase text-xs">ENVIAR</button></div>
+</article>
+<article class="bg-[#111111] border-t-4 border-[#00FF41] p-6 flex flex-col h-full border-x-2 border-b-2 border-zinc-800/20">
+<span class="text-[#00FF41] font-black text-[10px] tracking-widest uppercase mb-4">Venture Capital</span>
+<h3 class="neo-broadsheet-title text-2xl text-white leading-tight mb-8 uppercase">Investimento em Green-Tech bate Recorde.</h3>
+<div class="mt-auto flex items-center justify-between"><span class="text-zinc-600 text-[10px] font-bold uppercase">4 MIN LEITURA</span><span class="material-symbols-outlined text-[#00FF41] text-sm">arrow_forward</span></div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 glass-nav">
+<a class="flex flex-col items-center justify-center text-[#00F0FF] border-t-2 border-[#00F0FF] h-full transition-all flex-1" href="#"><span class="material-symbols-outlined">rss_feed</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Feed</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-400 h-full hover:bg-white/5 flex-1 transition-colors" href="#"><span class="material-symbols-outlined">auto_stories</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Edições</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-400 h-full hover:bg-white/5 flex-1 transition-colors" href="#"><span class="material-symbols-outlined">tune</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Preferências</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-400 h-full hover:bg-white/5 flex-1 transition-colors" href="#"><span class="material-symbols-outlined">dashboard</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Painel</span></a>
+</nav>
+</body></html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FRESH NEWS | Artigo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@300;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      "colors": {"on-primary":"#00363a","surface-container":"#201f1f","tertiary-fixed":"#72ff70","outline":"#849495","tertiary-container":"#00fb40","tertiary":"#ddffd3","on-secondary-fixed-variant":"#930100","surface-variant":"#353534","on-tertiary":"#003907","error":"#ffb4ab","on-secondary-fixed":"#410000","secondary":"#ffb4a8","inverse-surface":"#e5e2e1","tertiary-fixed-dim":"#00e639","on-primary-container":"#006970","on-surface-variant":"#b9cacb","on-secondary":"#690100","on-background":"#e5e2e1","on-error-container":"#ffdad6","surface":"#131313","surface-bright":"#3a3939","on-tertiary-fixed-variant":"#00530e","secondary-fixed-dim":"#ffb4a8","secondary-container":"#ff5540","on-error":"#690005","on-tertiary-container":"#006e16","surface-dim":"#131313","surface-container-highest":"#353534","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-fixed":"#7df4ff","on-surface":"#e5e2e1","primary":"#dbfcff","outline-variant":"#3b494b","surface-tint":"#00dbe9","secondary-fixed":"#ffdad4","on-secondary-container":"#5c0000","on-primary-fixed-variant":"#004f54","on-primary-fixed":"#002022","surface-container-low":"#1c1b1b","inverse-primary":"#006970","inverse-on-surface":"#313030","primary-fixed-dim":"#00dbe9","on-tertiary-fixed":"#002203","primary-container":"#00f0ff","background":"#131313","surface-container-lowest":"#0e0e0e"},
+      "borderRadius": {"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},
+      "fontFamily": {"headline":["Space Grotesk"],"display":["Space Grotesk"],"body":["Inter"],"label":["Inter"]}
+    }}
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { background-color: #0D0D0D; min-height: max(884px, 100dvh); }
+  ::selection { background: #00F0FF; color: #0D0D0D; }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HEADER PADRONIZADO — NÃO ALTERAR ESTRUTURA     -->
+<!-- ═══════════════════════════════════════════════ -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#0D0D0D]/80 backdrop-blur-md border-b-2 border-zinc-800">
+  <button class="text-[#00F0FF] active:opacity-80 active:scale-[0.98] transition-colors">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <h1 class="text-2xl font-black text-[#00F0FF] tracking-tighter uppercase font-headline">FRESH NEWS</h1>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px] font-black text-[#00F0FF] bg-[#00F0FF]/10 px-2 py-1 border border-[#00F0FF]/30 font-mono">29/04</span>
+    <button class="text-[#00F0FF] active:opacity-80 active:scale-[0.98] transition-colors">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+  </div>
+</header>
+<!-- ═══════════════════════════════════════════════ -->
+
+<main class="pt-24 pb-32 px-4 max-w-6xl mx-auto">
+<article class="flex flex-col gap-8">
+<div class="flex flex-col md:flex-row gap-6 md:items-end">
+<div class="flex-1">
+<span class="inline-block bg-primary-container text-on-primary px-3 py-1 font-headline font-black text-xs uppercase tracking-widest mb-4">IA</span>
+<h2 class="text-5xl md:text-8xl font-black font-headline leading-[0.9] tracking-tighter uppercase">GPT-5: O Salto no <span class="text-primary-container">Raciocínio</span> Lógico</h2>
+</div>
+<div class="w-full md:w-64 border-l-2 border-primary-container pl-4 py-2">
+<p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-tight">Publicado em 24 de Maio, 2024</p>
+<p class="text-sm font-black font-headline uppercase mt-1">Por Editorial Tech</p>
+<div class="mt-4 flex gap-2"><div class="h-1 w-8 bg-primary-container"></div><div class="h-1 w-4 bg-zinc-800"></div><div class="h-1 w-2 bg-zinc-800"></div></div>
+</div>
+</div>
+<div class="w-full aspect-video bg-surface-container overflow-hidden border-2 border-zinc-800">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVgRSI5Dt0nlJPcv9VooTjx6uLcCDhtMJlQkzjB_HFT59rlYim4BZkhzWfEAKwAmDt0_mjp-z1Bw4683rBux6x6Q407yQzM964cuDEPyBN7OTfnfeGBQu-t0P0WkprTYvbaDtQMoXlGGYUXHdfplgsOdfg6JJRMQ8Cf9delp0kKGkBq1P2PmyVUdZHtP1_QD_Um0hrUny5QzgG37-OAp-4BRFAirYX9nlxOJrKWdoo3_K39m_lIoHUA5cLrGpeq4iiZrvENpzd4irA"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12 mt-4">
+<div class="md:col-span-8 space-y-12">
+<p class="text-xl md:text-2xl font-bold font-headline leading-tight border-b-2 border-zinc-900 pb-8 italic text-on-surface-variant">A próxima fronteira da inteligência artificial não está na velocidade de resposta, mas na capacidade de processar problemas complexos através de camadas profundas de inferência.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="p-4 border-l-2 border-zinc-800"><h4 class="text-xs font-black uppercase text-primary-container mb-2">Arquitetura</h4><p class="text-sm text-zinc-400 font-medium">Processamento neural baseado em Reasoning Pathing para lógica determinística.</p></div>
+<div class="p-4 border-l-2 border-zinc-800"><h4 class="text-xs font-black uppercase text-primary-container mb-2">Impacto</h4><p class="text-sm text-zinc-400 font-medium">Redução de 98% em alucinações cognitivas para problemas de engenharia.</p></div>
+</div>
+<div class="bg-surface-container-high p-8 border-l-4 border-primary-container">
+<span class="text-4xl text-primary-container font-black leading-none select-none">"</span>
+<p class="text-2xl font-black font-headline uppercase tracking-tight -mt-4">O GPT-5 não está apenas prevendo palavras; ele está simulando soluções antes de apresentá-las ao usuário.</p>
+</div>
+<div class="space-y-4"><div class="h-2 w-full bg-zinc-900"></div><div class="h-2 w-3/4 bg-zinc-900"></div><div class="h-2 w-1/2 bg-zinc-900"></div></div>
+<div class="mt-12 p-8 border-2 border-primary-container bg-primary-container/5">
+<h4 class="text-2xl font-black font-headline uppercase mb-4 tracking-tighter">Gostou da análise?</h4>
+<p class="text-sm font-body mb-6 text-on-surface-variant">Envie este relatório exclusivo para o seu time de desenvolvedores e lidere a revolução da IA.</p>
+<button class="w-full py-4 bg-primary-container text-on-primary font-black font-headline uppercase tracking-widest flex items-center justify-center gap-2"><span class="material-symbols-outlined text-lg">send</span>ENVIAR PARA O ZAP</button>
+</div>
+</div>
+<aside class="md:col-span-4 space-y-12">
+<div class="sticky top-24 space-y-8">
+<div>
+<h3 class="text-xs font-black uppercase tracking-[0.2em] text-primary-container border-b-2 border-primary-container mb-6 pb-2">Top Trends IA</h3>
+<div class="space-y-6">
+<div class="group cursor-pointer"><span class="text-[10px] font-bold text-zinc-600">01</span><h5 class="text-sm font-black font-headline uppercase group-hover:text-primary-container transition-colors">Sora: Vídeos Cinematográficos Gerados por Prompt</h5></div>
+<div class="group cursor-pointer"><span class="text-[10px] font-bold text-zinc-600">02</span><h5 class="text-sm font-black font-headline uppercase group-hover:text-primary-container transition-colors">NVIDIA Lança Blackwell: O Chip do Futuro</h5></div>
+<div class="group cursor-pointer"><span class="text-[10px] font-bold text-zinc-600">03</span><h5 class="text-sm font-black font-headline uppercase group-hover:text-primary-container transition-colors">A Batalha Llama 3 vs GPT-5</h5></div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-6 border-2 border-zinc-800">
+<span class="material-symbols-outlined text-primary-container mb-4">auto_stories</span>
+<h4 class="text-lg font-black font-headline uppercase mb-2">Próxima Edição</h4>
+<p class="text-xs text-zinc-500 mb-4 font-medium">Resumo do mercado de Tech às 7h no seu e-mail.</p>
+<input class="w-full bg-surface border-none border-b-2 border-zinc-700 text-xs py-2 focus:border-primary-container focus:ring-0 transition-colors placeholder:text-zinc-700 font-headline font-black" placeholder="SEU@EMAIL.COM" type="email"/>
+</div>
+</div>
+</aside>
+</div>
+</article>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-[#0D0D0D]/90 backdrop-blur-xl border-t border-zinc-800">
+<a class="flex flex-col items-center justify-center text-[#00F0FF] border-t-2 border-[#00F0FF] h-full transition-all flex-1" href="#"><span class="material-symbols-outlined">rss_feed</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Feed</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full hover:bg-zinc-900/50 transition-all flex-1" href="#"><span class="material-symbols-outlined">auto_stories</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Edições</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full hover:bg-zinc-900/50 transition-all flex-1" href="#"><span class="material-symbols-outlined">tune</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Preferências</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full hover:bg-zinc-900/50 transition-all flex-1" href="#"><span class="material-symbols-outlined">dashboard</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Painel</span></a>
+</nav>
+</body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Space+Grotesk:wght@300;700&family=Geist+Sans:wght@900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      "colors": {"tertiary":"#ddffd3","on-error":"#690005","on-primary-fixed":"#002022","tertiary-container":"#00fb40","inverse-surface":"#e5e2e1","outline":"#849495","on-primary-fixed-variant":"#004f54","inverse-on-surface":"#313030","on-secondary-container":"#5c0000","surface-tint":"#00dbe9","on-surface":"#e5e2e1","outline-variant":"#3b494b","secondary-fixed-dim":"#ffb4a8","surface-container-low":"#1c1b1b","surface-dim":"#131313","primary-container":"#00f0ff","on-secondary-fixed":"#410000","background":"#131313","on-secondary-fixed-variant":"#930100","secondary-container":"#ff5540","on-surface-variant":"#b9cacb","surface-bright":"#3a3939","error":"#ffb4ab","on-secondary":"#690100","surface-container-lowest":"#0e0e0e","secondary":"#ffb4a8","on-background":"#e5e2e1","inverse-primary":"#006970","on-error-container":"#ffdad6","tertiary-fixed":"#72ff70","on-tertiary-fixed-variant":"#00530e","error-container":"#93000a","surface-variant":"#353534","primary-fixed":"#7df4ff","on-tertiary-container":"#006e16","primary":"#dbfcff","on-tertiary-fixed":"#002203","surface-container-highest":"#353534","on-primary":"#00363a","surface-container":"#201f1f","primary-fixed-dim":"#00dbe9","on-tertiary":"#003907","tertiary-fixed-dim":"#00e639","surface-container-high":"#2a2a2a","surface":"#131313","on-primary-container":"#006970","secondary-fixed":"#ffdad4"},
+      "borderRadius": {"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},
+      "fontFamily": {"headline":["Geist Sans"],"display":["Geist Sans"],"body":["Inter"],"label":["Inter"]}
+    }}
+  }
+</script>
+<style>
+  body { background-color: #0D0D0D; color: #e5e2e1; min-height: max(884px, 100dvh); }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .glass-nav { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+</style>
+</head>
+<body class="font-body selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HEADER PADRONIZADO — NÃO ALTERAR ESTRUTURA     -->
+<!-- ═══════════════════════════════════════════════ -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-16 bg-[#0D0D0D]/80 backdrop-blur-md border-b-2 border-zinc-800">
+  <span class="material-symbols-outlined text-[#00F0FF] cursor-pointer">menu</span>
+  <h1 class="text-2xl font-black text-[#00F0FF] tracking-tighter uppercase font-['Geist_Sans']">FRESH NEWS</h1>
+  <div class="flex items-center gap-3">
+    <span class="text-[10px] font-black text-[#00F0FF] bg-[#00F0FF]/10 px-2 py-1 border border-[#00F0FF]/30 font-mono">29/04</span>
+    <span class="material-symbols-outlined text-[#00F0FF] cursor-pointer">search</span>
+  </div>
+</header>
+<!-- ═══════════════════════════════════════════════ -->
+
+<main class="pt-24 pb-32 px-4 max-w-4xl mx-auto">
+<div class="mb-12 flex justify-between items-end">
+<div>
+<p class="text-[10px] uppercase tracking-[0.2em] text-outline mb-2">Preferências</p>
+<h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-on-surface">Preferências</h2>
+<div class="h-1 w-24 bg-primary-container mt-4"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-7 space-y-12">
+<section>
+<div class="flex items-baseline justify-between mb-6 border-b-2 border-outline-variant pb-2"><h3 class="text-xl font-bold uppercase tracking-tight">Conteúdo</h3><span class="text-[10px] text-primary-container font-bold tracking-widest uppercase">Ativo</span></div>
+<div class="space-y-4">
+<label class="group flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high cursor-pointer border-l-4 border-[#00F0FF] transition-all"><span class="text-lg font-black tracking-tighter uppercase">IA &amp; Redes Neurais</span><input checked="" class="w-6 h-6 border-2 border-outline bg-transparent text-primary-container focus:ring-0 rounded-none cursor-pointer" type="checkbox"/></label>
+<label class="group flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high cursor-pointer border-l-4 border-zinc-800 hover:border-[#00F0FF] transition-all"><span class="text-lg font-black tracking-tighter uppercase">Engenharia de Software</span><input checked="" class="w-6 h-6 border-2 border-outline bg-transparent text-primary-container focus:ring-0 rounded-none cursor-pointer" type="checkbox"/></label>
+<label class="group flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high cursor-pointer border-l-4 border-zinc-800 hover:border-[#00FF41] transition-all"><span class="text-lg font-black tracking-tighter uppercase">Cibersegurança</span><input class="w-6 h-6 border-2 border-outline bg-transparent text-primary-container focus:ring-0 rounded-none cursor-pointer" type="checkbox"/></label>
+<label class="group flex items-center justify-between p-4 bg-surface-container hover:bg-surface-container-high cursor-pointer border-l-4 border-zinc-800 hover:border-secondary-container transition-all"><span class="text-lg font-black tracking-tighter uppercase">Mercado &amp; Startups</span><input class="w-6 h-6 border-2 border-outline bg-transparent text-primary-container focus:ring-0 rounded-none cursor-pointer" type="checkbox"/></label>
+</div>
+</section>
+<section>
+<div class="flex items-baseline justify-between mb-6 border-b-2 border-outline-variant pb-2"><h3 class="text-xl font-bold uppercase tracking-tight">Frequência</h3></div>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-primary-container text-on-primary-container font-black uppercase text-sm py-4 tracking-tighter">Instantâneo</button>
+<button class="border-2 border-outline text-on-surface font-black uppercase text-sm py-4 tracking-tighter hover:bg-surface-container">Resumo Diário</button>
+</div>
+</section>
+</div>
+<div class="md:col-span-5 space-y-8">
+<div class="bg-surface-container p-6 relative overflow-hidden border-2 border-zinc-800">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary-container mb-6">Canais de Entrega</h4>
+<div class="space-y-6">
+<div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-outline">mail</span><span class="text-sm font-bold uppercase tracking-tight">E-mail</span></div><div class="relative inline-flex items-center cursor-pointer"><input checked="" class="sr-only peer" type="checkbox"/><div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div></div></div>
+<div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-outline">notifications</span><span class="text-sm font-bold uppercase tracking-tight">Push Mobile</span></div><div class="relative inline-flex items-center cursor-pointer"><input class="sr-only peer" type="checkbox"/><div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div></div></div>
+<div class="flex items-center justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-outline">terminal</span><span class="text-sm font-bold uppercase tracking-tight">Webhook</span></div><div class="relative inline-flex items-center cursor-pointer"><input class="sr-only peer" type="checkbox"/><div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div></div></div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container relative border-2 border-zinc-800 group overflow-hidden">
+<img class="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcinBUFvR1stxgEHEhlz2EEtXsGXLvWTA_-6JUrW9nZzwfyEjoaRRb9lISgZ4x3-HG0TAbyFgWgnNu0YNGS7eNI66IRoCZV0UCeSuPJlkk3IHfw3TiBgdPUYXXKFzWdMlAv0xp9bas2XiKyFKPXCg0UpM1vHkvh6vUYq-XzqTApKCjftBGHgCCE1NsHoFc8qJDDvJJUGMDG2i9_BYvi2gFF6-g7F2jBA0c-h7l7a-fOYRUbwWjJukxuqXoJV0ihORng5D0mJ9o2x0F"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4"><p class="text-[10px] font-black uppercase tracking-widest text-[#00F0FF] mb-1">Status</p><p class="text-lg font-black uppercase tracking-tighter leading-none">Perfil Validado</p></div>
+</div>
+</div>
+</div>
+<div class="mt-16 flex flex-col md:flex-row gap-4 items-center border-t-2 border-outline-variant pt-8">
+<button class="w-full md:w-auto px-12 py-4 bg-primary-container text-on-primary-container font-black uppercase tracking-widest hover:scale-[1.02] transition-transform">Salvar Alterações</button>
+<button class="w-full md:w-auto px-12 py-4 border-2 border-outline text-on-surface font-black uppercase tracking-widest hover:bg-surface-container transition-colors">Restaurar</button>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-2 bg-[#0D0D0D]/90 backdrop-blur-xl border-t-2 border-zinc-800">
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-colors" href="#"><span class="material-symbols-outlined">rss_feed</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Feed</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-colors" href="#"><span class="material-symbols-outlined">auto_stories</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Edições</span></a>
+<a class="flex flex-col items-center justify-center text-[#00F0FF] border-t-2 border-[#00F0FF] h-full w-full bg-zinc-900/30 transition-all" href="#"><span class="material-symbols-outlined">tune</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Preferências</span></a>
+<a class="flex flex-col items-center justify-center text-zinc-600 h-full w-full hover:bg-zinc-900/50 transition-colors" href="#"><span class="material-symbols-outlined">dashboard</span><span class="font-['Inter'] font-bold text-[10px] uppercase tracking-widest mt-1">Painel</span></a>
+</nav>
+</body></html>
