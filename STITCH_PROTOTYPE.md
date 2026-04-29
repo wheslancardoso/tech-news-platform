@@ -3,16 +3,16 @@
 Link do Projeto: [https://stitch.withgoogle.com/u/1/projects/17357458918698948902](https://stitch.withgoogle.com/u/1/projects/17357458918698948902)
 
 ## Status da Apresentação
-- **Tradução**: Todas as telas foram traduzidas para PT-BR.
-- **Navegação**: Unificada em todas as telas (Feed, Edições, Preferências, Painel).
-- **Design System**: Aplicado o 'Binary Broadsheet' (0px radius, glassmorphism, dark mode).
+- **Design Clean**: Conteúdo fictício reduzido para focar na estética visual (ideal para slides).
+- **Fluxo Numerado**: 8 telas organizadas de 01 a 08 simulando a jornada do usuário.
+- **Identidade**: 'Binary Broadsheet' reforçado (0px radius, glassmorphism).
 
-## Telas Atualizadas
-- Feed de Notícias
-- Dashboard Administrativo (Painel)
-- Arquivo de Edições
-- Artigo Detalhado
-- Home Desktop
-- Tela de Sucesso
-- Preferências do Usuário
-- Feed Musical
+## Fluxo de Telas (Apresentação)
+1. **01 - Landing Page (Desktop)**: Entrada principal e proposta de valor.
+2. **02 - Boas-vindas**: Confirmação de inscrição e recepção.
+3. **03 - Feed Principal**: Visualização geral das notícias curadas.
+4. **04 - Feed Temático**: Demonstração de nichos (ex: Música).
+5. **05 - Leitura de Artigo**: Layout de leitura imersiva.
+6. **06 - Arquivo**: Histórico de edições passadas.
+7. **07 - Preferências**: Personalização de temas e tópicos.
+8. **08 - Painel Admin**: Gestão da Master Edition e métricas.
