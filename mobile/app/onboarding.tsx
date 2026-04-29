@@ -7,34 +7,34 @@ import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
+const CYAN = "#00F0FF";
+const GREEN = "#00FF41";
+const RED = "#FF0000";
+
 const slides = [
     {
-        icon: (color: string) => <Newspaper size={40} color={color} />,
-        iconBg: "#eef2ff",
-        iconColor: "#6366f1",
-        title: "Bem-vindo ao\nTech News",
-        description: "Receba uma curadoria diária das notícias mais importantes do mundo da tecnologia.",
+        icon: (color: string) => <Newspaper size={40} color={color} strokeWidth={1.5} />,
+        iconColor: CYAN,
+        title: "FRESH\nNEWS",
+        description: "Curadoria diária das notícias mais importantes do mundo da tecnologia.",
     },
     {
-        icon: (color: string) => <Heart size={40} color={color} fill={color} />,
-        iconBg: "#fef2f2",
-        iconColor: "#ef4444",
-        title: "Salve seus\nFavoritos",
-        description: "Marque as edições mais interessantes com ❤️ e acesse quando quiser na aba Favoritos.",
+        icon: (color: string) => <Heart size={40} color={color} fill={color} strokeWidth={1.5} />,
+        iconColor: RED,
+        title: "SALVE SEUS\nFAVORITOS",
+        description: "Marque as edições mais interessantes e acesse quando quiser na aba Salvos.",
     },
     {
-        icon: (color: string) => <Moon size={40} color={color} />,
-        iconBg: "#f0f9ff",
-        iconColor: "#0ea5e9",
-        title: "Modo Escuro\nIncluído",
-        description: "Toque na logo TN no header para acessar as configurações e ativar o tema escuro.",
+        icon: (color: string) => <Moon size={40} color={color} strokeWidth={1.5} />,
+        iconColor: CYAN,
+        title: "DESIGN\nBRUTALISTA",
+        description: "Interface editorial de alto contraste. Informação densa, visual premium.",
     },
     {
-        icon: (color: string) => <Bell size={40} color={color} />,
-        iconBg: "#fffbeb",
-        iconColor: "#f59e0b",
-        title: "Fique por\nDentro",
-        description: "Receba notificações quando uma nova edição for publicada. Nunca perca uma novidade!",
+        icon: (color: string) => <Bell size={40} color={color} strokeWidth={1.5} />,
+        iconColor: GREEN,
+        title: "FIQUE POR\nDENTRO",
+        description: "Notificações quando uma nova edição for publicada. Nunca perca uma novidade.",
     },
 ];
 
@@ -57,12 +57,20 @@ export default function OnboardingScreen() {
         }
     };
 
+    const currentSlide = slides[currentIndex];
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }} edges={["top", "bottom"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#0D0D0D" }} edges={["top", "bottom"]}>
             {/* Skip button */}
             <View style={{ alignItems: "flex-end", paddingHorizontal: 20, paddingTop: 12 }}>
                 <TouchableOpacity onPress={completeOnboarding} style={{ padding: 8 }}>
-                    <Text style={{ fontSize: 14, color: "#94a3b8", fontWeight: "600" }}>Pular</Text>
+                    <Text style={{
+                        fontSize: 12,
+                        color: "#849495",
+                        fontWeight: "800",
+                        textTransform: "uppercase",
+                        letterSpacing: 1.5,
+                    }}>Pular</Text>
                 </TouchableOpacity>
             </View>
 
@@ -83,37 +91,34 @@ export default function OnboardingScreen() {
                         paddingHorizontal: 40,
                         paddingBottom: 60,
                     }}>
+                        {/* Sharp icon container */}
                         <View style={{
                             width: 100,
                             height: 100,
-                            borderRadius: 30,
-                            backgroundColor: item.iconBg,
+                            backgroundColor: "#1A1A1A",
                             alignItems: "center",
                             justifyContent: "center",
                             marginBottom: 40,
-                            shadowColor: item.iconColor,
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.2,
-                            shadowRadius: 12,
-                            elevation: 5,
+                            borderWidth: 2,
+                            borderColor: "#2A2A2A",
                         }}>
                             {item.icon(item.iconColor)}
                         </View>
                         <Text style={{
-                            fontSize: 32,
-                            fontWeight: "800",
-                            color: "#0f172a",
+                            fontSize: 36,
+                            fontWeight: "900",
+                            color: "#E5E2E1",
                             textAlign: "center",
-                            letterSpacing: -1,
-                            lineHeight: 40,
+                            letterSpacing: -1.5,
+                            lineHeight: 42,
                             marginBottom: 16,
                         }}>
                             {item.title}
                         </Text>
                         <Text style={{
-                            fontSize: 16,
+                            fontSize: 15,
                             lineHeight: 24,
-                            color: "#64748b",
+                            color: "#849495",
                             textAlign: "center",
                         }}>
                             {item.description}
@@ -124,7 +129,7 @@ export default function OnboardingScreen() {
 
             {/* Bottom */}
             <View style={{ paddingHorizontal: 24, paddingBottom: Platform.OS === "ios" ? 16 : 24 }}>
-                {/* Dots */}
+                {/* Sharp square dots */}
                 <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 24, gap: 8 }}>
                     {slides.map((_, i) => (
                         <View
@@ -132,36 +137,37 @@ export default function OnboardingScreen() {
                             style={{
                                 width: currentIndex === i ? 24 : 8,
                                 height: 8,
-                                borderRadius: 4,
-                                backgroundColor: currentIndex === i ? "#0f172a" : "#e2e8f0",
+                                borderRadius: 0,
+                                backgroundColor: currentIndex === i ? currentSlide.iconColor : "#1A1A1A",
                             }}
                         />
                     ))}
                 </View>
 
-                {/* Button */}
+                {/* Brutalist CTA Button */}
                 <TouchableOpacity
                     onPress={handleNext}
-                    activeOpacity={0.8}
+                    activeOpacity={0.85}
                     style={{
                         height: 56,
-                        backgroundColor: "#0f172a",
-                        borderRadius: 16,
+                        backgroundColor: currentSlide.iconColor,
+                        borderRadius: 0,
                         alignItems: "center",
                         justifyContent: "center",
                         flexDirection: "row",
                         gap: 8,
-                        shadowColor: "#0f172a",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 8,
-                        elevation: 5,
                     }}
                 >
-                    <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700" }}>
+                    <Text style={{
+                        color: "#0D0D0D",
+                        fontSize: 15,
+                        fontWeight: "900",
+                        textTransform: "uppercase",
+                        letterSpacing: 2,
+                    }}>
                         {currentIndex === slides.length - 1 ? "Começar" : "Próximo"}
                     </Text>
-                    <ArrowRight size={20} color="#ffffff" />
+                    <ArrowRight size={18} color="#0D0D0D" strokeWidth={2} />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

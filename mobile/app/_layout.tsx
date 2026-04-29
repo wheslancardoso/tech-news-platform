@@ -32,8 +32,8 @@ function OnboardingGate({ children }: { children: React.ReactNode }) {
 
     if (!isReady) {
         return (
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#fafafa" }}>
-                <ActivityIndicator size="large" color="#0f172a" />
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#0D0D0D" }}>
+                <ActivityIndicator size="large" color="#00F0FF" />
             </View>
         );
     }
