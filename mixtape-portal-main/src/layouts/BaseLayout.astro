@@ -1,0 +1,154 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  accentColor?: string;
+  borderColor?: string;
+  pageBg?: string;
+}
+
+const {
+  title = "MIXTAPE252",
+  description = "Digital Zine & Creative Collective",
+  image,
+  type = "website",
+  accentColor = "#ff4d00",
+  borderColor = "#111111",
+  pageBg = "#F2E8D5",
+} = Astro.props;
+
+const ogImageUrl = image
+  ? new URL(image, Astro.site || Astro.url).toString()
+  : null;
+---
+
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"
+      rel="stylesheet"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <style
+      define:vars={{
+        themeAccent: accentColor,
+        themeBorder: borderColor,
+        themeBg: pageBg,
+      }}
+    >
+      :root {
+        --theme-accent: var(--themeAccent);
+        --theme-border: var(--themeBorder);
+        --theme-bg: var(--themeBg);
+      }
+    </style>
+  </head>
+
+  <body
+    class="text-ink font-body overflow-x-hidden relative min-h-screen flex flex-col transition-colors duration-300"
+    style="background-color: var(--theme-bg);"
+  >
+    {/* 1. TEXTURA DE PAPEL (Fundo) */}
+    <div class="zine-texture fixed inset-0 z-[40] pointer-events-none"></div>
+
+    {/* 2. SUJEIRA / GRUNGE (Meio) */}
+    <div class="grunge-overlay fixed inset-0 z-[50] pointer-events-none"></div>
+
+    {/* 3. RUÍDO DIGITAL (Topo) */}
+    <div class="noise-overlay fixed inset-0 z-[60] pointer-events-none"></div>
+
+    <Header />
+
+    <main class="flex-grow pt-24 relative z-10">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* MENU MOBILE */}
+    <div
+      id="mobile-menu-overlay"
+      class="fixed inset-0 z-[70] bg-black text-white hidden flex-col items-center justify-center"
+    >
+      <button
+        id="mobile-menu-close"
+        class="absolute top-8 right-8 text-white transition-colors cursor-pointer hover:text-[var(--theme-accent)]"
+      >
+        <span class="material-symbols-outlined text-5xl">close</span>
+      </button>
+
+      <ul class="flex flex-col gap-8 text-center">
+        {
+          ["Drops", "Feed", "Manifesto"].map((item) => (
+            <li>
+              <a
+                href={
+                  item === "Feed"
+                    ? "/posts"
+                    : item === "Manifesto"
+                      ? "/sobre"
+                      : "/edicoes"
+                }
+                class="font-headline font-bold text-6xl uppercase transition-colors hover:text-[var(--theme-accent)]"
+              >
+                {item}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a
+            href="/backstage"
+            class="font-headline font-bold text-6xl uppercase transition-colors text-white/50 hover:text-[var(--theme-accent)]"
+          >
+            [ Backstage ]
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      const trigger = document.getElementById("mobile-menu-trigger");
+      const close = document.getElementById("mobile-menu-close");
+      const overlay = document.getElementById("mobile-menu-overlay");
+      const body = document.body;
+
+      if (trigger && close && overlay) {
+        trigger.addEventListener("click", () => {
+          overlay.classList.remove("hidden");
+          overlay.classList.add("flex");
+          body.classList.add("overflow-hidden");
+        });
+
+        close.addEventListener("click", () => {
+          overlay.classList.add("hidden");
+          overlay.classList.remove("flex");
+          body.classList.remove("overflow-hidden");
+        });
+
+        overlay.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            overlay.classList.add("hidden");
+            overlay.classList.remove("flex");
+            body.classList.remove("overflow-hidden");
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

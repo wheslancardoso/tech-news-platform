@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingDevMenu } from "@/components/dev/FloatingDevMenu";
+import { ChameleonProvider } from "@/components/chameleon-provider";
+import { MobileNav } from "@/components/mobile-nav";
 import { cookies } from "next/headers";
 
 const geistSans = Geist({
@@ -34,7 +36,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased noise-overlay`}
       >
-        {children}
+        <ChameleonProvider>
+          {children}
+          <MobileNav />
+        </ChameleonProvider>
         {isAdmin && <FloatingDevMenu />}
         <Toaster />
       </body>

@@ -1,107 +1,101 @@
 import { createClient } from '@/lib/supabase/server'
-import { NewsCard } from '@/components/news-card'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { ArrowLeft } from 'lucide-react'
+import { SharedHeader } from '@/components/shared-header'
+import { SharedFooter } from '@/components/shared-footer'
+import { ArchiveFilters } from '@/components/archive-filters'
+import { Layers, Tag, Clock } from 'lucide-react'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 export const revalidate = 0
 
 export default async function ArchiveIndexPage() {
-    const supabase = await createClient()
-    const cookieStore = await cookies()
-    const isAdmin = cookieStore.has('admin_session')
+  const supabase = await createClient()
+  const cookieStore = await cookies()
+  const isAdmin = cookieStore.has('admin_session')
 
-    let query = supabase
-        .from('newsletters')
-        .select('*')
-        .order('edition_number', { ascending: false })
-        .limit(100)
+  let query = supabase
+    .from('newsletters')
+    .select('*')
+    .order('edition_number', { ascending: false })
+    .limit(200)
 
-    if (!isAdmin) {
-        query = query.eq('status', 'published')
-    }
+  if (!isAdmin) {
+    query = query.eq('status', 'published')
+  }
 
-    const { data: newsletters } = await query
+  const { data: newsletters } = await query
 
-    return (
-        <div className="min-h-screen bg-background font-sans flex flex-col">
-            {/* Header */}
-            <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-                <div className="container mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="w-7 h-7 bg-[hsl(186,100%,50%)] flex items-center justify-center">
-                            <span className="text-black font-black text-[10px] tracking-tighter">FN</span>
-                        </div>
-                        <span className="font-black text-lg tracking-[-0.06em] uppercase text-foreground">Fresh News</span>
-                    </Link>
-                    <nav className="flex items-center gap-6 text-xs font-medium tracking-wider uppercase text-muted-foreground">
-                        <Link href="/archive" className="hidden md:block text-foreground font-bold">Edições</Link>
-                        <Link href="/about" className="hidden md:block hover:text-foreground transition-colors">Sobre</Link>
-                        <Link
-                            href="/#subscribe"
-                            className="px-4 py-1.5 bg-[hsl(186,100%,50%)] text-black font-bold text-[11px] tracking-wider hover:bg-[hsl(186,100%,60%)] transition-colors"
-                        >
-                            INSCREVER-SE
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+  // Stats
+  const totalEditions = newsletters?.length || 0
+  const categories = new Set(newsletters?.map(n => n.category || 'tech'))
+  const lastUpdate = newsletters?.[0]?.created_at
+    ? format(new Date(newsletters[0].created_at), "dd.MM.yy", { locale: ptBR })
+    : '—'
 
-            <main className="flex-grow">
-                <section className="py-12 md:py-20 container mx-auto px-4 md:px-6">
-                    {/* Back link */}
-                    <Link href="/" className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors mb-8 tracking-wider uppercase group">
-                        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-                        VOLTAR
-                    </Link>
+  return (
+    <div className="min-h-screen bg-background font-sans flex flex-col has-bottom-nav">
+      <SharedHeader isAdmin={isAdmin} />
 
-                    <div className="mb-10">
-                        <span className="text-[10px] font-mono text-[hsl(186,100%,50%)] tracking-widest uppercase block mb-2">// ARQUIVO</span>
-                        <h1 className="text-2xl md:text-4xl font-black tracking-[-0.03em] text-foreground uppercase">Todas as Edições</h1>
-                        <p className="text-muted-foreground text-sm mt-2 font-light">Explore o histórico completo do Fresh News.</p>
-                    </div>
+      <main className="flex-grow">
+        <section className="py-10 md:py-16 container mx-auto px-4 md:px-6">
 
-                    {!newsletters || newsletters.length === 0 ? (
-                        <div className="text-center py-24 border border-dashed border-border bg-card">
-                            <p className="text-muted-foreground font-mono text-sm">// SEM SINAL</p>
-                            <p className="text-xs text-muted-foreground/60 mt-2">Nenhuma edição encontrada.</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[2px] bg-border">
-                            {newsletters.map((news, index) => {
-                                const demoCategories = ['tech', 'ia', 'seguranca', 'dev', 'gearhead', 'eletronica'];
-                                return (
-                                    <NewsCard
-                                        key={news.id}
-                                        id={news.id}
-                                        edition={news.edition_number}
-                                        title={news.title}
-                                        date={news.created_at}
-                                        intro={news.summary_intro}
-                                        status={news.status}
-                                        isAdmin={isAdmin}
-                                        category={news.category || demoCategories[index % demoCategories.length]}
-                                        themeConfig={news.theme_config}
-                                        coverUrl={news.cover_url}
-                                    />
-                                )
-                            })}
-                        </div>
-                    )}
-                </section>
-            </main>
+          {/* ═══ HERO ═══ */}
+          <div className="mb-8">
+            <span className="text-[10px] font-mono text-[hsl(var(--primary))] tracking-widest uppercase block mb-2">
+              // ARQUIVO
+            </span>
+            <h1 className="text-3xl md:text-5xl font-black tracking-[-0.04em] text-foreground uppercase leading-[0.95] mb-3">
+              Todas as<br/>Transmissões
+            </h1>
+            <p className="text-muted-foreground text-sm font-light max-w-lg">
+              Explore o histórico completo do Fresh News. Filtre por categoria, busque por tema ou navegue pelas edições.
+            </p>
+          </div>
 
-            {/* Footer */}
-            <footer className="border-t-2 border-border py-8 bg-background">
-                <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-muted-foreground/50 font-mono tracking-wider">
-                    <p>© 2025 FRESH NEWS. TODOS OS DIREITOS RESERVADOS.</p>
-                    <div className="flex gap-6 mt-3 md:mt-0">
-                        <span className="cursor-pointer hover:text-foreground transition-colors">PRIVACIDADE</span>
-                        <span className="cursor-pointer hover:text-foreground transition-colors">TERMOS</span>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    )
+          {/* ═══ STATS STRIP ═══ */}
+          <div className="grid grid-cols-3 gap-[2px] bg-border mb-8">
+            <div className="bg-card p-4 flex items-center gap-3">
+              <div className="w-8 h-8 border border-[hsl(var(--primary))]/30 bg-[hsl(var(--primary))]/10 flex items-center justify-center">
+                <Layers className="w-4 h-4 text-[hsl(var(--primary))]" />
+              </div>
+              <div>
+                <p className="text-lg md:text-2xl font-black text-foreground">{totalEditions}</p>
+                <p className="text-[9px] font-mono text-muted-foreground/50 tracking-widest uppercase">EDIÇÕES</p>
+              </div>
+            </div>
+
+            <div className="bg-card p-4 flex items-center gap-3">
+              <div className="w-8 h-8 border border-[hsl(var(--primary))]/30 bg-[hsl(var(--primary))]/10 flex items-center justify-center">
+                <Tag className="w-4 h-4 text-[hsl(var(--primary))]" />
+              </div>
+              <div>
+                <p className="text-lg md:text-2xl font-black text-foreground">{categories.size}</p>
+                <p className="text-[9px] font-mono text-muted-foreground/50 tracking-widest uppercase">CATEGORIAS</p>
+              </div>
+            </div>
+
+            <div className="bg-card p-4 flex items-center gap-3">
+              <div className="w-8 h-8 border border-[hsl(var(--primary))]/30 bg-[hsl(var(--primary))]/10 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-[hsl(var(--primary))]" />
+              </div>
+              <div>
+                <p className="text-lg md:text-2xl font-black text-foreground">{lastUpdate}</p>
+                <p className="text-[9px] font-mono text-muted-foreground/50 tracking-widest uppercase">ÚLTIMA ATT</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ EDITORIAL DIVIDER ═══ */}
+          <div className="editorial-rule mb-8" />
+
+          {/* ═══ FILTERS + GRID ═══ */}
+          <ArchiveFilters newsletters={newsletters || []} isAdmin={isAdmin} />
+
+        </section>
+      </main>
+
+      <SharedFooter />
+    </div>
+  )
 }

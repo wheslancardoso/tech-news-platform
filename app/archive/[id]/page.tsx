@@ -2,9 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { getThemeConfig } from '@/lib/chameleon-theme'
+import { SharedHeader } from '@/components/shared-header'
+import { SharedFooter } from '@/components/shared-footer'
+import { ChameleonArticleTrigger } from '@/components/chameleon-article-trigger'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -51,6 +54,8 @@ export async function generateMetadata({ params }: ArchivePageProps): Promise<Me
 export default async function ArchivePage({ params }: ArchivePageProps) {
   const { id } = await params
   const supabase = await createClient()
+  const cookieStore = await cookies()
+  const isAdmin = cookieStore.has('admin_session')
 
   const { data: newsletter, error } = await supabase
     .from('newsletters')
@@ -63,7 +68,8 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
   }
 
   // Theme mutation based on category
-  const theme = getThemeConfig(newsletter.category, newsletter.theme_config)
+  const category = newsletter.category || 'tech'
+  const theme = getThemeConfig(category, newsletter.theme_config)
 
   // Extrair apenas o miolo do HTML
   let safeHtml = newsletter.html_content || '';
@@ -73,40 +79,14 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background font-sans flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-[hsl(186,100%,50%)] flex items-center justify-center">
-              <span className="text-black font-black text-[10px] tracking-tighter">FN</span>
-            </div>
-            <span className="font-black text-lg tracking-[-0.06em] uppercase text-foreground">Fresh News</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium tracking-wider uppercase text-muted-foreground">
-            <Link href="/#archive" className="hover:text-foreground transition-colors">Edições</Link>
-            <Link href="/about" className="hover:text-foreground transition-colors">Sobre</Link>
-            <Link
-              href="/#subscribe"
-              className="px-4 py-1.5 text-black font-bold text-[11px] tracking-wider transition-colors"
-              style={{ background: theme.accent }}
-            >
-              INSCREVER-SE
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background font-sans flex flex-col has-bottom-nav">
+      {/* Trigger the Chameleon theme change for this article's category */}
+      <ChameleonArticleTrigger category={category} />
+
+      <SharedHeader isAdmin={isAdmin} />
 
       <main className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-10 max-w-3xl">
-          {/* Back link */}
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors mb-8 tracking-wider uppercase group"
-          >
-            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-            VOLTAR
-          </Link>
 
           <article className="bg-card border border-border overflow-hidden">
             {/* ═══ NICHE HEADER — Mutates per category ═══ */}
@@ -198,7 +178,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                   className="px-8 py-3 font-black text-xs tracking-widest uppercase transition-colors"
                   style={{
                     background: theme.accent,
-                    color: theme.accent === '#FFFFFF' ? '#000' : '#000',
+                    color: '#000',
                   }}
                 >
                   INSCREVER-SE GRATUITAMENTE
@@ -209,16 +189,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t-2 border-border py-8 bg-background">
-        <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center text-[10px] text-muted-foreground/50 font-mono tracking-wider">
-          <p>© 2025 FRESH NEWS. TODOS OS DIREITOS RESERVADOS.</p>
-          <div className="flex gap-6 mt-3 md:mt-0">
-            <span className="cursor-pointer hover:text-foreground transition-colors">PRIVACIDADE</span>
-            <span className="cursor-pointer hover:text-foreground transition-colors">TERMOS</span>
-          </div>
-        </div>
-      </footer>
+      <SharedFooter />
     </div>
   )
 }

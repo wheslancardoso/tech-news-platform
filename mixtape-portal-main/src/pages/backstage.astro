@@ -1,0 +1,348 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+
+const posts = await sanityClient.fetch(
+  `*[_type == "post"] | order(publishedAt desc){title, slug, publishedAt, mainImage}`
+);
+---
+
+<BaseLayout title="BACKSTAGE // ASSETS // MIXTAPE252">
+  
+  <main class="min-h-screen bg-ink text-paper py-12 relative">
+    
+    <!-- Header Terminal Style -->
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div class="border-4 border-paper p-6 mb-8 bg-black/50">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="font-mono text-safety-orange text-sm">$</span>
+          <h1 class="text-4xl md:text-6xl font-headline uppercase text-paper">
+            BACKSTAGE
+          </h1>
+        </div>
+        <p class="font-mono text-sm text-paper/70 uppercase tracking-widest">
+          // GERADOR DE ARTES // CLIENT-SIDE RENDERER
+        </p>
+      </div>
+
+      <!-- MÁQUINA DE CRIAÇÃO (IA) -->
+      <div class="border-4 border-safety-orange p-6 mb-12 bg-black/80 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 bg-safety-orange text-ink font-mono text-xs px-2 py-1 uppercase font-bold">
+          BETA v0.9
+        </div>
+        
+        <h2 class="font-headline text-3xl text-safety-orange uppercase mb-6 flex items-center gap-2">
+          <span class="animate-pulse">⚡</span> MÁQUINA DE CRIAÇÃO
+        </h2>
+
+        <div class="flex flex-col md:flex-row gap-4">
+          <input 
+            type="text" 
+            id="topic-input"
+            placeholder="Ex: O impacto do 808s & Heartbreak..." 
+            class="flex-1 bg-ink border-2 border-paper text-paper p-4 font-mono text-sm focus:outline-none focus:border-safety-orange placeholder:text-paper/30 uppercase"
+          />
+          
+          <button 
+            id="btn-create-specific"
+            class="bg-paper text-ink px-6 py-4 font-headline uppercase text-sm border-2 border-paper hover:bg-safety-orange hover:border-safety-orange transition-all whitespace-nowrap"
+          >
+            CRIAR PAUTA
+          </button>
+          
+          <button 
+            id="btn-create-random"
+            class="bg-transparent text-safety-orange px-6 py-4 font-headline uppercase text-sm border-2 border-safety-orange hover:bg-safety-orange hover:text-ink transition-all whitespace-nowrap"
+          >
+            SORTEAR TEMA CULT 🎲
+          </button>
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="generation-feedback" class="mt-4 font-mono text-xs hidden">
+          <p class="text-paper/70 animate-pulse">>>> CONECTANDO AO ORÁCULO (OPENAI)... AGUARDE...</p>
+        </div>
+      </div>
+
+      <!-- Grid de Posts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {posts.map((post: any) => (
+          <article class="border-4 border-paper bg-black/30 p-4 hover:bg-black/50 transition-colors">
+            
+            <!-- Miniatura -->
+            <div class="aspect-square w-full mb-4 border-2 border-paper overflow-hidden bg-gray-900">
+              {post.mainImage ? (
+                <img 
+                  src={urlFor(post.mainImage).width(300).height(300).url()} 
+                  alt={post.title}
+                  class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all"
+                />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center font-mono text-xs text-paper/50">
+                  NO IMAGE
+                </div>
+              )}
+            </div>
+
+            <!-- Info -->
+            <div class="mb-4 space-y-2">
+              <h3 class="font-headline text-xl uppercase text-paper leading-tight line-clamp-2">
+                {post.title}
+              </h3>
+              <p class="font-mono text-xs text-paper/60">
+                {new Date(post.publishedAt).toLocaleDateString('pt-BR')}
+              </p>
+              <p class="font-mono text-xs text-paper/40 uppercase">
+                SLUG: {post.slug.current}
+              </p>
+            </div>
+
+            <!-- Ações -->
+            <div class="flex flex-col gap-2">
+              <button 
+                data-slug={post.slug.current}
+                data-title={post.title}
+                data-date={new Date(post.publishedAt).toLocaleDateString('pt-BR')}
+                data-image={post.mainImage ? urlFor(post.mainImage).width(1080).height(1080).url() : ''}
+                class="generate-btn w-full inline-flex items-center justify-center gap-2 bg-safety-orange text-ink px-4 py-3 font-headline uppercase text-sm border-2 border-paper hover:bg-paper hover:text-safety-orange transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+              >
+                <span>GERAR CARD [JPG]</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+              
+              <a 
+                href={`/post/${post.slug.current}`}
+                class="inline-flex items-center justify-center gap-2 bg-transparent text-paper px-4 py-2 font-mono text-xs uppercase border border-paper hover:bg-paper hover:text-ink transition-all"
+              >
+                VER POST →
+              </a>
+            </div>
+
+          </article>
+        ))}
+      </div>
+
+      {posts.length === 0 && (
+        <div class="border-4 border-dashed border-paper/50 p-12 text-center">
+          <p class="font-mono text-paper/50 uppercase">
+            // NO POSTS FOUND // SYSTEM EMPTY
+          </p>
+        </div>
+      )}
+
+      <!-- Footer Info -->
+      <div class="mt-12 border-t-4 border-paper pt-8">
+        <div class="font-mono text-xs text-paper/60 space-y-2">
+          <p class="uppercase">// INSTRUÇÕES</p>
+          <ul class="list-disc pl-6 space-y-1">
+            <li>Clique em "GERAR CARD [PNG]" para baixar a imagem</li>
+            <li>Processamento feito 100% no navegador (Client-Side)</li>
+            <li>Alta fidelidade com texturas e fontes</li>
+            <li>Formato: 1080x1080px JPG (Otimizado)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- HIDDEN TEMPLATE FOR GENERATION -->
+  <div class="fixed top-0 left-0 pointer-events-none opacity-0 overflow-hidden" style="z-index: -9999;">
+    <div id="og-card-template" class="w-[1080px] h-[1080px] bg-[#f4f1ea] relative flex flex-col justify-between overflow-hidden">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        </style>
+        
+        <!-- Background Image (VIBRANTE) -->
+        <div class="absolute inset-0 z-0">
+            <img id="template-image" src="" crossorigin="anonymous" class="w-full h-full object-cover contrast-125 brightness-90" />
+        </div>
+
+        <!-- Noise Overlay (TEXTURE) -->
+        <div class="absolute inset-0 z-10 opacity-60 mix-blend-overlay" style="background-image: url('/overlay.png'); background-size: cover;"></div>
+
+        <!-- Gradient Overlay (READABILITY) -->
+        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
+
+        <!-- Content Wrapper -->
+        <div class="relative z-20 w-full h-full flex flex-col justify-between p-0">
+            
+            <!-- Top Badge (STICKER) -->
+            <div class="absolute top-8 right-8 transform rotate-2">
+                <div class="bg-ink text-paper px-8 py-6 shadow-[-8px_8px_0px_0px_rgba(255,255,255,1)]">
+                    <span id="template-badge" class="font-headline text-6xl uppercase leading-none block whitespace-nowrap">
+                        <span class="text-white">MIXTAPE</span><span class="text-safety-orange">252</span>
+                    </span>
+                    <span id="template-date" class="font-mono text-xl uppercase tracking-widest block mt-2 text-center bg-white text-ink">DATA</span>
+                </div>
+            </div>
+
+            <!-- Spacer -->
+            <div></div>
+
+            <!-- Bottom Content -->
+            <div class="flex flex-col gap-8 w-full">
+                <!-- Title -->
+                <div class="w-full px-12 pb-4">
+                    <h1 id="template-title" class="font-headline text-7xl uppercase leading-[0.9] text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.9)] line-clamp-3 text-balance text-left">
+                        TÍTULO DO POST
+                    </h1>
+                </div>
+                
+                <!-- Footer -->
+                <div class="w-full border-t-4 border-white pt-6 flex justify-between items-center bg-black/20 p-4 backdrop-blur-sm">
+                    <span class="font-mono text-2xl text-white uppercase tracking-widest font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">WWW.MIXTAPE252.COM</span>
+                    <span class="font-mono text-2xl text-white uppercase tracking-widest font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">DIGITAL ZINE</span>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    import { toJpeg } from 'html-to-image';
+    import { saveAs } from 'file-saver';
+
+    const buttons = document.querySelectorAll('.generate-btn');
+    const template = document.getElementById('og-card-template');
+    const templateImage = document.getElementById('template-image') as HTMLImageElement;
+    const templateTitle = document.getElementById('template-title');
+    const templateDate = document.getElementById('template-date');
+    const templateBadge = document.getElementById('template-badge');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const slug = btn.getAttribute('data-slug');
+        const title = btn.getAttribute('data-title');
+        const date = btn.getAttribute('data-date');
+        const imageUrl = btn.getAttribute('data-image');
+
+        if (!template || !templateImage || !templateTitle || !templateDate || !templateBadge) return;
+
+        // 1. UI Feedback Inicial
+        const originalText = btn.querySelector('span')!.innerText;
+        const setBtnText = (text: string) => { btn.querySelector('span')!.innerText = text; };
+        
+        setBtnText("CARREGANDO ASSETS... (0%)");
+        (btn as HTMLButtonElement).disabled = true;
+
+        try {
+            // 2. INJETAR DADOS
+            templateImage.src = imageUrl || '';
+            templateTitle.innerText = title || 'SEM TÍTULO';
+            templateDate.innerText = date || 'DATA';
+            templateBadge.innerHTML = '<span class="text-white">MIXTAPE</span><span class="text-safety-orange">252</span>';
+
+            // 3. CARREGAMENTO AGRESSIVO DE FONTES
+            // Força o browser a baixar as fontes se ainda não estiverem lá
+            document.fonts.load('1em Anton');
+            document.fonts.load('1em Space Mono');
+
+            // Loop de Verificação (Polling) - Max 4 segundos
+            let attempts = 0;
+            const maxAttempts = 8; // 8 * 500ms = 4s
+            
+            while (attempts < maxAttempts) {
+                const antonReady = document.fonts.check('1em Anton');
+                const monoReady = document.fonts.check('1em Space Mono');
+                
+                if (antonReady && monoReady) {
+                    break;
+                }
+                
+                attempts++;
+                setBtnText(`CARREGANDO ASSETS... (${Math.round((attempts / maxAttempts) * 100)}%)`);
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            // 4. CARREGAR IMAGEM PRINCIPAL
+            if (!templateImage.complete) {
+                await new Promise((resolve) => {
+                    templateImage.onload = resolve;
+                    templateImage.onerror = resolve;
+                });
+            }
+
+            // 5. DELAY NUCLEAR (Safety Buffer)
+            // 2 segundos fixos para garantir que o layout estabilize
+            setBtnText("RENDERIZANDO...");
+            await new Promise(r => setTimeout(r, 2000));
+
+            // 6. GERAÇÃO
+            const dataUrl = await toJpeg(template, {
+                quality: 0.9,
+                pixelRatio: 1,
+                width: 1080,
+                height: 1080
+            });
+
+            // 7. SALVAR
+            saveAs(dataUrl, `mixtape-${slug}.jpg`);
+
+        } catch (error) {
+            console.error('Erro fatal na geração:', error);
+            alert('Erro ao gerar imagem. Tente novamente.');
+        } finally {
+            setBtnText(originalText);
+            (btn as HTMLButtonElement).disabled = false;
+        }
+      });
+    });
+  </script>
+
+  <script>
+    // --- LÓGICA DO GERADOR DE PAUTAS ---
+    const topicInput = document.getElementById('topic-input') as HTMLInputElement;
+    const btnSpecific = document.getElementById('btn-create-specific') as HTMLButtonElement;
+    const btnRandom = document.getElementById('btn-create-random') as HTMLButtonElement;
+    const feedback = document.getElementById('generation-feedback');
+
+    async function handleGeneration(mode: 'specific' | 'random') {
+        const topic = topicInput?.value;
+        
+        if (mode === 'specific' && !topic) {
+            alert('DIGITE UM TÓPICO!');
+            return;
+        }
+
+        // UI Loading
+        if (feedback) feedback.classList.remove('hidden');
+        if (btnSpecific) btnSpecific.disabled = true;
+        if (btnRandom) btnRandom.disabled = true;
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic, mode })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(`SUCESSO: "${data.title}" foi adicionado à Fila!`);
+                if (topicInput) topicInput.value = ''; // Limpa
+            } else {
+                alert(`ERRO: ${data.error || 'Falha desconhecida'}`);
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert('ERRO DE CONEXÃO.');
+        } finally {
+            // UI Reset
+            if (feedback) feedback.classList.add('hidden');
+            if (btnSpecific) btnSpecific.disabled = false;
+            if (btnRandom) btnRandom.disabled = false;
+        }
+    }
+
+    if (btnSpecific) btnSpecific.addEventListener('click', () => handleGeneration('specific'));
+    if (btnRandom) btnRandom.addEventListener('click', () => handleGeneration('random'));
+  </script>
+</BaseLayout>
+

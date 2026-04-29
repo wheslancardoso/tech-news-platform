@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #F2E8D5;
+  --color-ink: #111111;
+  --color-safety-orange: #ff4d00;
+
+  --font-headline: "Anton", "Oswald", sans-serif;
+  --font-body: "Space Mono", monospace;
+
+  --shadow-hard: 6px 6px 0px 0px #111111;
+  --shadow-hard-sm: 3px 3px 0px 0px #111111;
+  --shadow-hard-lg: 10px 10px 0px 0px #111111;
+}
+
+@layer base {
+  :root {
+    /* ========================================= */
+    /* 🎛️ PAINEL DE CONTROLE DE EFEITOS (FX)    */
+    /* ========================================= */
+
+    /* 1. RUÍDO DIGITAL (Noise/Grain) - Camada Superior */
+    /* Opacidade: 0.15 a 0.20 para visibilidade clara */
+    --fx-noise-opacity: 0.08;
+
+    /* 2. SUJEIRA / RISCOS (Grunge Overlay) - Camada Intermediária */
+    --fx-grunge-url: url("/grunge-overlay.jpg");
+    --fx-grunge-opacity: 0.12;
+    /* Ajuste a força da sujeira aqui */
+
+    /* 3. PAPEL AMASSADO (Zine Texture) - Camada Base */
+    --fx-paper-url: url("/zine-bg.jpg");
+    /* Se quiser desligar o papel e deixar só a sujeira, coloque 0 aqui */
+    --fx-paper-opacity: 0.4;
+  }
+
+  body {
+    background-color: var(--theme-bg, var(--color-paper));
+    color: var(--color-ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 768px) {
+    :root {
+      --fx-noise-opacity: 0.05;
+      --fx-grunge-opacity: 0.08;
+    }
+  }
+}
+
+/* --- CAMADAS DE EFEITO (FX LAYERS) --- */
+/* Nota: Removemos 'background-attachment: fixed' para corrigir bugs no mobile */
+
+/* Camada 1: Papel (Fundo) */
+.zine-texture {
+  /* Posicionamento gerido pelo Layout (fixed inset-0) */
+  background-image: var(--fx-paper-url);
+  opacity: var(--fx-paper-opacity);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+/* Camada 2: Sujeira/Grunge (Meio) */
+.grunge-overlay {
+  background-image: var(--fx-grunge-url);
+  opacity: var(--fx-grunge-opacity);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  mix-blend-mode: overlay;
+  filter: contrast(120%);
+}
+
+/* Camada 3: Ruído (Topo) */
+.noise-overlay {
+  /* SVG Base64 de Grão Grosso (0.65 frequency) */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+
+  opacity: var(--fx-noise-opacity);
+  /* Sem blend mode para garantir que o grão cinza apareça sempre */
+}
+
+/* Utilitários */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.btn-press:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0px 0px #111111;
+}
