@@ -1,75 +1,36 @@
-# 📐 Sistema de Design: Tech News Platform
+# Design System: Binary Broadsheet
 
-Este documento define a linguagem visual, comportamentos e tokens de estilo para o painel administrativo e interface de usuário da plataforma Tech News. O objetivo é garantir uma experiência **Premium**, **Moderna** e **Funcional**.
+Este documento define o padrão visual do projeto **Fresh News**, focado em uma estética "Neo-Broadsheet" que mistura jornalismo clássico com brutalismo digital.
 
-## 🎨 Paleta de Cores (Tokens CSS)
+## 1. Conceito Visual (North Star)
+- **Autoridade Editorial**: Rejeita designs suaves e arredondados em favor de estruturas rígidas e informativas.
+- **Neo-Broadsheet**: Simula a densidade e o peso de um jornal impresso tradicional, mas com a energia do ciberespaço.
 
-As cores devem ser implementadas como variáveis HSL no `:root` do `globals.css`.
+## 2. Cores e Tons
+- **Fundo (Base)**: `#0D0D0D` (Preto Absoluto/Obsidiana).
+- **Contêineres**: `#111111` (Stacking Tonal para profundidade).
+- **Sotaques (Destaques)**:
+  - **Ciano (#00F0FF)**: Software / IA / Primário.
+  - **Vermelho (#FF0000)**: Hardware / Breaking News.
+  - **Verde Matrix (#00FF41)**: Cibersegurança / Coding.
 
-### Cores Base
-- **Background**: `hsl(210 20% 98%)` (Gelo Suave) - Evitar branco puro para reduzir fadiga visual.
-- **Foreground**: `hsl(224 71% 4%)` (Azul Profundo quase Preto) para textos principais.
-- **Surface**: `hsl(0 0% 100%)` (Branco Puro) para Cards e modais.
+## 3. Tipografia
+- **Títulos (Headlines)**: `Geist Sans 900` ou `Space Grotesk`. Peso máximo para impacto visual.
+- **Corpo (Body)**: `Inter`. Focado em legibilidade máxima contra fundos escuros.
+- **Espaçamento**: Letter-spacing reduzido em títulos (-0.02em) para densidade "tinta no papel".
 
-### Identidade Tech (News Blue)
-- **Primary**: `hsl(221 83% 53%)` (Azul Vibrante) - Usado para botões de ação principal, links ativos e status importantes.
-- **Primary Foreground**: `hsl(210 40% 98%)` (Texto claro sobre azul).
+## 4. Layout e Formas
+- **Raio de Borda (Border Radius)**: **0px em tudo**. Sem exceções.
+- **Regra Editorial**: Uso de bordas sólidas de 2px (`outline`) para separar grandes módulos arquiteturais, em vez de sombras suaves.
+- **Navegação**: Efeito Glassmorphism com `backdrop-blur` elevado (20px) e transparência sutil no fundo.
 
-### Estados de Sistema
-- **Success**: `hsl(142 76% 36%)` (Verde Esmeralda) - Aprovação de posts.
-- **Warning**: `hsl(38 92% 50%)` (Âmbar) - Status pendente.
-- **Destructive**: `hsl(0 84% 60%)` (Vermelho Coral) - Rejeição de posts.
-
----
-
-## ✍️ Tipografia
-
-| Estilo | Fonte | Tamanho | Peso | Uso |
-|---|---|---|---|---|
-| **Display** | Geist Sans / Inter | 32px | 800 (Bold) | Títulos de Dashboard |
-| **Heading** | Geist Sans / Inter | 20px | 600 (Semi-bold) | Títulos de Cards |
-| **Body** | Geist Sans / Inter | 14px | 400 (Regular) | Descrições e resumos |
-| **Mono** | Geist Mono | 12px | 500 (Medium) | Timestamps, Versão, Snippets |
-
-- **Line Height**: `1.5` para corpos de texto para garantir legibilidade.
-- **Tracking**: `-0.02em` em títulos decorativos para um look mais "estiloso".
-
----
-
-## 💎 Componentes Core (Specs)
-
-### 1. Cards de Notícia (Moderation Card)
-- **Borda**: `1px solid hsl(214 32% 91%)`.
-- **Raio**: `12px` (Radius-lg).
-- **Sombra**: `shadow-sm` (subtil).
-- **Hover**: Elevação leve (`translate-y-[-2px]`) e sombra `shadow-md`.
-- **Badge de Relevância**: Fundo translúcido com cor baseada no score (Score > 80% = Verde, > 50% = Amarelo).
-
-### 2. Botões Administrativos
-- **Primary**: Background Blue, cantos arredondados, leve brilho no hover.
-- **Ghost Actions**: Apenas ícone + texto cinza que muda de cor ao passar o mouse (Vermelho no "X", Verde no "Aprovar").
-
-### 3. Sidebar (Master Admin)
-- **Background**: `hsl(222 47% 11%)` (Azul Noite Profundo).
-- **Links**: `text-slate-400` com transição para `text-white` e background `slate-800` no hover.
-
----
-
-## ✨ Micro-animações & Efeitos
-
-> [!TIP]
-> Use a classe `.animate-in` para carregar novos elementos suavemente.
-
-1. **Fade In Up**: Elementos surgindo com 10px de offset de baixo para cima (duração 0.4s, ease-out).
-2. **Glassmorphism**: 
-   - `backdrop-filter: blur(12px)`.
-   - Borda branca com 10% de opacidade.
-   - Usado em: Cabeçalhos fixos e sobreposições.
-3. **Skeleton Loading**: Pulsação suave em tons de cinza claro (`#f1f5f9` para `#e2e8f0`).
-
----
-
-## 🛠️ Implementação nos Arquivos
-- **Fase 1**: Atualizar `globals.css` com os novos tokens HSL.
-- **Fase 2**: Criar wrapper `Layout` no Admin que aplica a fonte padrão e o background gelo.
-- **Fase 3**: Utilizar `Lucide-React` para todos os ícones funcionais.
+## 5. Fluxo de Apresentação (Numbered Flow)
+O protótipo segue um fluxo de 8 passos para demonstrar a jornada completa:
+1. **Landing Page**: Proposta de valor.
+2. **Boas-vindas**: Retenção e sucesso.
+3. **Feed Principal**: Curadoria geral.
+4. **Feed Temático**: Segmentação de nicho.
+5. **Leitura de Artigo**: Experiência imersiva.
+6. **Arquivo**: Valor de longo prazo.
+7. **Preferências**: Personalização.
+8. **Painel Admin**: Gestão e métricas.
