@@ -57,29 +57,37 @@ export default function Favorites() {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
             <Stack.Screen options={{ headerShown: false }} />
 
-            {/* Header */}
+            {/* Brutalist Header */}
             <View style={{
                 paddingHorizontal: 20,
-                paddingTop: 16,
+                paddingTop: 20,
                 paddingBottom: 16,
                 backgroundColor: colors.bgHeader,
-                borderBottomWidth: 1,
+                borderBottomWidth: 2,
                 borderBottomColor: colors.border,
             }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
                     <View style={{
-                        height: 36,
-                        width: 36,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: 18,
-                        backgroundColor: "#fef2f2",
-                    }}>
-                        <Text style={{ fontSize: 18 }}>❤️</Text>
-                    </View>
+                        width: 4,
+                        height: 28,
+                        backgroundColor: "#FF0000",
+                    }} />
                     <View>
-                        <Text style={{ fontWeight: "800", fontSize: 20, color: colors.text, letterSpacing: -0.8 }}>Favoritos</Text>
-                        <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "500" }}>
+                        <Text style={{
+                            fontWeight: "900",
+                            fontSize: 22,
+                            color: colors.text,
+                            letterSpacing: -0.5,
+                            textTransform: "uppercase",
+                        }}>Favoritos</Text>
+                        <Text style={{
+                            fontSize: 11,
+                            color: colors.textMuted,
+                            fontWeight: "600",
+                            textTransform: "uppercase",
+                            letterSpacing: 1.5,
+                            marginTop: 2,
+                        }}>
                             {favorites.length} {favorites.length === 1 ? "edição salva" : "edições salvas"}
                         </Text>
                     </View>
@@ -88,7 +96,7 @@ export default function Favorites() {
 
             {loading ? (
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                    <ActivityIndicator size="large" color="#ef4444" />
+                    <ActivityIndicator size="large" color="#FF0000" />
                 </View>
             ) : (
                 <FlatList
@@ -110,20 +118,34 @@ export default function Favorites() {
                     ListEmptyComponent={
                         <View style={{ alignItems: "center", paddingVertical: 80 }}>
                             <View style={{
-                                width: 80,
-                                height: 80,
-                                borderRadius: 40,
+                                width: 72,
+                                height: 72,
                                 backgroundColor: colors.bgMuted,
                                 alignItems: "center",
                                 justifyContent: "center",
                                 marginBottom: 20,
+                                borderWidth: 2,
+                                borderColor: colors.border,
                             }}>
-                                <HeartOff size={32} color={colors.textMuted} />
+                                <HeartOff size={28} color={colors.textMuted} strokeWidth={1.5} />
                             </View>
-                            <Text style={{ color: colors.textSecondary, fontSize: 17, fontWeight: "700", marginBottom: 6 }}>
+                            <Text style={{
+                                color: colors.textSecondary,
+                                fontSize: 16,
+                                fontWeight: "800",
+                                marginBottom: 8,
+                                textTransform: "uppercase",
+                                letterSpacing: 0.5,
+                            }}>
                                 Nenhum favorito ainda
                             </Text>
-                            <Text style={{ color: colors.textMuted, fontSize: 14, textAlign: "center", paddingHorizontal: 40, lineHeight: 20 }}>
+                            <Text style={{
+                                color: colors.textMuted,
+                                fontSize: 13,
+                                textAlign: "center",
+                                paddingHorizontal: 40,
+                                lineHeight: 20,
+                            }}>
                                 Toque no ❤️ nas edições para salvá-las aqui.
                             </Text>
                         </View>

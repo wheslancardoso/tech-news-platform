@@ -36,6 +36,12 @@ type Newsletter = {
     content_json: NewsletterContent;
 };
 
+// Assign category accent color
+function getCategoryColor(index: number, colors: any): string {
+    const accents = [colors.categoryIA, colors.categorySEC, colors.categoryDEV];
+    return accents[index % 3];
+}
+
 export default function NewsletterDetail() {
     const { id } = useLocalSearchParams();
     const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
@@ -67,7 +73,7 @@ export default function NewsletterDetail() {
         if (!newsletter) return;
         try {
             await Share.share({
-                message: `Confira a edição #${newsletter.edition_number} do Tech News: ${newsletter.title}`,
+                message: `Confira a edição #${newsletter.edition_number} do Fresh News: ${newsletter.title}`,
             });
         } catch (error) {
             console.error(error);
@@ -83,7 +89,7 @@ export default function NewsletterDetail() {
             <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg, alignItems: "center", justifyContent: "center" }} edges={["top"]}>
                 <Stack.Screen options={{ headerShown: false }} />
                 <ActivityIndicator size="large" color={colors.accent} />
-                <Text style={{ marginTop: 12, color: colors.textMuted, fontSize: 14 }}>Carregando edição...</Text>
+                <Text style={{ marginTop: 12, color: colors.textMuted, fontSize: 12, textTransform: "uppercase", letterSpacing: 1 }}>Carregando edição...</Text>
             </SafeAreaView>
         );
     }
@@ -95,9 +101,9 @@ export default function NewsletterDetail() {
                 <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 16 }}>Newsletter não encontrada.</Text>
                 <TouchableOpacity
                     onPress={() => router.back()}
-                    style={{ backgroundColor: colors.accent, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}
+                    style={{ backgroundColor: colors.accent, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 0 }}
                 >
-                    <Text style={{ color: isDark ? "#0a0a0a" : "#ffffff", fontWeight: "700" }}>Voltar</Text>
+                    <Text style={{ color: "#0D0D0D", fontWeight: "800" }}>VOLTAR</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         );
@@ -109,102 +115,125 @@ export default function NewsletterDetail() {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
             <Stack.Screen options={{ headerShown: false }} />
 
-            {/* Header */}
+            {/* Brutalist Header */}
             <View style={{
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 14,
                 backgroundColor: colors.bgHeader,
-                borderBottomWidth: 1,
+                borderBottomWidth: 2,
                 borderBottomColor: colors.border,
             }}>
                 <TouchableOpacity
                     onPress={() => router.back()}
-                    style={{ flexDirection: "row", alignItems: "center", padding: 6, marginLeft: -6, borderRadius: 20 }}
+                    style={{ flexDirection: "row", alignItems: "center", padding: 6, marginLeft: -6 }}
                 >
-                    <ArrowLeft size={22} color={colors.text} />
-                    <Text style={{ marginLeft: 6, fontSize: 15, fontWeight: "600", color: colors.text }}>Voltar</Text>
+                    <ArrowLeft size={20} color={colors.text} strokeWidth={1.5} />
+                    <Text style={{ marginLeft: 8, fontSize: 13, fontWeight: "800", color: colors.text, textTransform: "uppercase", letterSpacing: 1 }}>Voltar</Text>
                 </TouchableOpacity>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
                     <TouchableOpacity
                         onPress={() => id && toggleFavorite(id as string)}
-                        style={{ padding: 8, borderRadius: 20 }}
+                        style={{ padding: 8 }}
                     >
-                        <Heart size={22} color={active ? "#ef4444" : colors.textSecondary} fill={active ? "#ef4444" : "none"} />
+                        <Heart size={20} color={active ? "#FF0000" : colors.textMuted} fill={active ? "#FF0000" : "none"} strokeWidth={1.5} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleShare} style={{ padding: 8, borderRadius: 20 }}>
-                        <Share2 size={22} color={colors.textSecondary} />
+                    <TouchableOpacity onPress={handleShare} style={{ padding: 8 }}>
+                        <Share2 size={20} color={colors.textMuted} strokeWidth={1.5} />
                     </TouchableOpacity>
                 </View>
             </View>
 
             <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 50 }} showsVerticalScrollIndicator={false}>
-                {/* Hero Section */}
+                {/* Hero Section — Brutalist */}
                 <View style={{
-                    backgroundColor: isDark ? "#171717" : "#0f172a",
+                    backgroundColor: colors.bgCard,
                     paddingHorizontal: 20,
-                    paddingTop: 28,
+                    paddingTop: 32,
                     paddingBottom: 32,
+                    borderBottomWidth: 2,
+                    borderBottomColor: colors.border,
                 }}>
-                    <View style={{ flexDirection: "row", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+                    <View style={{ flexDirection: "row", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
                         <View style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            gap: 5,
-                            backgroundColor: "rgba(255,255,255,0.1)",
+                            gap: 6,
+                            backgroundColor: colors.bgMuted,
                             paddingHorizontal: 10,
                             paddingVertical: 5,
-                            borderRadius: 20,
+                            borderRadius: 0,
+                            borderWidth: 1,
+                            borderColor: colors.border,
                         }}>
-                            <Hash size={12} color="#94a3b8" />
-                            <Text style={{ fontSize: 12, fontWeight: "700", color: "#94a3b8" }}>Edição {newsletter.edition_number}</Text>
+                            <Hash size={11} color={colors.textMuted} strokeWidth={1.5} />
+                            <Text style={{ fontSize: 11, fontWeight: "800", color: colors.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                                Edição {newsletter.edition_number}
+                            </Text>
                         </View>
                         <View style={{
                             flexDirection: "row",
                             alignItems: "center",
-                            gap: 5,
-                            backgroundColor: "rgba(255,255,255,0.1)",
+                            gap: 6,
+                            backgroundColor: colors.bgMuted,
                             paddingHorizontal: 10,
                             paddingVertical: 5,
-                            borderRadius: 20,
+                            borderRadius: 0,
+                            borderWidth: 1,
+                            borderColor: colors.border,
                         }}>
-                            <Calendar size={12} color="#94a3b8" />
-                            <Text style={{ fontSize: 12, fontWeight: "700", color: "#94a3b8" }}>
+                            <Calendar size={11} color={colors.textMuted} strokeWidth={1.5} />
+                            <Text style={{ fontSize: 11, fontWeight: "800", color: colors.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>
                                 {format(new Date(newsletter.created_at), "d 'de' MMMM, yyyy", { locale: ptBR })}
                             </Text>
                         </View>
                     </View>
-                    <Text style={{ fontSize: 26, fontWeight: "800", color: "#ffffff", lineHeight: 34, letterSpacing: -0.5, marginBottom: 14 }}>
+                    <Text style={{
+                        fontSize: 28,
+                        fontWeight: "900",
+                        color: colors.text,
+                        lineHeight: 34,
+                        letterSpacing: -1,
+                        marginBottom: 16,
+                    }}>
                         {newsletter.title}
                     </Text>
-                    <Text style={{ fontSize: 15, lineHeight: 24, color: "#94a3b8" }}>
+                    <Text style={{ fontSize: 15, lineHeight: 24, color: colors.textMuted }}>
                         {content_json.intro}
                     </Text>
                 </View>
 
-                {/* Quick Takes */}
+                {/* Quick Takes — Brutalist */}
                 {content_json.quickTakes && content_json.quickTakes.length > 0 && (
                     <View style={{
                         marginHorizontal: 16,
                         marginTop: 20,
-                        backgroundColor: isDark ? "#1a1a00" : "#fffbeb",
-                        borderRadius: 16,
+                        backgroundColor: colors.bgMuted,
+                        borderRadius: 0,
                         padding: 18,
-                        borderWidth: 1,
-                        borderColor: isDark ? "#333300" : "#fef3c7",
+                        borderWidth: 2,
+                        borderColor: colors.border,
+                        borderLeftWidth: 4,
+                        borderLeftColor: colors.accent,
                     }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 12 }}>
-                            <Zap size={16} color="#f59e0b" fill="#f59e0b" />
-                            <Text style={{ fontSize: 13, fontWeight: "800", color: isDark ? "#fbbf24" : "#92400e", textTransform: "uppercase", letterSpacing: 1 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                            <Zap size={14} color={colors.accent} fill={colors.accent} strokeWidth={1.5} />
+                            <Text style={{
+                                fontSize: 11,
+                                fontWeight: "900",
+                                color: colors.accent,
+                                textTransform: "uppercase",
+                                letterSpacing: 2,
+                            }}>
                                 Destaques Rápidos
                             </Text>
                         </View>
                         {content_json.quickTakes.map((take, index) => (
-                            <View key={index} style={{ flexDirection: "row", marginBottom: 8, paddingRight: 8 }}>
-                                <Text style={{ fontSize: 14, marginRight: 6 }}>⚡</Text>
-                                <Text style={{ fontSize: 14, lineHeight: 21, color: isDark ? "#fde68a" : "#78350f", flex: 1 }}>
+                            <View key={index} style={{ flexDirection: "row", marginBottom: 10, paddingRight: 8 }}>
+                                <Text style={{ fontSize: 14, marginRight: 8, color: colors.accent }}>▸</Text>
+                                <Text style={{ fontSize: 14, lineHeight: 22, color: colors.textSecondary, flex: 1 }}>
                                     {take}
                                 </Text>
                             </View>
@@ -212,70 +241,97 @@ export default function NewsletterDetail() {
                     </View>
                 )}
 
-                {/* Categories */}
-                {content_json.categories.map((category, catIndex) => (
-                    <View key={catIndex} style={{ marginTop: 28, paddingHorizontal: 16 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
-                            <View style={{ width: 4, height: 24, backgroundColor: colors.accent, borderRadius: 2, marginRight: 10 }} />
-                            <Text style={{ fontSize: 18, fontWeight: "800", color: colors.text, letterSpacing: -0.3 }}>
-                                {category.name}
-                            </Text>
-                        </View>
-                        {category.items.map((item, itemIndex) => (
-                            <View key={itemIndex} style={{
-                                marginBottom: 12,
-                                borderRadius: 14,
-                                backgroundColor: colors.bgCard,
-                                padding: 16,
-                                shadowColor: "#000",
-                                shadowOffset: { width: 0, height: 1 },
-                                shadowOpacity: isDark ? 0.2 : 0.04,
-                                shadowRadius: 3,
-                                elevation: 1,
-                                borderWidth: 1,
-                                borderColor: colors.border,
+                {/* Categories — Brutalist */}
+                {content_json.categories.map((category, catIndex) => {
+                    const catColor = getCategoryColor(catIndex, colors);
+                    return (
+                        <View key={catIndex} style={{ marginTop: 28, paddingHorizontal: 16 }}>
+                            <View style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                marginBottom: 16,
+                                paddingBottom: 12,
+                                borderBottomWidth: 2,
+                                borderBottomColor: colors.border,
                             }}>
-                                <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text, lineHeight: 22, marginBottom: 8 }}>
-                                    {item.headline.replace(/^[^\w]+/, '')}
+                                <View style={{ width: 4, height: 20, backgroundColor: catColor, marginRight: 10 }} />
+                                <Text style={{
+                                    fontSize: 16,
+                                    fontWeight: "900",
+                                    color: colors.text,
+                                    letterSpacing: 0.5,
+                                    textTransform: "uppercase",
+                                }}>
+                                    {category.name}
                                 </Text>
-                                <Text style={{ fontSize: 14, lineHeight: 22, color: colors.textSecondary, marginBottom: 14 }}>
-                                    {item.story}
-                                </Text>
-                                <TouchableOpacity
-                                    onPress={() => openLink(item.link)}
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        alignSelf: "flex-start",
-                                        backgroundColor: colors.bgMuted,
-                                        paddingHorizontal: 12,
-                                        paddingVertical: 8,
-                                        borderRadius: 8,
-                                        borderWidth: 1,
-                                        borderColor: colors.border,
-                                    }}
-                                >
-                                    <Text style={{ fontSize: 13, fontWeight: "600", color: colors.text, marginRight: 5 }}>
-                                        Ler fonte original
-                                    </Text>
-                                    <ExternalLink size={13} color={colors.text} />
-                                </TouchableOpacity>
                             </View>
-                        ))}
-                    </View>
-                ))}
+                            {category.items.map((item, itemIndex) => (
+                                <View key={itemIndex} style={{
+                                    marginBottom: 12,
+                                    borderRadius: 0,
+                                    backgroundColor: colors.bgCard,
+                                    padding: 16,
+                                    borderWidth: 2,
+                                    borderColor: colors.border,
+                                    borderTopWidth: 3,
+                                    borderTopColor: catColor,
+                                }}>
+                                    <Text style={{
+                                        fontSize: 16,
+                                        fontWeight: "800",
+                                        color: colors.text,
+                                        lineHeight: 22,
+                                        marginBottom: 10,
+                                        letterSpacing: -0.3,
+                                    }}>
+                                        {item.headline.replace(/^[^\w]+/, '')}
+                                    </Text>
+                                    <Text style={{ fontSize: 14, lineHeight: 23, color: colors.textSecondary, marginBottom: 16 }}>
+                                        {item.story}
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={() => openLink(item.link)}
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            alignSelf: "flex-start",
+                                            backgroundColor: colors.bgMuted,
+                                            paddingHorizontal: 14,
+                                            paddingVertical: 10,
+                                            borderRadius: 0,
+                                            borderWidth: 2,
+                                            borderColor: colors.border,
+                                        }}
+                                    >
+                                        <Text style={{
+                                            fontSize: 12,
+                                            fontWeight: "800",
+                                            color: catColor,
+                                            marginRight: 6,
+                                            textTransform: "uppercase",
+                                            letterSpacing: 0.5,
+                                        }}>
+                                            Ler fonte
+                                        </Text>
+                                        <ExternalLink size={13} color={catColor} strokeWidth={1.5} />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                    );
+                })}
 
-                {/* Footer */}
+                {/* Footer — Editorial Rule */}
                 <View style={{
                     marginTop: 32,
                     marginHorizontal: 16,
                     alignItems: "center",
                     paddingTop: 24,
-                    borderTopWidth: 1,
+                    borderTopWidth: 2,
                     borderTopColor: colors.border,
                 }}>
-                    <Text style={{ color: colors.textMuted, fontSize: 13, fontWeight: "600" }}>Gostou da edição?</Text>
-                    <Text style={{ color: colors.textMuted, fontSize: 11, marginTop: 4, opacity: 0.7 }}>Tech News App v1.0</Text>
+                    <Text style={{ color: colors.textMuted, fontSize: 12, fontWeight: "700", textTransform: "uppercase", letterSpacing: 1 }}>Gostou da edição?</Text>
+                    <Text style={{ color: colors.textMuted, fontSize: 10, marginTop: 6, opacity: 0.5, letterSpacing: 1 }}>FRESH NEWS APP v1.0</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>

@@ -77,54 +77,54 @@ export default function Home() {
             <Stack.Screen options={{ headerShown: false }} />
             <AppMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
 
-            {/* Header */}
+            {/* Brutalist Header */}
             <View style={{
                 paddingHorizontal: 20,
-                paddingTop: 16,
-                paddingBottom: 12,
+                paddingTop: 20,
+                paddingBottom: 16,
                 backgroundColor: colors.bgHeader,
-                borderBottomWidth: 1,
+                borderBottomWidth: 2,
                 borderBottomColor: colors.border,
             }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                    <TouchableOpacity
-                        onPress={() => setMenuVisible(true)}
-                        activeOpacity={0.7}
-                        style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-                    >
+                <TouchableOpacity
+                    onPress={() => setMenuVisible(true)}
+                    activeOpacity={0.7}
+                    style={{ marginBottom: 16 }}
+                >
+                    <Text style={{
+                        fontWeight: "900",
+                        fontSize: 28,
+                        color: colors.text,
+                        letterSpacing: -1.5,
+                        textTransform: "uppercase",
+                    }}>FRESH NEWS</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 2 }}>
                         <View style={{
-                            height: 36,
-                            width: 36,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 18,
+                            width: 8,
+                            height: 8,
                             backgroundColor: colors.accent,
-                            shadowColor: colors.accent,
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 4,
-                            elevation: 3,
-                        }}>
-                            <Text style={{ color: isDark ? "#0a0a0a" : "#ffffff", fontWeight: "800", fontSize: 12 }}>TN</Text>
-                        </View>
-                        <View>
-                            <Text style={{ fontWeight: "800", fontSize: 20, color: colors.text, letterSpacing: -0.8 }}>Tech News</Text>
-                            <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: "500" }}>Curadoria diária de tech</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                        }} />
+                        <Text style={{
+                            fontSize: 11,
+                            color: colors.textMuted,
+                            fontWeight: "600",
+                            textTransform: "uppercase",
+                            letterSpacing: 2,
+                        }}>Curadoria diária de tech</Text>
+                    </View>
+                </TouchableOpacity>
 
-                {/* Search Bar */}
+                {/* Brutalist Search Bar */}
                 <View style={{
                     flexDirection: "row",
                     alignItems: "center",
                     backgroundColor: colors.searchBg,
-                    borderRadius: 12,
                     paddingHorizontal: 12,
-                    borderWidth: 1,
+                    borderWidth: 2,
                     borderColor: colors.searchBorder,
+                    borderRadius: 0,
                 }}>
-                    <Search size={18} color={colors.textMuted} />
+                    <Search size={16} color={colors.textMuted} strokeWidth={1.5} />
                     <TextInput
                         placeholder="Buscar por edição ou tema..."
                         placeholderTextColor={colors.textMuted}
@@ -132,15 +132,15 @@ export default function Home() {
                         onChangeText={setSearch}
                         style={{
                             flex: 1,
-                            height: 42,
+                            height: 44,
                             fontSize: 14,
                             color: colors.text,
-                            marginLeft: 8,
+                            marginLeft: 10,
                         }}
                     />
                     {search.length > 0 && (
                         <TouchableOpacity onPress={() => setSearch("")} style={{ padding: 4 }}>
-                            <X size={16} color={colors.textMuted} />
+                            <X size={16} color={colors.textMuted} strokeWidth={1.5} />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -149,7 +149,7 @@ export default function Home() {
             {loading ? (
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <ActivityIndicator size="large" color={colors.accent} />
-                    <Text style={{ marginTop: 12, color: colors.textMuted, fontSize: 14 }}>Carregando edições...</Text>
+                    <Text style={{ marginTop: 12, color: colors.textMuted, fontSize: 13, textTransform: "uppercase", letterSpacing: 1 }}>Carregando edições...</Text>
                 </View>
             ) : (
                 <FlatList
@@ -175,15 +175,16 @@ export default function Home() {
                             <View style={{
                                 width: 64,
                                 height: 64,
-                                borderRadius: 32,
                                 backgroundColor: colors.bgMuted,
                                 alignItems: "center",
                                 justifyContent: "center",
                                 marginBottom: 16,
+                                borderWidth: 2,
+                                borderColor: colors.border,
                             }}>
-                                <Newspaper size={28} color={colors.textMuted} />
+                                <Newspaper size={28} color={colors.textMuted} strokeWidth={1.5} />
                             </View>
-                            <Text style={{ color: colors.textSecondary, fontSize: 16, fontWeight: "600" }}>
+                            <Text style={{ color: colors.textSecondary, fontSize: 16, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.5 }}>
                                 {search ? "Nenhum resultado" : "Nenhuma edição ainda"}
                             </Text>
                             <Text style={{ color: colors.textMuted, fontSize: 13, marginTop: 4 }}>

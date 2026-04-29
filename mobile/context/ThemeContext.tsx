@@ -21,6 +21,11 @@ interface ThemeColors {
     searchBorder: string;
     tabBar: string;
     tabBorder: string;
+    // Brutalist category accents
+    categoryIA: string;
+    categorySEC: string;
+    categoryDEV: string;
+    primaryCyan: string;
 }
 
 const lightColors: ThemeColors = {
@@ -41,26 +46,36 @@ const lightColors: ThemeColors = {
     searchBorder: "#f1f5f9",
     tabBar: "#ffffff",
     tabBorder: "#f1f5f9",
+    categoryIA: "#0f172a",
+    categorySEC: "#0f172a",
+    categoryDEV: "#0f172a",
+    primaryCyan: "#0f172a",
 };
 
+// Neo-Broadsheet Brutalist Dark Theme — Stitch Design System
 const darkColors: ThemeColors = {
-    bg: "#0a0a0a",
-    bgCard: "#171717",
-    bgMuted: "#1e1e1e",
-    bgHeader: "#111111",
-    text: "#fafafa",
-    textSecondary: "#a1a1aa",
-    textMuted: "#71717a",
-    border: "#262626",
-    accent: "#fafafa",
-    accentLight: "#262626",
-    hero: "#171717",
-    heroText: "#fafafa",
-    heroMuted: "#a1a1aa",
-    searchBg: "#1e1e1e",
-    searchBorder: "#262626",
+    bg: "#0D0D0D",
+    bgCard: "#111111",
+    bgMuted: "#1A1A1A",
+    bgHeader: "#0D0D0D",
+    text: "#E5E2E1",
+    textSecondary: "#A1A1AA",
+    textMuted: "#849495",
+    border: "#1A1A1A",
+    accent: "#00F0FF",
+    accentLight: "#0D3B3E",
+    hero: "#111111",
+    heroText: "#E5E2E1",
+    heroMuted: "#849495",
+    searchBg: "#111111",
+    searchBorder: "#1A1A1A",
     tabBar: "#111111",
-    tabBorder: "#1e1e1e",
+    tabBorder: "#1A1A1A",
+    // Chameleon category accent colors
+    categoryIA: "#00F0FF",
+    categorySEC: "#00FF41",
+    categoryDEV: "#FF0000",
+    primaryCyan: "#00F0FF",
 };
 
 interface ThemeContextType {
@@ -71,14 +86,14 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-    mode: "light",
-    colors: lightColors,
-    isDark: false,
+    mode: "dark",
+    colors: darkColors,
+    isDark: true,
     toggleTheme: () => { },
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [mode, setMode] = useState<ThemeMode>("light");
+    const [mode, setMode] = useState<ThemeMode>("dark");
 
     useEffect(() => {
         AsyncStorage.getItem("theme").then((stored) => {

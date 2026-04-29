@@ -10,40 +10,41 @@ export default function TabsLayout() {
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: isDark ? "#fafafa" : "#0f172a",
+                tabBarActiveTintColor: colors.accent,
                 tabBarInactiveTintColor: colors.textMuted,
                 tabBarStyle: {
                     backgroundColor: colors.tabBar,
-                    borderTopWidth: 1,
+                    borderTopWidth: 2,
                     borderTopColor: colors.tabBorder,
                     height: Platform.OS === "ios" ? 88 : 64,
                     paddingBottom: Platform.OS === "ios" ? 28 : 8,
                     paddingTop: 8,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: -2 },
-                    shadowOpacity: isDark ? 0.3 : 0.04,
-                    shadowRadius: 8,
-                    elevation: 8,
+                    elevation: 0,
+                    shadowOpacity: 0,
                 },
                 tabBarLabelStyle: {
-                    fontSize: 11,
-                    fontWeight: "600",
-                    marginTop: 2,
+                    fontSize: 10,
+                    fontWeight: "800",
+                    marginTop: 4,
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
                 },
             }}
         >
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: "Home",
+                    title: "Feed",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={focused ? {
-                            backgroundColor: isDark ? "#262626" : "#f1f5f9",
-                            borderRadius: 20,
+                            backgroundColor: "rgba(0,240,255,0.08)",
                             paddingHorizontal: 14,
                             paddingVertical: 6,
+                            borderRadius: 0,
+                            borderWidth: 1,
+                            borderColor: "rgba(0,240,255,0.2)",
                         } : undefined}>
-                            <Home size={22} color={color} />
+                            <Home size={20} color={color} strokeWidth={1.5} />
                         </View>
                     ),
                 }}
@@ -51,22 +52,25 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="favorites"
                 options={{
-                    title: "Favoritos",
+                    title: "Salvos",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={focused ? {
-                            backgroundColor: isDark ? "#2a1515" : "#fef2f2",
-                            borderRadius: 20,
+                            backgroundColor: "rgba(255,0,0,0.08)",
                             paddingHorizontal: 14,
                             paddingVertical: 6,
+                            borderRadius: 0,
+                            borderWidth: 1,
+                            borderColor: "rgba(255,0,0,0.2)",
                         } : undefined}>
                             <Heart
-                                size={22}
-                                color={focused ? "#ef4444" : color}
-                                fill={focused ? "#ef4444" : "none"}
+                                size={20}
+                                color={focused ? "#FF0000" : color}
+                                fill={focused ? "#FF0000" : "none"}
+                                strokeWidth={1.5}
                             />
                         </View>
                     ),
-                    tabBarActiveTintColor: "#ef4444",
+                    tabBarActiveTintColor: "#FF0000",
                 }}
             />
         </Tabs>
