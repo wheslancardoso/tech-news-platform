@@ -34,3 +34,9 @@ O protótipo segue um fluxo de 8 passos para demonstrar a jornada completa:
 6. **Arquivo**: Valor de longo prazo.
 7. **Preferências**: Personalização.
 8. **Painel Admin**: Gestão e métricas.
+
+## 6. Padronização de Header
+- **Título**: 'FRESH NEWS' sempre em linha única, tipografia de alto impacto.
+- **Data**: Formato fixo `dd/mm`, integrada ao header com design minimalista (alinhamento fixo e bordas de 2px quando em box).
+- **Consistência**: O header é o elemento de ancoragem visual que deve ser idêntico em todas as telas do protótipo.
+
