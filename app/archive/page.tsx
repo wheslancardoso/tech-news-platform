@@ -99,6 +99,7 @@ export default async function ArchiveIndexPage() {
                                     intro={news.summary_intro}
                                     status={news.status}
                                     isAdmin={isAdmin}
+                                    imageUrl={news.image_url}
                                 />
                             ))}
                         </div>

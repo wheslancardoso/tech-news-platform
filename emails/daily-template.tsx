@@ -35,11 +35,11 @@ export const DailyNewsletter = ({
 
   const getCategoryColor = (name: string) => {
     const upper = name.toUpperCase();
-    if (upper.includes('IA') || upper.includes('INTELIGÊNCIA')) return '#00F0FF'; // Cyan
-    if (upper.includes('DEV') || upper.includes('ENGENHARIA')) return '#00FF41'; // Matrix Green
-    if (upper.includes('SEC') || upper.includes('CIBER') || upper.includes('HACKER')) return '#FF0000'; // Red
-    if (upper.includes('STARTUP') || upper.includes('BUSINESS') || upper.includes('MERCADO')) return '#E10600'; // Racing Red
-    return '#ffffff'; // White default
+    if (upper.includes('IA') || upper.includes('INTELIGÊNCIA')) return '#A78BFA'; // Lavender
+    if (upper.includes('DEV') || upper.includes('ENGENHARIA')) return '#10B981'; // Emerald
+    if (upper.includes('SEC') || upper.includes('CIBER') || upper.includes('HACKER')) return '#F43F5E'; // Rose
+    if (upper.includes('STARTUP') || upper.includes('BUSINESS') || upper.includes('MERCADO')) return '#F59E0B'; // Amber
+    return '#8B5CF6'; // Violet Premium
   };
 
   return (
@@ -48,10 +48,10 @@ export const DailyNewsletter = ({
       <Preview>{title}</Preview>
       <Body style={main}>
         <Container style={container}>
-          {/* Header Brutalista */}
+          {/* Header Liquid Glass Style */}
           <Section style={header}>
             <Heading style={headerTitle}>FRESH NEWS</Heading>
-            <Text style={headerSub}>A Sua Zine Digital de Tecnologia</Text>
+            <Text style={headerSub}>Protocolo de Inteligência Técnica</Text>
           </Section>
 
           <Section style={content}>
@@ -134,36 +134,38 @@ const main = {
 };
 
 const container = {
-  backgroundColor: "#131313", // Surface principal
+  backgroundColor: "#0d0d0d", 
   margin: "0 auto",
   padding: "0",
   maxWidth: "640px",
-  border: "2px solid #474747", // Editorial rule
-  borderRadius: "0px", // BRUTALISM
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  borderRadius: "32px",
+  overflow: "hidden" as const,
 };
 
 const header = {
-  backgroundColor: "#000000",
-  padding: "30px 20px",
+  backgroundColor: "#131313",
+  padding: "40px 20px",
   textAlign: "center" as const,
-  borderBottom: "2px solid #474747",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
 };
 
 const headerTitle = {
   color: "#ffffff",
-  fontSize: "40px",
-  fontWeight: "900",
+  fontSize: "32px",
+  fontWeight: "800",
   margin: "0",
   letterSpacing: "-1px",
+  fontFamily: 'Outfit, -apple-system, sans-serif',
 };
 
 const headerSub = {
-  color: "#c6c6c6",
-  fontSize: "14px",
-  margin: "10px 0 0",
+  color: "#8B5CF6",
+  fontSize: "10px",
+  margin: "12px 0 0",
   textTransform: "uppercase" as const,
-  letterSpacing: "3px",
-  fontWeight: "bold",
+  letterSpacing: "4px",
+  fontWeight: "900",
 };
 
 const content = {

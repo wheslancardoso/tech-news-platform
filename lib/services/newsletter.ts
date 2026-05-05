@@ -306,25 +306,33 @@ export async function generateNewsletterService() {
    - Foco: LLMs, infra de GPUs, automação agêntica, novos benchmarks e pesos de modelo.
    - Tom: Futurista, focado em escala e eficiência computacional.
    - Missão: Explicar a arquitetura por trás da notícia e por que isso muda o jogo da IA.
-   - Accent: #00F0FF | Effects: ['neural_particles', 'glassmorphism', 'terminal_glow']
+   - Accent: #8B5CF6 | Effects: ['neural_particles', 'glassmorphism', 'terminal_glow']
 
 2. **SEGURANÇA (Red Team)**:
    - Foco: Exploits, CVEs, privacidade, táticas de ataque e defesa.
    - Tom: Urgente, tático, focado em "como se proteger" e na anatomia da falha.
    - Missão: Desmiuçar a vulnerabilidade, o vetor de ataque e o impacto real na infraestrutura.
-   - Accent: #FF0000 | Effects: ['glitch_effect', 'scanlines', 'pulsing_borders']
+   - Accent: #F43F5E | Effects: ['glitch_effect', 'scanlines', 'pulsing_borders']
 
 3. **DEV (Arquiteto Software Sênior)**:
    - Foco: Frameworks, linguagens, manutenção, padrões de projeto e performance de código.
    - Tom: Pragmático, experiente, cético em relação a hypes vazios.
    - Missão: Analisar o código, a mudança na API ou o novo paradigma de desenvolvimento e como isso afeta o dia a dia do dev.
-   - Accent: #00FF41 | Effects: ['terminal_cursor', 'scanlines', 'grainy_texture']
+   - Accent: #10B981 | Effects: ['terminal_cursor', 'scanlines', 'grainy_texture']
 
 4. **CLOUD (SRE / Cloud Architect)**:
    - Foco: Cloud Providers (AWS/Azure/GCP), Kubernetes, Serverless, FinOps e escalabilidade.
    - Tom: Focado em disponibilidade, custo-benefício e robustez.
    - Missão: Detalhar o impacto na infraestrutura, custos operacionais e estratégias de deployment.
-   - Accent: #BD00FF | Effects: ['glassmorphism', 'cloud_compute_grid']
+   - Accent: #A78BFA | Effects: ['glassmorphism', 'cloud_compute_grid']
+
+# IDENTIDADE VISUAL (LIQUID GLASS OFFICIAL):
+Para cada item, você deve gerar uma descrição de imagem (image_prompt) seguindo estas diretrizes rigorosas para manter a UNIDADE VISUAL:
+- **Estilo**: Macro-Tech Glassmorphism. Fotografia macro de alta precisão.
+- **Ambiente**: Peças de hardware futuristas imersas em blocos de vidro translúcido ou acrílico premium.
+- **Cores**: Paleta Violeta Premium (#8B5CF6), Lavanda Elétrico e Grafite Profundo. Use iluminação de borda (rim lighting) violeta.
+- **Logo Integration**: A Logo 'N' (um 'N' orgânico, fluido e minimalista) DEVE ser o elemento central da cena, esculpida em vidro, brilhando como um filamento de neon ou gravada a laser no hardware.
+- **Qualidade**: 8k, renderização Octane, estilo cinematográfico de tecnologia de luxo (estilo apresentações da Apple/Nvidia).
 
 # REGRAS DE OURO:
 - **NÃO FAÇA RESUMOS GENÉRICOS**: Entre a fundo. Detalhe os "comos" e "porquês".
@@ -337,18 +345,19 @@ export async function generateNewsletterService() {
   "items": [
     {
       "id": "ID original fornecido",
-      "topic_slug": "slug-unico-do-assunto-para-evitar-duplicidade (ex: apple-ceo-ternus, cpanel-cve-2026)",
+      "topic_slug": "slug-unico-do-assunto-para-evitar-duplicidade",
       "category": "AI | SEC | DEV | CLOUD",
       "title": "Título provisório impactante (Máx 80 chars)",
-      "summary": "Comentário profundo e analítico. Mínimo 400, Máximo 1200 caracteres. Use markdown leve (negrito para termos técnicos).",
-      "whatsapp_summary": "Versão curta com emoji para WhatsApp (Máx 160 chars)",
+      "summary": "Comentário profundo e analítico. Mínimo 400, Máximo 1200 caracteres.",
+      "whatsapp_summary": "Versão curta com emoji para WhatsApp",
+      "image_prompt": "Prompt detalhado para geração de imagem no estilo Liquid Glass com a logo 'N' integrada.",
       "relevance_score": 0-100,
       "theme_config": {
         "dna": "TECH_HACKER",
         "primary_color": "#0D0D0D",
         "accent_color": "Hex da persona",
-        "font_style": "Mono",
-        "ui_effects": ["lista", "de", "efeitos", "conforme", "persona"]
+        "font_style": "Outfit",
+        "ui_effects": ["lista", "de", "efeitos"]
       }
     }
   ]
@@ -414,7 +423,10 @@ export async function generateNewsletterService() {
         whatsapp_summary: item.whatsapp_summary,
         category: item.category,
         score: item.relevance_score,
-        theme_config: item.theme_config,
+        theme_config: {
+          ...item.theme_config,
+          image_prompt: item.image_prompt
+        },
       }
 
       await supabase
@@ -471,13 +483,20 @@ export async function generateNewsletterService() {
         messages: [
           {
             role: "system",
-            content: `Você é o editor-chefe do 'Fresh News'. Gere metadados globais para a edição da newsletter.
+            content: `Você é o editor-chefe do 'Fresh News'. Sua missão é consolidar a edição diária sob o novo design system 'Liquid Glass'.
+
+# ESTILO VISUAL (PRECISION TECH):
+- Use uma linguagem que remeta a transparência, nitidez, profundidade e precisão técnica.
+- EVITE underscores (_) ou snake_case nos títulos. Use espaços normais e CAIXA ALTA para ênfase técnica.
+- Substitua termos como "Giro Tech" por "REGISTRO TÉCNICO" ou "LOGS DE SISTEMA".
+- Tom editorial: Autoridade elegante, minimalista e sofisticada.
 
 SAÍDA JSON:
 {
-  "title": "Título criativo e engraçado (ex: 'O estagiário derrubou a prod?')",
-  "intro": "Introdução de 1-2 linhas conectando os 2 maiores destaques do dia",
-  "quickTakes": ["⚡ Manchete 1", "🔥 Manchete 2", "👀 Manchete 3"]
+  "title": "Título criativo e impactante (foco em engenharia/futuro)",
+  "intro": "Introdução de 1-2 linhas conectando os 2 maiores destaques do dia com tom premium",
+  "quickTakes": ["⚡ Manchete 1", "🔥 Manchete 2", "👀 Manchete 3"],
+  "image_prompt": "Prompt detalhado no estilo 'Liquid Glass Official // Macro-Tech' para a capa desta edição."
 }`
           },
           {
@@ -497,7 +516,8 @@ SAÍDA JSON:
         title: metadata.title,
         intro: metadata.intro,
         quickTakes: metadata.quickTakes,
-        categories: categories // Array com todas as categorias!
+        categories: categories,
+        image_prompt: metadata.image_prompt
       }
 
       const htmlContent = await render(
@@ -527,7 +547,8 @@ SAÍDA JSON:
           content_json: contentJson,
           html_content: htmlContent,
           status: 'draft',
-          category: 'MASTER'
+          category: 'MASTER',
+          image_prompt: contentJson.image_prompt
         })
         .select()
         .single()

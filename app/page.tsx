@@ -10,6 +10,7 @@ import { ScrollLink } from '@/components/scroll-link'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { Logo } from '@/components/logo'
 
 export const revalidate = 0
 
@@ -47,34 +48,32 @@ export default async function Home(props: { searchParams: SearchParams }) {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans flex flex-col selection:bg-primary/30">
       {/* Header Liquid Glass */}
-      <div className="fixed top-6 left-0 right-0 z-50 px-6">
-        <header className="max-w-7xl mx-auto glass-nav h-20 px-8 rounded-full flex items-center justify-between border border-white/10 shadow-2xl">
-          <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="text-white font-black text-sm tracking-tighter">FN</span>
-            </div>
-            <span className="font-black text-xl tracking-tighter text-foreground uppercase italic hidden md:block">Fresh News</span>
+      <div className="fixed top-8 left-0 right-0 z-50 px-6">
+        <header className="max-w-7xl mx-auto glass-nav h-20 px-10 rounded-full flex items-center justify-between border border-white/5 shadow-2xl">
+          <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-all active:scale-95 group">
+            <Logo size={42} className="group-hover:rotate-6 transition-transform duration-500" />
+            <span className="font-heading font-bold text-2xl tracking-tighter text-foreground md:block">Fresh News</span>
           </Link>
 
-          <nav className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-8 text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground mr-4">
+          <nav className="flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-10 tech-label">
               <ScrollLink href="#archive" className="hover:text-primary transition-colors">Edições</ScrollLink>
               <Link href="/about" className="hover:text-primary transition-colors">Sobre</Link>
               {isAdmin && (
-                <Link href="/admin/posts" className="text-primary hover:brightness-125">ADMIN_INBOX</Link>
+                <Link href="/admin/posts" className="text-primary hover:brightness-125">Console</Link>
               )}
             </div>
 
             <ScrollLink
               href="#subscribe"
-              className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20"
+              className="bg-primary text-white hover:bg-white hover:text-black px-10 py-4 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-2xl shadow-primary/40 active:scale-95"
             >
-              Assinar Zine
+              Acessar Protocolo
             </ScrollLink>
             
             {isAdmin && (
               <form action={handleLogout} className="ml-2">
-                <button type="submit" className="p-2 hover:text-red-500 transition-colors">
+                <button type="submit" className="p-2 text-muted-foreground/40 hover:text-red-500 transition-colors">
                   <span className="sr-only">Sair</span>
                   🚪
                 </button>
@@ -84,30 +83,31 @@ export default async function Home(props: { searchParams: SearchParams }) {
         </header>
       </div>
 
-      <main className="flex-grow pt-32">
+      <main className="flex-grow pt-40">
         {/* Hero Section - Liquid Style */}
         <section id="subscribe" className="relative py-24 md:py-44 container mx-auto px-6 scroll-mt-32">
-          <div className="max-w-6xl mx-auto relative">
+          <div className="max-w-6xl mx-auto relative text-center">
             {/* Elementos Decorativos Flutuantes */}
-            <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
-            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-[120px]"></div>
+            <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-[140px] animate-pulse"></div>
+            <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-[140px]"></div>
 
-            <div className="text-center space-y-12 relative z-10">
-              <div className="inline-flex items-center gap-3 px-4 py-2 glass-card rounded-full border-white/10">
-                <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span>
-                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-primary">Protocolo_Ativo // 2026</span>
+            <div className="space-y-12 relative z-10">
+              <div className="inline-flex items-center gap-3 px-6 py-2.5 glass-card rounded-full border-white/5">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.5)]"></span>
+                <span className="tech-label opacity-80">Protocolo de Transmissão // v1.0</span>
               </div>
               
-              <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-foreground leading-[0.85] uppercase italic">
+              <h1 className="text-7xl md:text-9xl font-heading font-bold tracking-tight text-foreground leading-[0.9] max-w-5xl mx-auto">
                 Sua Dose de <br />
-                <span className="text-primary drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]">Inteligência Tech.</span>
+                <span className="text-primary drop-shadow-[0_0_40px_rgba(124,58,237,0.4)] italic font-black">Inteligência Tech.</span>
               </h1>
 
-              <p className="text-xl md:text-3xl text-muted-foreground/80 max-w-3xl mx-auto font-medium leading-tight text-center">
-                Curadoria técnica de alta densidade para quem constrói o futuro. Sem ruído, sem distrações, apenas o core.
+              <p className="text-xl md:text-2xl text-muted-foreground/60 max-w-3xl mx-auto font-medium leading-relaxed">
+                Curadoria técnica de alta densidade para quem constrói o futuro. <br className="hidden md:block" />
+                Sem ruído, sem distrações, apenas o core da inovação.
               </p>
 
-              <div className="max-w-2xl mx-auto mt-16 glass-card p-2 rounded-[2.5rem] shadow-2xl">
+              <div className="max-w-xl mx-auto mt-20 glass-card p-1.5 rounded-[2.5rem] shadow-2xl border-white/5 bg-white/[0.02]">
                 <SubscribeForm />
               </div>
             </div>
@@ -117,31 +117,31 @@ export default async function Home(props: { searchParams: SearchParams }) {
         {/* Archive Section - Airy Grid */}
         <section id="archive" className="py-32 relative">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-24 gap-12">
               <div className="text-center md:text-left">
-                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Edições_Passadas</h2>
-                <p className="text-primary font-black text-xs tracking-[0.4em] uppercase">Arquivo de Transmissões Técnicas</p>
+                <h2 className="text-4xl md:text-7xl font-heading font-bold tracking-tighter mb-4 uppercase">Arquivo Histórico</h2>
+                <p className="tech-label">Acesso a Transmissões Anteriores</p>
               </div>
               
               {/* Category Filter - Pill Style */}
               {availableCategories.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center gap-2">
+                <div className="flex flex-wrap items-center justify-center gap-3">
                   <Link 
                     href="/" 
                     className={cn(
-                      "px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border",
-                      !selectedCategory ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
+                      "px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border",
+                      !selectedCategory ? "bg-primary text-white border-primary shadow-xl shadow-primary/30" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
                     )}
                   >
-                    ALL_TRANS
+                    TUDO
                   </Link>
                   {availableCategories.map(cat => (
                     <Link 
                       key={cat}
                       href={`/?category=${encodeURIComponent(cat)}`}
                       className={cn(
-                        "px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border",
-                        selectedCategory === cat ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
+                        "px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border",
+                        selectedCategory === cat ? "bg-primary text-white border-primary shadow-xl shadow-primary/30" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
                       )}
                     >
                       {cat.replace(/[^a-zA-ZÀ-ÿ0-9 ]/g, '').trim()}
@@ -152,11 +152,11 @@ export default async function Home(props: { searchParams: SearchParams }) {
             </div>
 
             {!newsletters || newsletters.length === 0 ? (
-              <div className="text-center py-40 glass-card rounded-[3rem] border-dashed border-white/10">
-                <p className="text-muted-foreground font-black uppercase tracking-widest">Nenhuma transmissão detectada na rede.</p>
+              <div className="text-center py-40 glass-card rounded-[3.5rem] border-dashed border-white/5">
+                <p className="text-muted-foreground/40 font-bold uppercase tracking-widest text-xs">Nenhuma transmissão detectada na rede.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16">
                 {newsletters.map((news) => (
                   <NewsCard
                     key={news.id}
@@ -167,14 +167,15 @@ export default async function Home(props: { searchParams: SearchParams }) {
                     intro={news.summary_intro}
                     status={news.status}
                     isAdmin={isAdmin}
+                    imageUrl={news.image_url}
                   />
                 ))}
               </div>
             )}
 
-            <div className="mt-24 text-center">
-              <Link href="/archive" className="inline-flex items-center gap-3 px-10 py-4 glass-card rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:text-primary transition-all">
-                Explorar_Arquivo_Completo <ArrowRight className="w-4 h-4" />
+            <div className="mt-28 text-center">
+              <Link href="/archive" className="inline-flex items-center gap-4 px-12 py-5 glass-card rounded-full tech-label hover:text-primary transition-all border-white/5 bg-white/[0.01]">
+                Explorar Arquivo Completo <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -182,48 +183,37 @@ export default async function Home(props: { searchParams: SearchParams }) {
       </main>
 
       {/* Footer Liquid Glass */}
-      <footer className="bg-white/[0.02] backdrop-blur-xl border-t border-white/5 py-32 mt-32">
+      <footer className="bg-white/[0.01] backdrop-blur-3xl border-t border-white/5 py-32 mt-32">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
             <div className="col-span-1 md:col-span-2 space-y-12">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-white font-black text-sm">FN</span>
-                </div>
-                <span className="font-black text-2xl tracking-tighter uppercase italic">Fresh News</span>
+                <Logo size={40} />
+                <span className="font-heading font-bold text-3xl tracking-tighter">Fresh News</span>
               </div>
-              <p className="text-muted-foreground text-lg md:text-2xl font-medium max-w-2xl leading-tight">
-                Destilando o ruído digital para entregar inteligência técnica de alta densidade. Feito por engenheiros, para engenheiros.
+              <p className="text-muted-foreground/60 text-lg md:text-2xl font-medium max-w-2xl leading-relaxed">
+                Destilando o ruído digital para entregar inteligência técnica de alta densidade. <br />
+                Feito por engenheiros, para engenheiros.
               </p>
             </div>
             
-            <div className="flex flex-col gap-8">
-              <div className="text-[10px] font-black tracking-[0.4em] text-primary uppercase underline underline-offset-8">Links // Protocol</div>
-              <div className="flex flex-col gap-6 text-xs font-black uppercase tracking-widest text-muted-foreground">
-                <Link href="/archive" className="hover:text-white transition-colors">Arquivo Completo</Link>
-                <Link href="/about" className="hover:text-white transition-colors">Manifesto Técnico</Link>
-                <Link href="/privacy" className="hover:text-white transition-colors">Privacidade</Link>
+            <div className="flex flex-col gap-10">
+              <div className="text-[10px] font-bold tracking-[0.5em] text-primary uppercase">Links // Protocol</div>
+              <div className="flex flex-col gap-6 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                <Link href="/archive" className="hover:text-primary transition-colors">Arquivo Completo</Link>
+                <Link href="/about" className="hover:text-primary transition-colors">Manifesto Técnico</Link>
+                <Link href="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
               </div>
             </div>
           </div>
 
-          <div className="mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/20">
+          <div className="mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] font-bold uppercase tracking-[0.6em] text-muted-foreground/10">
             <p>© 2026 Binary BroadSheet // Premium Intelligence</p>
             <p className="mt-6 md:mt-0">Protocol_Status: Fully_Encrypted</p>
           </div>
         </div>
       </footer>
 
-      {/* Floating Dev Trigger (APENAS ADMIN) */}
-      {isAdmin && (
-        <div className="fixed bottom-4 right-4 z-[100]">
-          <form action={generateDraft}>
-            <Button type="submit" variant="secondary" className="glass-card rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity">
-              ⚡ (Dev) Gerar Edição
-            </Button>
-          </form>
-        </div>
-      )}
     </div>
   )
 }

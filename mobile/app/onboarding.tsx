@@ -25,7 +25,7 @@ const slides = [
     {
         icon: (color: string) => <Moon size={40} color={color} />,
         iconBg: "#f0f9ff",
-        iconColor: "#0ea5e9",
+        iconColor: "#8B5CF6",
         title: "Modo Escuro\nIncluído",
         description: "Toque na logo TN no header para acessar as configurações e ativar o tema escuro.",
     },

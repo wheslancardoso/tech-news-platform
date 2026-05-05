@@ -1,42 +1,34 @@
-# Design System: Binary Broadsheet
+# Design System: Liquid Glass Precision Tech
 
-Este documento define o padrão visual do projeto **Fresh News**, focado em uma estética "Neo-Broadsheet" que mistura jornalismo clássico com brutalismo digital.
+Este documento define o padrão visual premium do projeto **Fresh News**, focado em uma estética de "Centro de Comando de Luxo" que utiliza transparências, profundidade e tipografia de alta precisão.
 
 ## 1. Conceito Visual (North Star)
-- **Autoridade Editorial**: Rejeita designs suaves e arredondados em favor de estruturas rígidas e informativas.
-- **Neo-Broadsheet**: Simula a densidade e o peso de um jornal impresso tradicional, mas com a energia do ciberespaço.
+- **Liquid Glass**: Utiliza camadas de vidro translúcido com forte desfoque de fundo (`backdrop-blur: 24px`) para criar uma interface que parece flutuar sobre o conteúdo.
+- **Precision Tech**: Substitui o "brutalismo de código" por uma engenharia visual refinada. Rejeita itálicos agressivos e underscores em favor de uma organização técnica e autoritária.
 
 ## 2. Cores e Tons
-- **Fundo (Base)**: `#0D0D0D` (Preto Absoluto/Obsidiana).
-- **Contêineres**: `#111111` (Stacking Tonal para profundidade).
-- **Sotaques (Destaques)**:
-  - **Ciano (#00F0FF)**: Software / IA / Primário.
-  - **Vermelho (#FF0000)**: Hardware / Breaking News.
-  - **Verde Matrix (#00FF41)**: Cibersegurança / Coding.
+- **Fundo (Void)**: `#0D0D0D` (Grafite Profundo/Obsidiana).
+- **Primária (Destaque)**: `#8B5CF6` (Violeta Elétrico Premium).
+- **Secundária**: `#A78BFA` (Lavanda Suave para gradientes e detalhes).
+- **Superfícies**: Vidro translúcido (branco com 2% a 5% de opacidade) com bordas violetas de 1px.
 
 ## 3. Tipografia
-- **Títulos (Headlines)**: `Geist Sans 900` ou `Space Grotesk`. Peso máximo para impacto visual.
-- **Corpo (Body)**: `Inter`. Focado em legibilidade máxima contra fundos escuros.
-- **Espaçamento**: Letter-spacing reduzido em títulos (-0.02em) para densidade "tinta no papel".
+- **Títulos (Headlines)**: `Space Grotesk` (Peso 900/Black). Tracking reduzido (`tracking-tighter`) para máxima densidade e autoridade.
+- **Corpo (Body)**: `Inter`. Focado em legibilidade e conforto visual.
+- **Labels Técnicos (Precision Tech)**: Caixa alta, peso `black`, tamanho reduzido (10px a 11px) e tracking ultra-amplo (`tracking-[0.4em]`). Ex: `SYSTEM // LEVEL_0`.
 
 ## 4. Layout e Formas
-- **Raio de Borda (Border Radius)**: **0px em tudo**. Sem exceções.
-- **Regra Editorial**: Uso de bordas sólidas de 2px (`outline`) para separar grandes módulos arquiteturais, em vez de sombras suaves.
-- **Navegação**: Efeito Glassmorphism com `backdrop-blur` elevado (20px) e transparência sutil no fundo.
+- **Raio de Borda (Border Radius)**: 
+  - Cards e Painéis: `32px` a `48px` (`rounded-[3rem]`).
+  - Botões e Badges: `rounded-full` (Estilo Pílula).
+- **Glassmorphism**: Todos os contêineres principais devem utilizar `glass-card` com bordas violetas sutis e sombras de brilho interno (`glow`).
 
-## 5. Fluxo de Apresentação (Numbered Flow)
-O protótipo segue um fluxo de 8 passos para demonstrar a jornada completa:
-1. **Landing Page**: Proposta de valor.
-2. **Boas-vindas**: Retenção e sucesso.
-3. **Feed Principal**: Curadoria geral.
-4. **Feed Temático**: Segmentação de nicho.
-5. **Leitura de Artigo**: Experiência imersiva.
-6. **Arquivo**: Valor de longo prazo.
-7. **Preferências**: Personalização.
-8. **Painel Admin**: Gestão e métricas.
+## 5. Regras de Ouro
+1. **Sem Underscores**: Nunca use `snake_case` em labels visíveis. Use espaços e caixa alta.
+2. **Profundidade**: Use gradientes violetas sutis no fundo para simular iluminação indireta.
+3. **Consistência de Logo**: O 'N' orgânico (Liquid Logo) deve estar presente em todos os cabeçalhos como âncora da marca.
+4. **Precisão**: Labels de metadados devem parecer gravuras técnicas de precisão.
 
 ## 6. Padronização de Header
-- **Título**: 'FRESH NEWS' sempre em linha única, tipografia de alto impacto.
-- **Data**: Formato fixo `dd/mm`, integrada ao header com design minimalista (alinhamento fixo e bordas de 2px quando em box).
-- **Consistência**: O header é o elemento de ancoragem visual que deve ser idêntico em todas as telas do protótipo.
-
+- **Logo**: Gota pulsante violeta integrada à marca 'Fresh News'.
+- **Interação**: Navegação flutuante com efeito de vidro que se destaca do conteúdo no scroll.

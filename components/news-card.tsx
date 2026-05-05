@@ -19,9 +19,10 @@ interface NewsCardProps {
   intro?: string
   status?: 'draft' | 'published'
   isAdmin?: boolean
+  imageUrl?: string
 }
 
-export function NewsCard({ id, edition, title, date, intro, status = 'published', isAdmin = false }: NewsCardProps) {
+export function NewsCard({ id, edition, title, date, intro, status = 'published', isAdmin = false, imageUrl }: NewsCardProps) {
   const dateObj = new Date(date)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -44,60 +45,60 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
   }
 
   return (
-    <div className="group relative h-full glass-card rounded-3xl overflow-hidden flex flex-col hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1">
-      {/* Categoria Badge (Glass Style) */}
-      <div className="absolute top-4 left-4 z-10">
-        <span className="px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/10 shadow-xl bg-black/20 text-white">
+    <div className="group relative h-full glass-card rounded-[2.5rem] overflow-hidden flex flex-col hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 border-white/5">
+      {/* Status Badge (Glass Style) */}
+      <div className="absolute top-5 left-5 z-10">
+        <span className="px-4 py-1.5 rounded-full text-[9px] font-bold tracking-[0.2em] uppercase backdrop-blur-xl border border-white/10 shadow-2xl bg-black/40 text-white/80">
           {status === 'draft' ? 'RASCUNHO' : 'PÚBLICO'}
         </span>
       </div>
 
       {/* Imagem com Overlay de Vidro */}
-      <div className="aspect-[16/10] bg-slate-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent z-10" />
+      <div className="aspect-[16/10] bg-zinc-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent z-10" />
         <img
-          src={`https://picsum.photos/seed/${id}/800/500`}
+          src={imageUrl || `https://picsum.photos/seed/${id}/800/500`}
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0"
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale-[0.2] group-hover:grayscale-0"
         />
       </div>
 
-      <div className="p-8 flex flex-col flex-grow">
+      <div className="p-10 flex flex-col flex-grow relative z-20">
         {/* Meta Info */}
-        <div className="flex items-center gap-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+        <div className="flex items-center gap-3 mb-6 tech-label opacity-50">
           <span>Edição #{edition}</span>
-          <span className="w-1 h-1 bg-white/20 rounded-full" />
-          <span>{format(dateObj, "d MMM yyyy", { locale: ptBR })}</span>
+          <span className="w-1 h-1 bg-primary/30 rounded-full" />
+          <span>{format(dateObj, "dd.MM.yyyy", { locale: ptBR })}</span>
         </div>
 
         {/* Título */}
-        <h3 className="text-2xl font-black mb-4 leading-tight tracking-tight group-hover:text-primary transition-colors line-clamp-2 italic">
+        <h3 className="text-2xl font-heading font-bold mb-4 leading-tight tracking-tight group-hover:text-primary transition-colors line-clamp-2">
           {title}
         </h3>
 
         {/* Intro */}
-        <p className="text-sm text-muted-foreground/80 leading-relaxed line-clamp-3 mb-8 font-medium">
+        <p className="text-sm text-muted-foreground/60 leading-relaxed line-clamp-3 mb-10 font-medium italic">
           {intro || 'Análise técnica em progresso. Aguarde a sincronização.'}
         </p>
 
-        <div className="mt-auto flex items-center justify-between relative z-20">
+        <div className="mt-auto flex items-center justify-between">
           <Link
             href={`/archive/${id}`}
-            className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary group/link pointer-events-auto"
+            className="inline-flex items-center gap-4 tech-label text-primary hover:text-white transition-all group/link pointer-events-auto"
           >
-            READ_TRANSMISSION
-            <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
+            VER CONTEÚDO
+            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-2" />
           </Link>
 
           {isAdmin && (
-            <div className="flex gap-2 pointer-events-auto">
+            <div className="flex gap-3 pointer-events-auto">
               <PublishButton id={id} status={status} />
               <button 
                 onClick={handleDelete} 
-                className="p-2 glass-card rounded-full hover:bg-destructive transition-colors group/del"
+                className="p-2.5 glass-card rounded-xl hover:bg-red-500/10 hover:border-red-500/20 transition-all group/del border-white/5"
                 disabled={isDeleting}
               >
-                <Trash2 className="w-3 h-3 text-muted-foreground group-hover/del:text-white" />
+                <Trash2 className="w-4 h-4 text-muted-foreground/40 group-hover/del:text-red-500" />
               </button>
             </div>
           )}

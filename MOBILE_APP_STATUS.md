@@ -29,20 +29,19 @@ As telas mobile foram totalmente redesenhadas para a estética **Liquid Glass**,
 
 ---
 
-## ⚙️ 3. Funcionalidades Mobile Ativas
-- [x] **Deep Dive Content**: As newsletters agora entregam análises profundas e detalhadas, fugindo de resumos genéricos.
-- [x] **Segmentação por Interesse**: Filtro automático de categorias no envio do WhatsApp.
-- [x] **Magic Links**: Links personalizados que mantêm a sessão do usuário ativa na Web App.
-- [x] **Performance Glass**: Otimização do CSS para garantir 60fps em animações de desfoque em dispositivos móveis.
+## ⚙️ 3. Funcionalidades de Gestão (Admin Command Center)
+- [x] **Painel Responsivo**: Interface administrativa otimizada para tablets e smartphones, permitindo curadoria "on-the-go".
+- [x] **Métricas em Tempo Real**: Visualização de KPIs (Tráfego, Conversão) em cards de vidro de alta fidelidade.
+- [x] **Curadoria Expressa**: Fluxo de aprovação/rejeição com feedback visual imediato e interações simplificadas para toque.
 
 ---
 
 ## 🚀 4. Roadmap & Próximos Passos
 - [ ] **Manifesto PWA**: Configurar `manifest.json` e ícones para instalação "Add to Home Screen".
 - [ ] **Service Workers**: Implementar cache estratégico para leitura offline das edições de vidro.
-- [ ] **Haptic Feedback**: Adicionar vibrações sutis em ações de salvar preferências (Web API).
+- [ ] **Haptic Feedback**: Adicionar vibrações sutis em ações de salvar preferências e curadoria (Web API).
 
 ---
 
 **Última atualização:** 05/05/2026
-**Status Geral:** 🔵 95% Concluído (Interface Liquid Glass Estabilizada)
+**Status Geral:** 🟣 100% Concluído (Interface Liquid Glass & Command Center Estabilizados)
