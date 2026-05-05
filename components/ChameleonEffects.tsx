@@ -8,40 +8,46 @@ export function ChameleonEffects({ effects }: ChameleonEffectsProps) {
   if (!effects || effects.length === 0) return null;
 
   return (
-    <>
-      {/* Background & Overlay Effects */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
+      {/* Glow de Fundo Localizado */}
       {effects.includes('glow') && (
-        <div className="pointer-events-none fixed top-0 left-0 w-full h-[500px] z-0 bg-[radial-gradient(ellipse_at_50%_0%,var(--theme-primary)_0%,transparent_70%)] opacity-15" />
-      )}
-      {(effects.includes('glitch') || effects.includes('glitch_effect')) && (
-        <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-scanlines animate-chameleon-glitch" />
-      )}
-      {effects.includes('neural_particles') && (
-        <div className="pointer-events-none fixed inset-0 z-50 opacity-20 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')]" />
-      )}
-      {effects.includes('terminal_glow') && (
-        <div className="pointer-events-none fixed inset-0 z-40 shadow-[inset_0_0_120px_var(--theme-primary)] opacity-40 mix-blend-screen" />
-      )}
-      {effects.includes('glassmorphism') && (
-        <div className="pointer-events-none fixed inset-0 z-30 backdrop-blur-[1px] bg-white/5" />
-      )}
-      {effects.includes('pulsing_borders') && (
-        <div className="pointer-events-none fixed inset-0 z-50 border-[4px] border-chameleon-primary opacity-60 animate-pulse" />
-      )}
-      {effects.includes('scanlines') && (
-        <div className="pointer-events-none fixed inset-0 z-50 bg-scanlines opacity-10" />
-      )}
-      {effects.includes('grainy_texture') && (
-        <div className="pointer-events-none fixed inset-0 z-50 bg-grainy opacity-[0.05] mix-blend-multiply" />
-      )}
-      {effects.includes('cloud_compute_grid') && (
-        <div className="pointer-events-none fixed inset-0 z-0 bg-compute-grid opacity-[0.03]" />
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-full h-[600px] z-0 bg-[radial-gradient(circle_at_center,var(--theme-primary)_0%,transparent_70%)] opacity-20 blur-[100px]" />
       )}
       
-      {/* Scanline Animation */}
-      {effects.includes('scanlines') && (
-        <div className="pointer-events-none fixed top-0 left-0 w-full h-2 bg-chameleon-primary/20 z-50 blur-sm" style={{ animation: 'scanline 8s linear infinite' }} />
+      {/* Efeito de Glitch Localizado */}
+      {(effects.includes('glitch') || effects.includes('glitch_effect')) && (
+        <div className="absolute inset-0 z-10 opacity-[0.05] mix-blend-overlay bg-scanlines animate-chameleon-glitch" />
       )}
-    </>
+      
+      {/* Partículas / Texturas Específicas */}
+      {effects.includes('neural_particles') && (
+        <div className="absolute inset-0 z-10 opacity-30 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')]" />
+      )}
+      
+      {/* Brilho de Terminal (Retro-Future) */}
+      {effects.includes('terminal_glow') && (
+        <div className="absolute inset-0 z-20 shadow-[inset_0_0_150px_rgba(var(--theme-primary-rgb),0.3)] opacity-50 mix-blend-screen border-2 border-[var(--theme-primary)]/20" />
+      )}
+      
+      {/* Scanlines Dinâmicas */}
+      {effects.includes('scanlines') && (
+        <div className="absolute inset-0 z-10 bg-scanlines opacity-20" />
+      )}
+      
+      {/* Textura de Grão */}
+      {effects.includes('grainy_texture') && (
+        <div className="absolute inset-0 z-10 bg-grainy opacity-[0.08] mix-blend-multiply" />
+      )}
+      
+      {/* Grade de Computação em Nuvem */}
+      {effects.includes('cloud_compute_grid') && (
+        <div className="absolute inset-0 z-0 bg-compute-grid opacity-[0.05]" />
+      )}
+      
+      {/* Linha de Varredura (Scanline Beam) */}
+      {effects.includes('scanlines') && (
+        <div className="absolute top-0 left-0 w-full h-4 bg-[var(--theme-primary)]/10 z-30 blur-md" style={{ animation: 'scanline 4s linear infinite' }} />
+      )}
+    </div>
   )
 }

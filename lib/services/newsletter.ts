@@ -452,7 +452,8 @@ Para cada item, você deve gerar uma descrição de imagem (image_prompt) seguin
       categoriesMap.get(cat)!.push({
         headline: item.title,
         story: item.summary,
-        link: originalPost?.url || '#'
+        link: originalPost?.url || '#',
+        theme: item.theme_config
       })
     }
 
