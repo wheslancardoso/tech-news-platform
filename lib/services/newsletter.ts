@@ -337,6 +337,7 @@ export async function generateNewsletterService() {
   "items": [
     {
       "id": "ID original fornecido",
+      "topic_slug": "slug-unico-do-assunto-para-evitar-duplicidade (ex: apple-ceo-ternus, cpanel-cve-2026)",
       "category": "AI | SEC | DEV | CLOUD",
       "title": "Título provisório impactante (Máx 80 chars)",
       "summary": "Comentário profundo e analítico. Mínimo 400, Máximo 1200 caracteres. Use markdown leve (negrito para termos técnicos).",
@@ -383,13 +384,24 @@ export async function generateNewsletterService() {
       })
     )
 
-    // ===== 4. REDUCE: Consolidar todos os itens e atualizar o banco de dados =====
-    const allItems = mapResults.flat()
-    console.log(`🔗 [Reduce] Total consolidado: ${allItems.length} itens`)
+    // ===== 4. REDUCE: Consolidar, Deduplicar e Atualizar o banco de dados =====
+    const rawItems = mapResults.flat()
+    console.log(`🔗 [Reduce] Total bruto: ${rawItems.length} itens`)
 
-    if (allItems.length === 0) {
+    if (rawItems.length === 0) {
       throw new Error('Nenhum item foi processado. Verifique os logs de erro.')
     }
+
+    // DEDUPLICAÇÃO: Manter apenas um item por topic_slug (o de maior score)
+    const seenTopics = new Map<string, any>()
+    for (const item of rawItems) {
+      const slug = item.topic_slug || item.id
+      if (!seenTopics.has(slug) || item.relevance_score > seenTopics.get(slug).relevance_score) {
+        seenTopics.set(slug, item)
+      }
+    }
+    const allItems = Array.from(seenTopics.values())
+    console.log(`🎯 [Reduce] Total após deduplicação: ${allItems.length} itens`)
 
     // 4.1 Persistir Enriquecimento no Banco de Dados
     console.log('💾 [Reduce] Atualizando posts com temas e resumos especializados...')
@@ -403,7 +415,6 @@ export async function generateNewsletterService() {
         category: item.category,
         score: item.relevance_score,
         theme_config: item.theme_config,
-        // Mantemos como approved se já estava, ou pending se era pending
       }
 
       await supabase
