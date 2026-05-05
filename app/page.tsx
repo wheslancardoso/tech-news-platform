@@ -45,37 +45,37 @@ export default async function Home(props: { searchParams: SearchParams }) {
 
 
   return (
-    <div className="min-h-screen bg-background font-sans flex flex-col">
+    <div className="min-h-screen bg-background font-sans flex flex-col selection:bg-primary selection:text-primary-foreground">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b-2 border-editorial bg-background/95 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xs">FN</span>
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="w-10 h-10 bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-black text-lg">FN</span>
             </div>
-            <span className="font-bold text-xl tracking-tighter">Fresh News</span>
+            <span className="font-black text-2xl tracking-tighter uppercase">Fresh News</span>
           </Link>
-          <nav className="flex items-center gap-4 md:gap-8 text-sm font-medium text-muted-foreground">
-            <ScrollLink href="#archive" className="hidden md:block hover:text-black transition-colors">Edições</ScrollLink>
-            <Link href="/about" className="hidden md:block hover:text-black transition-colors">Sobre</Link>
+          <nav className="flex items-center gap-4 md:gap-8 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            <ScrollLink href="#archive" className="hidden md:block hover:text-primary transition-colors">Edições</ScrollLink>
+            <Link href="/about" className="hidden md:block hover:text-primary transition-colors">Sobre</Link>
             {isAdmin && (
               <div className="flex items-center gap-3">
-                <Link href="/admin/posts" className="text-xs font-bold flex items-center gap-2 px-3 py-1.5 rounded-md bg-black text-white hover:bg-zinc-800 transition-colors">
-                  Inbox 📥
+                <Link href="/admin/posts" className="text-[10px] font-black flex items-center gap-2 px-3 py-1 bg-white text-black hover:bg-primary transition-colors">
+                  INBOX 📥
                 </Link>
                 <form action={handleLogout}>
                   <button
                     type="submit"
-                    className="text-xs flex items-center gap-2 px-3 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
+                    className="text-[10px] font-black flex items-center gap-2 px-3 py-1 border border-white/20 text-white/50 hover:text-red-500 hover:border-red-500 transition-colors"
                   >
-                    Sair 🚪
+                    SAIR 🚪
                   </button>
                 </form>
               </div>
             )}
             <ScrollLink
               href="#subscribe"
-              className={cn(buttonVariants({ variant: "default", size: "sm" }), "rounded-full px-6 bg-black text-white hover:bg-zinc-800")}
+              className={cn(buttonVariants({ variant: "default", size: "sm" }), "px-6 font-black uppercase text-[12px]")}
             >
               Inscrever-se
             </ScrollLink>
@@ -85,58 +85,58 @@ export default async function Home(props: { searchParams: SearchParams }) {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section id="subscribe" className="relative py-12 md:py-24 container mx-auto px-4 scroll-mt-24 overflow-hidden">
-          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-grid-pattern [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-slate-900 leading-[1.1]">
-              As notícias de tech que importam, <span className="text-muted-foreground">sem o hype.</span>
+        <section id="subscribe" className="relative py-16 md:py-32 container mx-auto px-4 scroll-mt-24 overflow-hidden border-b-2 border-editorial">
+          <div className="absolute inset-0 -z-10 bg-scanlines opacity-20"></div>
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_-20%,rgba(0,240,255,0.15),transparent_70%)]"></div>
+          
+          <div className="max-w-5xl mx-auto text-center space-y-10">
+            <div className="inline-block px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black tracking-[0.2em] uppercase mb-4 animate-pulse">
+              System Online // 2026 Edition
+            </div>
+            
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.9] uppercase italic">
+              Notícias Tech <span className="text-primary">Sem Hype.</span><br />
+              <span className="text-muted-foreground/30">Deep Dive Only.</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
-              Um resumo diário de 5 minutos com tudo que você precisa saber para começar o dia bem informado.
+            <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto font-medium leading-tight border-l-4 border-primary pl-6 text-left">
+              O feed de autoridade para engenheiros que desprezam o óbvio e buscam a essência técnica.
             </p>
 
-            <div className="max-w-md mx-auto mt-10">
-              {/* Formulário de Inscrição */}
+            <div className="max-w-md mx-auto mt-12 bg-surface-container p-1 border-2 border-editorial">
               <SubscribeForm />
             </div>
-
-            {/* Floating Dev Trigger (APENAS ADMIN) */}
-            {isAdmin && (
-              <form action={generateDraft} className="opacity-0 hover:opacity-100 transition-opacity absolute top-0 right-0 p-4">
-                <Button type="submit" variant="ghost" size="sm" className="text-xs">
-                  (Dev) Gerar Edição
-                </Button>
-              </form>
-            )}
           </div>
         </section>
 
         {/* Archive Section (Newsletters) */}
-        <section id="archive" className="bg-slate-50 py-20 border-t min-h-[50vh]">
+        <section id="archive" className="py-24 min-h-[50vh]">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
-              <h2 className="text-3xl font-bold tracking-tight">Edições Disponíveis</h2>
+            <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-8 border-b-2 border-editorial pb-6">
+              <div className="space-y-2">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic">Edições</h2>
+                <p className="text-primary font-bold text-xs tracking-widest uppercase">// Histórico de Inteligência</p>
+              </div>
               
               {/* Category Filter */}
               {availableCategories.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1">
                   <Link 
                     href="/" 
                     className={cn(
-                      "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
-                      !selectedCategory ? "bg-black text-white border-black" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                      "px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors border-2",
+                      !selectedCategory ? "bg-primary text-primary-foreground border-primary" : "bg-transparent text-muted-foreground border-white/10 hover:border-white/30"
                     )}
                   >
-                    Todas
+                    ALL
                   </Link>
                   {availableCategories.map(cat => (
                     <Link 
                       key={cat}
                       href={`/?category=${encodeURIComponent(cat)}`}
                       className={cn(
-                        "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
-                        selectedCategory === cat ? "bg-black text-white border-black" : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                        "px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors border-2",
+                        selectedCategory === cat ? "bg-primary text-primary-foreground border-primary" : "bg-transparent text-muted-foreground border-white/10 hover:border-white/30"
                       )}
                     >
                       {cat.replace(/[^a-zA-ZÀ-ÿ0-9 ]/g, '').trim()}
@@ -147,64 +147,63 @@ export default async function Home(props: { searchParams: SearchParams }) {
             </div>
 
             {!newsletters || newsletters.length === 0 ? (
-              <div className="text-center py-24 border-2 border-dashed rounded-xl bg-white">
-                <p className="text-muted-foreground">Nenhuma edição encontrada.</p>
-                {!isAdmin && (
-                  <p className="text-sm text-slate-400 mt-2">Volte amanhã para a primeira edição!</p>
-                )}
+              <div className="text-center py-32 border-2 border-dashed border-white/10 bg-surface-container">
+                <p className="text-muted-foreground font-black uppercase tracking-tighter">Nenhuma edição detectada na rede.</p>
                 {isAdmin && (
-                  <p className="text-sm text-slate-400 mt-2">Use o botão flutuante para gerar conteúdo.</p>
+                  <p className="text-[10px] text-primary mt-4 font-bold uppercase tracking-widest animate-pulse">Aguardando geração via console de admin...</p>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-l-2 border-t-2 border-editorial">
                 {newsletters.map((news) => (
-                  <NewsCard
-                    key={news.id}
-                    id={news.id}
-                    edition={news.edition_number}
-                    title={news.title}
-                    date={news.created_at}
-                    intro={news.summary_intro}
-                    status={news.status}
-                    isAdmin={isAdmin} // Passando status de admin
-                  />
+                  <div key={news.id} className="border-r-2 border-b-2 border-editorial">
+                    <NewsCard
+                      id={news.id}
+                      edition={news.edition_number}
+                      title={news.title}
+                      date={news.created_at}
+                      intro={news.summary_intro}
+                      status={news.status}
+                      isAdmin={isAdmin}
+                    />
+                  </div>
                 ))}
               </div>
             )}
-
-            <div className="mt-12 text-center md:hidden">
-              <Link href="/archive">
-                <Button variant="outline" className="w-full">Ver arquivo completo</Button>
-              </Link>
-            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex flex-col items-center gap-2 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-[10px]">FN</span>
+      <footer className="bg-surface-container border-t-2 border-editorial py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-black text-sm">FN</span>
+                </div>
+                <span className="font-black text-xl tracking-tighter uppercase">Fresh News</span>
               </div>
-              <span className="font-bold text-lg tracking-tight">Fresh News</span>
+              <p className="text-muted-foreground text-sm max-w-sm font-medium leading-relaxed uppercase">
+                Curadoria de autoridade técnica. <br />
+                Feito para quem constrói o futuro, não para quem apenas o comenta.
+              </p>
             </div>
-            <p className="text-muted-foreground text-sm max-w-md mx-auto">
-              Curadoria de notícias de tecnologia feita para desenvolvedores. Sem spam, apenas conteúdo.
-            </p>
+            
+            <div className="flex flex-col md:items-end gap-4">
+              <div className="text-[10px] font-black tracking-[0.3em] text-primary uppercase mb-2">Navigation // Protocol</div>
+              <div className="flex gap-8 text-xs font-black uppercase tracking-widest">
+                <ScrollLink href="#archive" className="hover:text-primary transition-colors">Arquivo</ScrollLink>
+                <Link href="/about" className="hover:text-primary transition-colors">Privacidade</Link>
+                <Link href="/terms" className="hover:text-primary transition-colors">Termos</Link>
+              </div>
+            </div>
           </div>
 
-          <Separator className="my-8" />
-
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>© 2026 Fresh News Zine. Todos os direitos reservados.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
-              <span className="cursor-pointer hover:text-black">Privacidade</span>
-              <span className="cursor-pointer hover:text-black">Termos</span>
-            </div>
+          <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+            <p>© 2026 Fresh News Zine. Binary Edition // All Rights Reserved.</p>
+            <p className="mt-4 md:mt-0">Built with deep engineering</p>
           </div>
         </div>
       </footer>

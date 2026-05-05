@@ -13,28 +13,28 @@ export function SubscribeForm() {
   })
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <form action={action} className="flex flex-col gap-4">
+    <div className="max-w-md mx-auto">
+      <form action={action} className="flex flex-col gap-6">
         
-        <div className="text-left text-sm font-medium text-slate-700 mb-1">
-          O que você quer receber? (Opcional)
+        <div className="text-left text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-1">
+          // CONFIG_PREFERENCES (Opcional)
         </div>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {['💻 DEV', '🤖 IA', '🛡️ CIBERSEGURANÇA', '💰 MERCADO'].map(cat => (
-            <label key={cat} className="flex items-center gap-2 text-sm border border-slate-200 px-3 py-1.5 rounded-full cursor-pointer hover:bg-slate-50 transition-colors">
-              <input type="checkbox" name="preferences" value={cat} className="rounded border-slate-300 text-black focus:ring-black accent-black" />
+        <div className="flex flex-wrap gap-1 mb-2">
+          {['💻 DEV', '🤖 IA', '🛡️ SEC', '💰 BIZ'].map(cat => (
+            <label key={cat} className="group relative flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border-2 border-white/10 px-4 py-2 cursor-pointer hover:border-primary transition-colors has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:checked]:border-primary">
+              <input type="checkbox" name="preferences" value={cat} className="sr-only" />
               <span>{cat}</span>
             </label>
           ))}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <div className="flex-grow">
             <Input
               name="email"
               type="email"
-              placeholder="Seu melhor e-mail"
-              className="h-12 rounded-none border-2 border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
+              placeholder="USUARIO@NETWORK.COM"
+              className="h-14 bg-surface-container-high border-2 border-editorial text-base px-6 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/30 font-black uppercase tracking-tighter"
               defaultValue=""
               disabled={isPending}
               required
@@ -44,8 +44,8 @@ export function SubscribeForm() {
             <Input
               name="phone"
               type="tel"
-              placeholder="WhatsApp (ex: 5511999999999)"
-              className="h-12 rounded-none border-2 border-slate-200 text-base px-4 focus-visible:ring-black shadow-sm"
+              placeholder="+55 WHATSAPP_ID"
+              className="h-14 bg-surface-container-high border-2 border-editorial text-base px-6 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/30 font-black uppercase tracking-tighter"
               defaultValue=""
               disabled={isPending}
             />
@@ -53,32 +53,32 @@ export function SubscribeForm() {
           <Button
             type="submit"
             size="lg"
-            className="h-12 px-8 rounded-none bg-black text-white hover:bg-zinc-800 font-bold uppercase tracking-widest min-w-[140px] shadow-md transition-all active:scale-95"
+            className="h-14 px-8 bg-primary text-primary-foreground hover:bg-white hover:text-black font-black uppercase tracking-[0.2em] transition-all active:scale-95 text-xs"
             disabled={isPending}
           >
-            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Quero Receber 🚀'}
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sincronizar Acesso 🚀'}
           </Button>
         </div>
       </form>
 
       {/* Feedback Visual */}
-      <div className="h-6 mt-2 text-left">
+      <div className="mt-6 text-left min-h-[24px]">
         {state?.message && (
           <p
-            className={`text-sm font-medium ${state.success ? 'text-green-600' : 'text-red-500'
+            className={`text-[10px] font-black uppercase tracking-widest ${state.success ? 'text-primary' : 'text-red-500'
               }`}
           >
-            {state.message}
+            &gt; {state.message}
           </p>
         )}
         {state?.errors?.email && (
-          <p className="text-sm text-red-500 font-medium">
-            {state.errors.email[0]}
+          <p className="text-[10px] text-red-500 font-black uppercase tracking-widest">
+            &gt; ERR_EMAIL_INVALID: {state.errors.email[0]}
           </p>
         )}
         {!state?.message && !state?.errors && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Junte-se a 10.000+ leitores inteligentes. Cancelamento a qualquer momento.
+          <p className="text-[9px] text-muted-foreground/40 font-bold uppercase tracking-[0.2em]">
+            // Protocolo de privacidade ativo. Sem spam. Apenas inteligência técnica.
           </p>
         )}
       </div>
