@@ -18,77 +18,77 @@ export default async function AdminPostsPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen p-8 text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-16 border-b-2 border-editorial pb-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+    <div className="bg-background min-h-screen text-foreground font-sans selection:bg-primary/30">
+      <div className="max-w-6xl mx-auto space-y-16">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-white/5 pb-16">
           <div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-foreground uppercase italic leading-[0.85]">
-              Inbox de <span className="text-primary">Curadoria</span>
+            <div className="inline-flex items-center gap-3 px-4 py-2 glass-card rounded-full border-white/10 mb-8">
+              <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase text-primary">System_Level_0 // Protocolo_Aprovação</span>
+            </div>
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground uppercase italic leading-[0.85]">
+              Inbox de <br />
+              <span className="text-primary drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]">Curadoria</span>
             </h1>
-            <p className="text-muted-foreground text-sm font-bold uppercase tracking-[0.3em]">
-              Protocolo de Aprovação Editorial // System Level 0
-            </p>
           </div>
-          <div className="text-[10px] font-black border-2 border-editorial p-4 uppercase tracking-[0.2em] text-primary bg-surface-container">
+          <div className="px-6 py-3 glass-card rounded-full border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-primary shadow-xl">
             Aguardando Decisão do Operador
           </div>
         </header>
-
+ 
       {newsletters?.length === 0 ? (
-        <div className="p-32 text-center border-2 border-dashed border-editorial bg-surface-container relative overflow-hidden">
+        <div className="p-32 text-center glass-card rounded-[4rem] border-white/5 border-dashed relative overflow-hidden shadow-2xl">
           <div className="absolute inset-0 bg-scanlines opacity-5"></div>
-          <p className="text-muted-foreground font-black text-xl uppercase tracking-tighter">Nenhuma transmissão pendente de análise.</p>
-          <div className="mt-8 text-primary font-black text-[10px] uppercase tracking-widest animate-pulse">Scanning Grid...</div>
+          <p className="text-muted-foreground font-black text-xl uppercase tracking-[0.3em] italic">Nenhuma transmissão pendente de análise.</p>
+          <div className="mt-12 inline-block px-8 py-3 glass-card rounded-full text-primary font-black text-[10px] uppercase tracking-widest animate-pulse">Scanning Grid...</div>
         </div>
       ) : (
         <div className="grid gap-12">
           {newsletters?.map((newsletter) => {
             return (
-            <div key={newsletter.id} className="bg-surface-container border-2 border-editorial flex flex-col lg:flex-row gap-0 hover:border-primary transition-all relative group">
+            <div key={newsletter.id} className="glass-card rounded-[3rem] border-white/10 flex flex-col lg:flex-row gap-0 hover:border-primary/30 transition-all relative group overflow-hidden shadow-2xl">
               
-              {/* DNA Stripe */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20 group-hover:bg-primary transition-colors" />
-
-              <div className="flex-1 p-8 lg:p-12 border-b-2 lg:border-b-0 lg:border-r-2 border-editorial">
-                <div className="flex flex-wrap items-center gap-2 mb-8">
-                  <span className="px-3 py-1 text-[10px] font-black bg-primary text-primary-foreground uppercase tracking-widest">
+              {/* DNA Stripe Accent */}
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary/20 group-hover:bg-primary transition-all duration-500 shadow-[0_0_20px_rgba(59,130,246,0)] group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]" />
+ 
+              <div className="flex-1 p-10 lg:p-16 relative z-10">
+                <div className="flex flex-wrap items-center gap-3 mb-10">
+                  <span className="px-4 py-1.5 text-[10px] font-black bg-primary text-white rounded-full uppercase tracking-widest shadow-lg shadow-primary/20">
                     {newsletter.category || 'GERAL'}
                   </span>
-                  <span className="px-3 py-1 text-[10px] font-black border-2 border-editorial text-muted-foreground uppercase tracking-widest">
+                  <span className="px-4 py-1.5 text-[10px] font-black glass-card border-white/10 text-muted-foreground rounded-full uppercase tracking-widest">
                     VOL. #{newsletter.edition_number}
                   </span>
-                  <span className="text-[10px] font-black text-muted-foreground/50 uppercase tracking-[0.2em] ml-2">
+                  <span className="text-[10px] font-black text-muted-foreground/30 uppercase tracking-[0.3em] ml-2 italic">
                     {new Date(newsletter.created_at).toLocaleDateString('pt-BR')}
                   </span>
                 </div>
                 
-                <h3 className="text-3xl md:text-5xl font-black mb-8 text-foreground leading-[0.9] uppercase italic tracking-tighter group-hover:text-primary transition-colors">
+                <h3 className="text-3xl md:text-6xl font-black mb-8 text-foreground leading-[0.9] uppercase italic tracking-tighter group-hover:text-primary transition-colors">
                   {newsletter.title}
                 </h3>
                 
-                <p className="text-muted-foreground mb-12 text-lg md:text-xl leading-tight max-w-3xl font-medium border-l-4 border-white/5 pl-6 py-2">
+                <p className="text-muted-foreground mb-12 text-lg md:text-2xl leading-tight max-w-3xl font-medium border-l-4 border-primary/20 pl-8 py-2 italic">
                   {newsletter.summary_intro}
                 </p>
-
-                {/* Conteúdo da Edição (Log View) */}
+ 
+                {/* Conteúdo da Edição (Log View) - Nested Glass */}
                 {newsletter.content_json?.categories?.length > 0 && (
-                  <div className="bg-surface-container-high border-2 border-editorial p-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-2 text-[8px] font-black text-white/5 uppercase">Content_Log</div>
-                    <div className="space-y-10">
+                  <div className="glass-card bg-white/[0.01] p-10 rounded-[2.5rem] border-white/5 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 text-[8px] font-black text-white/10 uppercase tracking-[0.5em]">Content_Sync_Log</div>
+                    <div className="space-y-12">
                       {newsletter.content_json.categories.map((cat: any, catIdx: number) => (
                         <div key={catIdx}>
-                          <h4 className="text-primary font-black text-[10px] mb-4 uppercase tracking-[0.3em] flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-primary"></span> {cat.name}
+                          <h4 className="text-primary font-black text-[10px] mb-6 uppercase tracking-[0.4em] flex items-center gap-3">
+                            <span className="w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span> {cat.name}
                           </h4>
                           <ul className="space-y-4">
                             {cat.items?.map((item: any, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground pl-4 border-l-2 border-white/10 group/item">
-                                <span className="font-bold uppercase tracking-tight group-hover/item:text-primary transition-colors">{item.headline}</span>
-                                <div className="mt-2">
-                                  <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-[9px] font-black text-muted-foreground hover:text-white uppercase tracking-widest border border-white/5 px-2 py-0.5 transition-colors">
-                                    [ SOURCE_LINK ]
-                                  </a>
-                                </div>
+                              <li key={idx} className="text-sm text-muted-foreground pl-6 border-l-2 border-white/5 group/item">
+                                <span className="font-black uppercase tracking-tight text-foreground group-hover/item:text-primary transition-colors block mb-2">{item.headline}</span>
+                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="inline-block text-[8px] font-black text-muted-foreground/40 hover:text-white uppercase tracking-[0.3em] border border-white/5 px-3 py-1 rounded-full transition-all">
+                                  SOURCE_LINK // EXTERNAL
+                                </a>
                               </li>
                             ))}
                           </ul>
@@ -98,17 +98,19 @@ export default async function AdminPostsPage() {
                   </div>
                 )}
               </div>
-
-              <div className="flex md:flex-row lg:flex-col gap-0 shrink-0 lg:w-48 bg-surface-container-high/50">
+ 
+              <div className="flex flex-row lg:flex-col shrink-0 lg:w-56 glass-card bg-white/[0.02] border-0 border-l border-white/5">
                 <form action={publishNewsletter.bind(null, newsletter.id)} className="flex-1">
-                  <Button type="submit" className="w-full h-full lg:h-32 bg-foreground text-background hover:bg-primary hover:text-primary-foreground rounded-none font-black uppercase tracking-[0.2em] text-xs transition-all border-r-2 lg:border-r-0 lg:border-b-2 border-editorial">
-                    <Check className="w-4 h-4 mr-2" /> Publicar
-                  </Button>
+                  <button type="submit" className="w-full h-full lg:h-1/2 flex flex-col items-center justify-center gap-4 bg-transparent text-muted-foreground hover:bg-emerald-500 hover:text-white transition-all border-r lg:border-r-0 lg:border-b border-white/5 group/btn">
+                    <Check className="w-8 h-8 group-hover/btn:scale-125 transition-transform" />
+                    <span className="font-black uppercase tracking-[0.4em] text-[10px]">Publicar</span>
+                  </button>
                 </form>
                 <form action={rejectNewsletter.bind(null, newsletter.id)} className="flex-1">
-                  <Button type="submit" variant="ghost" className="w-full h-full lg:h-32 bg-transparent text-muted-foreground hover:bg-destructive hover:text-white rounded-none font-black uppercase tracking-[0.2em] text-xs transition-all">
-                    <X className="w-4 h-4 mr-2" /> Rejeitar
-                  </Button>
+                  <button type="submit" className="w-full h-full lg:h-1/2 flex flex-col items-center justify-center gap-4 bg-transparent text-muted-foreground hover:bg-red-500 hover:text-white transition-all group/btn">
+                    <X className="w-8 h-8 group-hover/btn:scale-125 transition-transform" />
+                    <span className="font-black uppercase tracking-[0.4em] text-[10px]">Rejeitar</span>
+                  </button>
                 </form>
               </div>
             </div>

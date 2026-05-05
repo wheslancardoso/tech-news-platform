@@ -9,60 +9,84 @@
 
 :root {
   /* Obsidian Base Hierarchy (Tonal Stacking) */
-  --background: 0 0% 5%; /* #0D0D0D */
-  --foreground: 0 0% 95%; /* #F2F2F2 */
+  --background: 222 47% 11%; /* Deep Slate #0F172A */
+  --foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%; /* Azure Blue #3B82F6 */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217 19% 27%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 19% 27%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217 19% 27%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 19% 27%;
+  --input: 217 19% 27%;
+  --ring: 224 76.3% 48%;
   
-  --surface-base: 0 0% 5%; /* #0D0D0D */
-  --surface-container: 0 0% 7%; /* #111111 */
-  --surface-container-high: 0 0% 16%; /* #2A2A2A */
-  --surface-container-highest: 0 0% 21%; /* #353534 */
-
-  --card: 0 0% 7%; /* #111111 */
-  --card-foreground: 0 0% 95%;
-
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 95%;
-
-  --primary: 184 100% 50%; /* #00F0FF - Neo Cyan */
-  --primary-foreground: 184 100% 10%;
-
-  --secondary: 0 100% 50%; /* #FF0000 - Security Red */
-  --secondary-foreground: 0 100% 95%;
-
-  --muted: 0 0% 20%;
-  --muted-foreground: 0 0% 65%;
-
-  --accent: 135 100% 50%; /* #00FF41 - Dev Green */
-  --accent-foreground: 135 100% 10%;
-
-  --destructive: 0 100% 40%;
-  --destructive-foreground: 0 0% 98%;
-
-  --border: 184 10% 55%; /* #849495 - Editorial Gray */
-  --input: 184 10% 25%;
-  --ring: 184 100% 50%;
-
-  --radius: 0px; /* NON-NEGOTIABLE BRUTALISM */
+  /* Glass Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 24px;
   
-  /* Editorial Rules */
-  --border-editorial: 2px solid hsl(var(--border));
+  --radius: 1.5rem; /* 24px Apple Standard */
+
+  /* Camaleão Palette (Glass Versions) */
+  --cat-ai: 190 100% 50%;
+  --cat-dev: 142 70% 55%;
+  --cat-sec: 0 84% 60%;
+  --cat-biz: 45 93% 47%;
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-surface: var(--glass-bg);
+  --color-surface-container: rgba(255, 255, 255, 0.05);
+  --color-editorial: var(--glass-border);
+  
+  --font-sans: "Inter", "Geist Sans", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+  
+  --radius-none: 0px;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
 }
 
 @layer base {
   * {
-    @apply border-border;
-    border-radius: var(--radius) !important;
+    @apply border-border outline-ring/50;
   }
-
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    -webkit-font-smoothing: antialiased;
+    @apply bg-background text-foreground antialiased selection:bg-primary/30;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-[24px] border border-white/[0.08] shadow-2xl transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply bg-white/[0.06] border-white/[0.15] scale-[1.02];
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-black tracking-tighter uppercase;
-    letter-spacing: -0.04em;
+  .glass-nav {
+    @apply bg-background/60 backdrop-blur-[20px] border-b border-white/[0.05] sticky top-0 z-50;
   }
 }
 

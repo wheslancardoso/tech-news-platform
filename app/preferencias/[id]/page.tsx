@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { updatePreferences } from '@/actions/preferences'
-import { Button } from '@/components/ui/button'
+
 
 interface PreferencesPageProps {
   params: Promise<{
@@ -32,41 +32,54 @@ export default async function PreferencesPage({ params }: PreferencesPageProps) 
   }
 
   return (
-    <div className="bg-[#131313] min-h-screen text-[#e5e2e1] font-sans flex flex-col items-center justify-center p-6">
-      <div className="max-w-md w-full border-2 border-[#474747] bg-[#1c1b1b] p-8 md:p-12">
-        <header className="mb-10 border-b-2 border-[#474747] pb-6">
-          <h1 className="text-3xl font-black tracking-tighter mb-2 text-white">SUAS PREFERÊNCIAS</h1>
-          <p className="text-[#919191] text-sm uppercase tracking-widest font-bold">
+    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col items-center justify-center p-6 selection:bg-primary/30 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-lg aspect-square bg-primary/20 rounded-full blur-[160px] pointer-events-none"></div>
+
+      <div className="max-w-md w-full glass-card p-10 md:p-14 rounded-[3.5rem] border-white/10 shadow-2xl relative z-10">
+        <header className="mb-12 border-b border-white/5 pb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-black text-[10px]">FN</span>
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Protocolo_Preferências</span>
+          </div>
+          <h1 className="text-4xl font-black tracking-tighter mb-3 text-foreground uppercase italic leading-none">SUAS ESCOLHAS</h1>
+          <p className="text-muted-foreground/60 text-[10px] uppercase tracking-[0.2em] font-black">
             {subscriber.email}
           </p>
         </header>
-
-        <form action={handleSubmit} className="space-y-8">
+ 
+        <form action={handleSubmit} className="space-y-10">
           <div className="space-y-4">
-            <p className="text-sm font-bold text-[#c6c6c6] uppercase tracking-widest mb-4">Escolha o que deseja receber:</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-6">Sincronizar Categorias:</p>
             {CATEGORIES.map((cat) => (
-              <label key={cat} className="flex items-center gap-4 p-4 border-2 border-[#474747] hover:border-white transition-colors cursor-pointer group">
-                <input 
-                  type="checkbox" 
-                  name="preferences" 
-                  value={cat} 
-                  defaultChecked={subscriber.preferences?.includes(cat)}
-                  className="w-5 h-5 rounded-none border-2 border-[#474747] bg-transparent text-white focus:ring-0 checked:bg-white checked:border-white accent-white"
-                />
-                <span className="font-bold uppercase tracking-wider text-sm group-hover:text-white transition-colors">
+              <label key={cat} className="flex items-center gap-4 p-5 glass-card rounded-2xl border-white/5 hover:border-primary/30 transition-all cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input 
+                    type="checkbox" 
+                    name="preferences" 
+                    value={cat} 
+                    defaultChecked={subscriber.preferences?.includes(cat)}
+                    className="peer w-6 h-6 rounded-lg border-white/10 bg-white/5 text-primary focus:ring-offset-0 focus:ring-0 transition-all checked:bg-primary checked:border-primary"
+                  />
+                </div>
+                <span className="font-black uppercase tracking-widest text-xs text-muted-foreground group-hover:text-foreground transition-colors peer-checked:text-white">
                   {cat}
                 </span>
               </label>
             ))}
           </div>
-
-          <Button type="submit" className="w-full bg-white text-black hover:bg-[#d4d4d4] rounded-none font-black uppercase tracking-widest h-14 text-lg shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all">
-            Salvar Escolhas
-          </Button>
-
-          <p className="text-center text-[10px] text-[#474747] uppercase tracking-widest font-bold pt-4">
-            Fresh News / Sem Hype / Só o que importa
-          </p>
+ 
+          <button type="submit" className="w-full bg-primary text-white hover:bg-white hover:text-black rounded-full font-black uppercase tracking-[0.3em] h-16 text-[10px] transition-all shadow-2xl shadow-primary/20 hover:shadow-white/10 active:scale-95">
+            SALVAR_PROTOCOLOS
+          </button>
+ 
+          <div className="pt-8 text-center">
+            <p className="text-[10px] text-muted-foreground/20 uppercase tracking-[0.5em] font-black italic">
+              Fresh News // Deep Intelligence // 2026
+            </p>
+          </div>
         </form>
       </div>
     </div>

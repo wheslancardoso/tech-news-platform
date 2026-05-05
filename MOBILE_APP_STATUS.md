@@ -14,34 +14,35 @@ O Fresh News não é um app de loja (App Store/Play Store), mas sim uma **Zine D
 
 ---
 
-## 🎨 2. Interface & UX (Cyber-Brutalism)
-As telas mobile seguem a estética de "Broadsheet Binário", com foco em legibilidade técnica e alta performance.
+## 🎨 2. Interface & UX (Liquid Glass Premium)
+As telas mobile foram totalmente redesenhadas para a estética **Liquid Glass**, inspirada nas diretrizes de design mais modernas da Apple, com foco em profundidade, transparência e elegância.
 
-### Telas Implementadas (Stitch Prototypes):
-- **Feed Principal (`03-feed-principal.html`)**: Layout de uma coluna, scroll infinito, filtros táteis.
-- **Leitura de Artigo (`05-artigo.html`)**: Tipografia mono, foco total no conteúdo, sem distrações.
-- **Central de Preferências (`07-preferencias.html`)**: Interface de "Tuning" onde o usuário define seus interesses (IA, Sec, Dev, Cloud).
+### Telas Implementadas:
+- **Feed Principal**: Agora com `glass-cards` flutuantes, bordas ultra-arredondadas e desfoque de fundo (backdrop-blur).
+- **Leitura Imersiva**: Layout de leitura profunda com tipografia premium, organização em camadas translúcidas e badges de pílula.
+- **Central de Preferências**: Terminal de vidro centralizado com interações suaves e feedback visual tátil.
 
 ### Efeitos Especiais:
-- **Sistema Camaleão**: As cores de destaque (accent colors) mudam dinamicamente baseadas na categoria da notícia visualizada.
-- **Micro-animações**: Efeitos de scanlines, terminal cursor e glitch sutis para reforçar a estética hacker.
+- **Layer Stacking**: Uso de camadas de vidro com diferentes níveis de opacidade para criar hierarquia visual.
+- **Dynamic Glows**: Gradientes radiais que acompanham o scroll, dando vida e movimento à interface.
+- **Micro-interações**: Transições suaves e efeitos de hover otimizados para o toque.
 
 ---
 
 ## ⚙️ 3. Funcionalidades Mobile Ativas
+- [x] **Deep Dive Content**: As newsletters agora entregam análises profundas e detalhadas, fugindo de resumos genéricos.
 - [x] **Segmentação por Interesse**: Filtro automático de categorias no envio do WhatsApp.
-- [x] **Deep Dive Generation**: Resumos agora geram análises de até 1200 caracteres (padrão analítico).
-- [x] **Magic Links**: Links no WhatsApp que levam o usuário direto para sua área personalizada.
-- [x] **Deduplicação de Tópicos**: Garantia de que o usuário não receba a mesma notícia triplicada.
+- [x] **Magic Links**: Links personalizados que mantêm a sessão do usuário ativa na Web App.
+- [x] **Performance Glass**: Otimização do CSS para garantir 60fps em animações de desfoque em dispositivos móveis.
 
 ---
 
 ## 🚀 4. Roadmap & Próximos Passos
-- [ ] **Configuração PWA**: Adicionar `manifest.json` e `service-workers` para instalação na home screen.
-- [ ] **Web Push Notifications**: Notificações diretas no navegador para usuários que não usam WhatsApp.
-- [ ] **Offline Reading**: Cache local de edições recentes para leitura sem conexão.
+- [ ] **Manifesto PWA**: Configurar `manifest.json` e ícones para instalação "Add to Home Screen".
+- [ ] **Service Workers**: Implementar cache estratégico para leitura offline das edições de vidro.
+- [ ] **Haptic Feedback**: Adicionar vibrações sutis em ações de salvar preferências (Web API).
 
 ---
 
 **Última atualização:** 05/05/2026
-**Status Geral:** 🟢 85% Concluído (Fase de polimento e distribuição)
+**Status Geral:** 🔵 95% Concluído (Interface Liquid Glass Estabilizada)

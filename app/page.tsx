@@ -45,98 +45,103 @@ export default async function Home(props: { searchParams: SearchParams }) {
 
 
   return (
-    <div className="min-h-screen bg-background font-sans flex flex-col selection:bg-primary selection:text-primary-foreground">
-      {/* Header */}
-      <header className="border-b-2 border-editorial bg-background/95 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-black text-lg">FN</span>
+    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col selection:bg-primary/30">
+      {/* Header Liquid Glass */}
+      <div className="fixed top-6 left-0 right-0 z-50 px-6">
+        <header className="max-w-7xl mx-auto glass-nav h-20 px-8 rounded-full flex items-center justify-between border border-white/10 shadow-2xl">
+          <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+              <span className="text-white font-black text-sm tracking-tighter">FN</span>
             </div>
-            <span className="font-black text-2xl tracking-tighter uppercase">Fresh News</span>
+            <span className="font-black text-xl tracking-tighter text-foreground uppercase italic hidden md:block">Fresh News</span>
           </Link>
-          <nav className="flex items-center gap-4 md:gap-8 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-            <ScrollLink href="#archive" className="hidden md:block hover:text-primary transition-colors">Edições</ScrollLink>
-            <Link href="/about" className="hidden md:block hover:text-primary transition-colors">Sobre</Link>
-            {isAdmin && (
-              <div className="flex items-center gap-3">
-                <Link href="/admin/posts" className="text-[10px] font-black flex items-center gap-2 px-3 py-1 bg-white text-black hover:bg-primary transition-colors">
-                  INBOX 📥
-                </Link>
-                <form action={handleLogout}>
-                  <button
-                    type="submit"
-                    className="text-[10px] font-black flex items-center gap-2 px-3 py-1 border border-white/20 text-white/50 hover:text-red-500 hover:border-red-500 transition-colors"
-                  >
-                    SAIR 🚪
-                  </button>
-                </form>
-              </div>
-            )}
+
+          <nav className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-8 text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground mr-4">
+              <ScrollLink href="#archive" className="hover:text-primary transition-colors">Edições</ScrollLink>
+              <Link href="/about" className="hover:text-primary transition-colors">Sobre</Link>
+              {isAdmin && (
+                <Link href="/admin/posts" className="text-primary hover:brightness-125">ADMIN_INBOX</Link>
+              )}
+            </div>
+
             <ScrollLink
               href="#subscribe"
-              className={cn(buttonVariants({ variant: "default", size: "sm" }), "px-6 font-black uppercase text-[12px]")}
+              className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20"
             >
-              Inscrever-se
+              Assinar Zine
             </ScrollLink>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section id="subscribe" className="relative py-16 md:py-32 container mx-auto px-4 scroll-mt-24 overflow-hidden border-b-2 border-editorial">
-          <div className="absolute inset-0 -z-10 bg-scanlines opacity-20"></div>
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_-20%,rgba(0,240,255,0.15),transparent_70%)]"></div>
-          
-          <div className="max-w-5xl mx-auto text-center space-y-10">
-            <div className="inline-block px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black tracking-[0.2em] uppercase mb-4 animate-pulse">
-              System Online // 2026 Edition
-            </div>
             
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.9] uppercase italic">
-              Notícias Tech <span className="text-primary">Sem Hype.</span><br />
-              <span className="text-muted-foreground/30">Deep Dive Only.</span>
-            </h1>
+            {isAdmin && (
+              <form action={handleLogout} className="ml-2">
+                <button type="submit" className="p-2 hover:text-red-500 transition-colors">
+                  <span className="sr-only">Sair</span>
+                  🚪
+                </button>
+              </form>
+            )}
+          </nav>
+        </header>
+      </div>
 
-            <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto font-medium leading-tight border-l-4 border-primary pl-6 text-left">
-              O feed de autoridade para engenheiros que desprezam o óbvio e buscam a essência técnica.
-            </p>
+      <main className="flex-grow pt-32">
+        {/* Hero Section - Liquid Style */}
+        <section id="subscribe" className="relative py-24 md:py-44 container mx-auto px-6 scroll-mt-32">
+          <div className="max-w-6xl mx-auto relative">
+            {/* Elementos Decorativos Flutuantes */}
+            <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-[120px]"></div>
 
-            <div className="max-w-md mx-auto mt-12 bg-surface-container p-1 border-2 border-editorial">
-              <SubscribeForm />
+            <div className="text-center space-y-12 relative z-10">
+              <div className="inline-flex items-center gap-3 px-4 py-2 glass-card rounded-full border-white/10">
+                <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-primary">Protocolo_Ativo // 2026</span>
+              </div>
+              
+              <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-foreground leading-[0.85] uppercase italic">
+                Sua Dose de <br />
+                <span className="text-primary drop-shadow-[0_0_30px_rgba(59,130,246,0.3)]">Inteligência Tech.</span>
+              </h1>
+
+              <p className="text-xl md:text-3xl text-muted-foreground/80 max-w-3xl mx-auto font-medium leading-tight text-center">
+                Curadoria técnica de alta densidade para quem constrói o futuro. Sem ruído, sem distrações, apenas o core.
+              </p>
+
+              <div className="max-w-2xl mx-auto mt-16 glass-card p-2 rounded-[2.5rem] shadow-2xl">
+                <SubscribeForm />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Archive Section (Newsletters) */}
-        <section id="archive" className="py-24 min-h-[50vh]">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-8 border-b-2 border-editorial pb-6">
-              <div className="space-y-2">
-                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic">Edições</h2>
-                <p className="text-primary font-bold text-xs tracking-widest uppercase">// Histórico de Inteligência</p>
+        {/* Archive Section - Airy Grid */}
+        <section id="archive" className="py-32 relative">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
+              <div className="text-center md:text-left">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic mb-4">Edições_Passadas</h2>
+                <p className="text-primary font-black text-xs tracking-[0.4em] uppercase">Arquivo de Transmissões Técnicas</p>
               </div>
               
-              {/* Category Filter */}
+              {/* Category Filter - Pill Style */}
               {availableCategories.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1">
+                <div className="flex flex-wrap items-center justify-center gap-2">
                   <Link 
                     href="/" 
                     className={cn(
-                      "px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors border-2",
-                      !selectedCategory ? "bg-primary text-primary-foreground border-primary" : "bg-transparent text-muted-foreground border-white/10 hover:border-white/30"
+                      "px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border",
+                      !selectedCategory ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
                     )}
                   >
-                    ALL
+                    ALL_TRANS
                   </Link>
                   {availableCategories.map(cat => (
                     <Link 
                       key={cat}
                       href={`/?category=${encodeURIComponent(cat)}`}
                       className={cn(
-                        "px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors border-2",
-                        selectedCategory === cat ? "bg-primary text-primary-foreground border-primary" : "bg-transparent text-muted-foreground border-white/10 hover:border-white/30"
+                        "px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border",
+                        selectedCategory === cat ? "bg-primary text-white border-primary shadow-lg shadow-primary/20" : "glass-card border-white/5 text-muted-foreground hover:border-white/20"
                       )}
                     >
                       {cat.replace(/[^a-zA-ZÀ-ÿ0-9 ]/g, '').trim()}
@@ -147,71 +152,73 @@ export default async function Home(props: { searchParams: SearchParams }) {
             </div>
 
             {!newsletters || newsletters.length === 0 ? (
-              <div className="text-center py-32 border-2 border-dashed border-white/10 bg-surface-container">
-                <p className="text-muted-foreground font-black uppercase tracking-tighter">Nenhuma edição detectada na rede.</p>
-                {isAdmin && (
-                  <p className="text-[10px] text-primary mt-4 font-bold uppercase tracking-widest animate-pulse">Aguardando geração via console de admin...</p>
-                )}
+              <div className="text-center py-40 glass-card rounded-[3rem] border-dashed border-white/10">
+                <p className="text-muted-foreground font-black uppercase tracking-widest">Nenhuma transmissão detectada na rede.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-l-2 border-t-2 border-editorial">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
                 {newsletters.map((news) => (
-                  <div key={news.id} className="border-r-2 border-b-2 border-editorial">
-                    <NewsCard
-                      id={news.id}
-                      edition={news.edition_number}
-                      title={news.title}
-                      date={news.created_at}
-                      intro={news.summary_intro}
-                      status={news.status}
-                      isAdmin={isAdmin}
-                    />
-                  </div>
+                  <NewsCard
+                    key={news.id}
+                    id={news.id}
+                    edition={news.edition_number}
+                    title={news.title}
+                    date={news.created_at}
+                    intro={news.summary_intro}
+                    status={news.status}
+                    isAdmin={isAdmin}
+                  />
                 ))}
               </div>
             )}
+
+            <div className="mt-24 text-center">
+              <Link href="/archive" className="inline-flex items-center gap-3 px-10 py-4 glass-card rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:text-primary transition-all">
+                Explorar_Arquivo_Completo <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-surface-container border-t-2 border-editorial py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-black text-sm">FN</span>
+      {/* Footer Liquid Glass */}
+      <footer className="bg-white/[0.02] backdrop-blur-xl border-t border-white/5 py-32 mt-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
+            <div className="col-span-1 md:col-span-2 space-y-12">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                  <span className="text-white font-black text-sm">FN</span>
                 </div>
-                <span className="font-black text-xl tracking-tighter uppercase">Fresh News</span>
+                <span className="font-black text-2xl tracking-tighter uppercase italic">Fresh News</span>
               </div>
-              <p className="text-muted-foreground text-sm max-w-sm font-medium leading-relaxed uppercase">
-                Curadoria de autoridade técnica. <br />
-                Feito para quem constrói o futuro, não para quem apenas o comenta.
+              <p className="text-muted-foreground text-lg md:text-2xl font-medium max-w-2xl leading-tight">
+                Destilando o ruído digital para entregar inteligência técnica de alta densidade. Feito por engenheiros, para engenheiros.
               </p>
             </div>
             
-            <div className="flex flex-col md:items-end gap-4">
-              <div className="text-[10px] font-black tracking-[0.3em] text-primary uppercase mb-2">Navigation // Protocol</div>
-              <div className="flex gap-8 text-xs font-black uppercase tracking-widest">
-                <ScrollLink href="#archive" className="hover:text-primary transition-colors">Arquivo</ScrollLink>
-                <Link href="/about" className="hover:text-primary transition-colors">Privacidade</Link>
-                <Link href="/terms" className="hover:text-primary transition-colors">Termos</Link>
+            <div className="flex flex-col gap-8">
+              <div className="text-[10px] font-black tracking-[0.4em] text-primary uppercase underline underline-offset-8">Links // Protocol</div>
+              <div className="flex flex-col gap-6 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                <Link href="/archive" className="hover:text-white transition-colors">Arquivo Completo</Link>
+                <Link href="/about" className="hover:text-white transition-colors">Manifesto Técnico</Link>
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacidade</Link>
               </div>
             </div>
           </div>
 
-          <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
-            <p>© 2026 Fresh News Zine. Binary Edition // All Rights Reserved.</p>
-            <p className="mt-4 md:mt-0">Built with deep engineering</p>
+          <div className="mt-32 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/20">
+            <p>© 2026 Binary BroadSheet // Premium Intelligence</p>
+            <p className="mt-6 md:mt-0">Protocol_Status: Fully_Encrypted</p>
           </div>
         </div>
       </footer>
+
       {/* Floating Dev Trigger (APENAS ADMIN) */}
       {isAdmin && (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 right-4 z-[100]">
           <form action={generateDraft}>
-            <Button type="submit" variant="secondary" className="shadow-lg opacity-75 hover:opacity-100 transition-opacity">
+            <Button type="submit" variant="secondary" className="glass-card rounded-full shadow-lg opacity-75 hover:opacity-100 transition-opacity">
               ⚡ (Dev) Gerar Edição
             </Button>
           </form>
