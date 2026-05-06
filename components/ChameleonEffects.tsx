@@ -68,6 +68,20 @@ export function ChameleonEffects({ effects }: ChameleonEffectsProps) {
       {effects.includes('glassmorphism') && (
         <div className="absolute inset-0 z-0 bg-white/[0.02] backdrop-blur-[10px] border border-white/10" />
       )}
+
+      {/* Street Glitch (Heavy/Urban) */}
+      {effects.includes('street_glitch') && (
+        <>
+          <div className="absolute inset-0 z-10 bg-scanlines opacity-40 mix-blend-overlay" />
+          <div className="absolute inset-0 z-20 bg-white/5 animate-chameleon-glitch opacity-20" />
+          <div className="absolute inset-0 z-0 bg-grainy opacity-[0.15]" />
+        </>
+      )}
+
+      {/* Paper/Monochrome Texture (Critical Vanguard) */}
+      {effects.includes('paper_texture') && (
+        <div className="absolute inset-0 z-10 bg-grainy opacity-[0.2] mix-blend-screen contrast-150 grayscale" />
+      )}
     </div>
   )
 }

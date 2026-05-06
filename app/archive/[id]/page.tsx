@@ -62,6 +62,48 @@ const getCategoryTheme = (name: string) => {
     };
   }
   
+  // --- NOVAS CATEGORIAS DE MÚSICA ---
+  
+  // MUSICA_URBANA (Amarelo Ocre / Street Brutalism)
+  if (upper.includes('URBANA') || upper.includes('HIP') || upper.includes('RAP')) {
+    return { 
+      color: '#EAB308', 
+      rgb: hexToRgb('#EAB308'), 
+      effects: ['street_glitch', 'grainy_texture', 'terminal_glow'],
+      label: 'URBAN_VANGUARD' 
+    };
+  }
+
+  // MUSICA_ELETRONICA (Hacker / Synth / Matrix)
+  if (upper.includes('ELETRONICA') || upper.includes('TECHNO') || upper.includes('HOUSE')) {
+    return { 
+      color: '#22C55E', 
+      rgb: hexToRgb('#22C55E'), 
+      effects: ['terminal_glow', 'scanlines', 'glitch'],
+      label: 'SYNTH_PROTOCOL' 
+    };
+  }
+
+  // VANGUARDA_CRITICA (Monocromático / Acadêmico)
+  if (upper.includes('VANGUARDA') || upper.includes('CRITICA') || upper.includes('QUIETUS')) {
+    return { 
+      color: '#FFFFFF', 
+      rgb: '255, 255, 255', 
+      effects: ['grainy_texture', 'subtle_glow'],
+      label: 'CRITICAL_THEORY' 
+    };
+  }
+
+  // CULTURA_BR (Brasil Tech)
+  if (upper.includes('BR') || upper.includes('BRASIL')) {
+    return { 
+      color: '#84CC16', 
+      rgb: hexToRgb('#84CC16'), 
+      effects: ['glow', 'street_glitch'],
+      label: 'BRAZIL_AXIS' 
+    };
+  }
+  
   // Default (Violet)
   return { 
     color: '#8b5cf6', 
