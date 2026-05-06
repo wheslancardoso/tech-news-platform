@@ -95,22 +95,22 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
       <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.02] bg-grainy bg-fixed"></div>
 
       {/* Header Liquid Glass */}
-      <div className="fixed top-8 left-0 right-0 z-[110] px-6">
-        <header className="max-w-6xl mx-auto glass-nav h-20 px-10 rounded-full flex items-center justify-between border border-white/5 shadow-2xl">
-          <Link href="/archive" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-9 h-9 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
-              <ArrowLeft className="w-4 h-4 text-primary" />
+      <div className="fixed top-2 md:top-8 left-0 right-0 z-[110] px-2 md:px-6 w-full">
+        <header className="max-w-6xl mx-auto glass-nav h-14 md:h-20 px-4 md:px-10 rounded-full flex items-center justify-between border border-white/5 shadow-2xl w-full overflow-hidden">
+          <Link href="/archive" className="flex items-center gap-2 md:gap-3 hover:opacity-80 transition-opacity shrink-0">
+            <div className="w-7 h-7 md:w-9 md:h-9 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
+              <ArrowLeft className="w-3 h-3 text-primary" />
             </div>
             <span className="tech-label text-primary hidden md:block">Arquivo // Transmissões</span>
           </Link>
           
-          <div className="flex items-center gap-6">
-             <button className="p-3 glass-card rounded-xl border-white/5 text-muted-foreground hover:text-white transition-colors">
-              <Share2 className="w-4 h-4" />
+          <div className="flex items-center gap-2 md:gap-6 shrink-0">
+             <button className="p-2 md:p-3 glass-card rounded-lg md:rounded-xl border-white/5 text-muted-foreground hover:text-white transition-colors">
+              <Share2 className="w-3 h-3 md:w-4 md:h-4" />
             </button>
             <Link href="/#subscribe">
-              <button className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all shadow-xl shadow-primary/25">
-                Assinar Edição
+              <button className="bg-primary text-white hover:bg-white hover:text-black px-3 md:px-8 py-2 md:py-3 rounded-full text-[7px] md:text-[10px] font-black uppercase tracking-wider md:tracking-widest transition-all shadow-xl shadow-primary/25 whitespace-nowrap">
+                Assinar
               </button>
             </Link>
           </div>
@@ -118,46 +118,46 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
       </div>
 
       {/* HERO IMERSIVO */}
-      <section className="relative h-[90vh] w-full overflow-hidden flex items-end pb-32">
+      <section className="relative min-h-[50vh] md:h-[90vh] w-full overflow-hidden flex items-end pb-12 md:pb-32">
         <div className="absolute inset-0 z-0">
           <img 
             src={mainImage} 
             alt={content.title} 
-            className="w-full h-full object-cover grayscale-[0.5] brightness-[0.3] scale-105"
+            className="w-full h-full object-cover grayscale-[0.5] brightness-[0.2] scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]"></div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-6 relative z-10 w-full">
-          <div className="inline-flex items-center gap-4 px-4 py-2 glass-card rounded-full border-primary/20 mb-10">
-            <span className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_10px_#8B5CF6]"></span>
-            <span className="tech-label text-primary uppercase">Edição #{newsletter.edition_number} // {format(new Date(newsletter.created_at), "dd MMMM yyyy", { locale: ptBR })}</span>
+        <div className="max-w-6xl mx-auto px-6 relative z-10 w-full overflow-hidden">
+          <div className="inline-flex items-center gap-2 px-2 py-1 glass-card rounded-full border-primary/20 mb-3 md:mb-10">
+            <span className="w-1 h-1 bg-primary rounded-full animate-pulse shadow-[0_0_10px_#8B5CF6]"></span>
+            <span className="tech-label text-primary uppercase text-[6px] md:text-[10px]">Edição #{newsletter.edition_number} // {format(new Date(newsletter.created_at), "dd MMMM yyyy", { locale: ptBR })}</span>
           </div>
-          <h1 className="text-6xl md:text-[9rem] font-black tracking-tighter text-white leading-[0.8] uppercase italic mb-12 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+          <h1 className="text-lg sm:text-2xl md:text-4xl lg:text-6xl xl:text-7xl font-black tracking-tighter text-white leading-tight md:leading-[0.85] uppercase italic mb-4 md:mb-12 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] break-words overflow-hidden">
             {content.title}
           </h1>
-          <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-4xl leading-snug border-l-4 border-primary pl-8 py-2 italic bg-black/40 backdrop-blur-md">
+          <p className="text-[10px] sm:text-base md:text-xl lg:text-2xl text-muted-foreground font-medium max-w-4xl leading-tight border-l-2 md:border-l-4 border-primary pl-3 md:pl-8 py-0.5 italic bg-black/40 backdrop-blur-md">
             {content.intro}
           </p>
         </div>
       </section>
 
-      <main className="max-w-6xl mx-auto px-6 py-32 space-y-48">
+      <main className="max-w-6xl mx-auto px-6 py-8 md:py-32 space-y-12 md:space-y-48">
         
         {/* QUICK TAKES - Glass Receptacle */}
         {content.quickTakes && content.quickTakes.length > 0 && (
-          <div className="glass-card p-12 md:p-24 rounded-[4rem] border-white/5 relative overflow-hidden shadow-2xl bg-white/[0.01]">
+          <div className="glass-card p-6 md:p-24 rounded-2xl md:rounded-[4rem] border-white/5 relative overflow-hidden shadow-2xl bg-white/[0.01]">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-            <h2 className="tech-label mb-16 flex items-center gap-4 text-primary">
-              <Zap className="w-4 h-4 fill-current" /> 
+            <h2 className="tech-label mb-6 md:mb-16 flex items-center gap-3 text-primary">
+              <Zap className="w-3 h-3 md:w-4 md:h-4 fill-current" /> 
               Sincronização Rápida // Quick Logs
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
               {content.quickTakes.map((take: string, idx: number) => (
-                <div key={idx} className="flex gap-6 group">
-                  <span className="text-primary/20 font-black text-4xl group-hover:text-primary transition-colors">{(idx + 1).toString().padStart(2, '0')}</span>
-                  <p className="text-lg md:text-xl font-bold leading-tight group-hover:text-foreground/90 transition-colors">{take}</p>
+                <div key={idx} className="flex gap-4 md:gap-6 group">
+                  <span className="text-primary/20 font-black text-xl md:text-4xl group-hover:text-primary transition-colors">{(idx + 1).toString().padStart(2, '0')}</span>
+                  <p className="text-sm md:text-xl font-bold leading-tight group-hover:text-foreground/90 transition-colors">{take}</p>
                 </div>
               ))}
             </div>
@@ -165,13 +165,13 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
         )}
 
         {/* CATEGORIAS CAMALEÔNICAS */}
-        <div className="space-y-64 pb-64">
+        <div className="space-y-16 md:space-y-64 pb-16 md:pb-64">
           {content.categories?.map((cat: any, catIdx: number) => {
             const theme = getCategoryTheme(cat.name);
             return (
               <section 
                 key={catIdx} 
-                className="relative scroll-mt-40 pt-32 pb-40 px-12 -mx-12 rounded-[5rem] transition-colors duration-1000"
+                className="relative scroll-mt-40 pt-8 md:pt-32 pb-12 md:pb-40 px-3 md:px-12 md:-mx-12 rounded-xl md:rounded-[5rem] transition-colors duration-1000"
                 style={{ 
                   '--theme-primary': theme.color,
                   '--theme-primary-rgb': theme.rgb 
@@ -179,23 +179,30 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
               >
                 {/* 
                   FUNDO TEMÁTICO DA SEÇÃO 
-                  Isso cria uma "nuvem" de cor atrás de toda a seção
+                  Utiliza uma máscara radial para garantir que o brilho se funda suavemente 
+                  com o fundo preto da página nas bordas.
                 */}
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                  <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundColor: theme.color }}></div>
+                <div 
+                  className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
+                  style={{ 
+                    maskImage: 'radial-gradient(circle at center, black 30%, transparent 95%)',
+                    WebkitMaskImage: 'radial-gradient(circle at center, black 30%, transparent 95%)'
+                  }}
+                >
+                  <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundColor: theme.color }}></div>
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--theme-primary-rgb),0.15)_0%,transparent_80%)]"></div>
                   <ChameleonEffects effects={theme.effects} />
                 </div>
 
                 {/* Cabeçalho da Seção */}
-                <div className="flex flex-col md:flex-row md:items-end gap-6 mb-24 relative z-10">
+                <div className="flex flex-col md:flex-row md:items-end gap-3 mb-6 md:mb-24 relative z-10">
                   <div className="flex-1">
-                    <div className="inline-flex items-center gap-2 mb-4">
-                      <span className="w-3 h-[2px]" style={{ backgroundColor: theme.color }}></span>
-                      <span className="tech-label" style={{ color: theme.color }}>{theme.label}</span>
+                    <div className="inline-flex items-center gap-2 mb-1.5 md:mb-4">
+                      <span className="w-2 md:w-3 h-[2px]" style={{ backgroundColor: theme.color }}></span>
+                      <span className="tech-label text-[6px] md:text-[10px]" style={{ color: theme.color }}>{theme.label}</span>
                     </div>
                     <h2 
-                      className="text-6xl md:text-[8rem] font-black tracking-tighter uppercase italic drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)] leading-none"
+                      className="text-base sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter uppercase italic drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)] leading-none break-words"
                       style={{ color: theme.color }}
                     >
                       {cat.name}
@@ -207,39 +214,39 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                 </div>
 
                 {/* Grid de Artigos */}
-                <div className="grid grid-cols-1 gap-40 relative z-10">
+                <div className="grid grid-cols-1 gap-12 md:gap-40 relative z-10">
                   {cat.items?.map((item: any, itemIdx: number) => {
                     const itemEffects = item.theme?.ui_effects || theme.effects;
                     
                     return (
                       <article key={itemIdx} className="group relative">
                         {/* Efeito de Destaque no Hover do Artigo */}
-                        <div className="absolute -inset-12 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-[3rem] bg-white/[0.02] border border-white/5 backdrop-blur-sm">
+                        <div className="absolute inset-0 md:-inset-12 z-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl md:rounded-[3rem] bg-white/[0.02] border border-white/5 backdrop-blur-sm">
                            <ChameleonEffects effects={itemEffects} />
                         </div>
                         
-                        <div className="max-w-4xl space-y-12 relative z-10 p-4 transition-transform duration-500 group-hover:translate-x-4">
-                          <div className="space-y-4">
-                             <h3 className="text-4xl md:text-6xl font-bold text-white leading-[1] tracking-tighter group-hover:text-[var(--theme-primary)] transition-all duration-500">
-                              <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-[var(--theme-primary)]/40 decoration-2 underline-offset-[20px]">
+                        <div className="max-w-4xl space-y-3 md:space-y-12 relative z-10 p-1.5 md:p-4 transition-transform duration-500 group-hover:translate-x-4">
+                          <div className="space-y-1.5 md:space-y-4">
+                             <h3 className="text-base sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-snug md:leading-[1] tracking-tighter group-hover:text-[var(--theme-primary)] transition-all duration-500">
+                              <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-[var(--theme-primary)]/40 decoration-2 underline-offset-[4px] md:underline-offset-[20px]">
                                 {item.headline}
                               </a>
                             </h3>
                           </div>
                           
-                          <p className="text-muted-foreground/90 text-xl md:text-2xl leading-relaxed font-medium max-w-3xl">
+                          <p className="text-muted-foreground/80 text-[10px] sm:text-sm md:text-lg lg:text-xl xl:text-2xl leading-normal font-medium max-w-3xl">
                             {item.story}
                           </p>
                           
-                          <div className="flex items-center gap-8">
+                          <div className="flex items-center gap-6 md:gap-8">
                             <a 
                               href={item.link} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-4 tech-label transition-all hover:gap-8 hover:text-white"
+                              className="inline-flex items-center gap-3 tech-label transition-all hover:gap-6 hover:text-white text-[7px] md:text-[10px]"
                               style={{ color: theme.color }}
                             >
-                              ACESSAR_LOG_COMPLETO <ArrowRight className="w-4 h-4" />
+                              VER_MAIS <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                             </a>
                           </div>
                         </div>
@@ -253,21 +260,21 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
         </div>
 
         {/* ASSINATURA FINAL - Floating Glass */}
-        <div className="mt-64 p-20 md:p-40 glass-card rounded-[5rem] text-center relative overflow-hidden border-white/5 shadow-2xl bg-white/[0.01]">
+        <div className="mt-24 md:mt-64 p-6 md:p-40 glass-card rounded-2xl md:rounded-[5rem] text-center relative overflow-hidden border-white/5 shadow-2xl bg-white/[0.01]">
           <div className="absolute inset-0 bg-scanlines opacity-[0.05]"></div>
           <div className="absolute -bottom-40 -left-40 w-[30rem] h-[30rem] bg-primary/20 rounded-full blur-[150px]"></div>
           
-          <div className="relative z-10 space-y-12">
-            <h3 className="text-5xl md:text-[7rem] font-black text-foreground tracking-tighter uppercase italic leading-none">
+          <div className="relative z-10 space-y-6 md:space-y-12">
+            <h3 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl xl:text-7xl font-black text-foreground tracking-tighter uppercase italic leading-none break-words">
               Fim da <br /> <span className="text-primary">Transmissão</span>
             </h3>
-            <p className="text-muted-foreground/60 text-xl md:text-3xl max-w-3xl mx-auto font-medium italic leading-tight">
+            <p className="text-[10px] sm:text-base md:text-xl lg:text-2xl text-muted-foreground/60 max-w-2xl mx-auto font-medium italic leading-tight px-4">
               O Fresh News é o protocolo de inteligência para quem constrói a próxima camada da web.
             </p>
-            <div className="pt-8">
-              <Link href="/#subscribe">
-                <button className="bg-primary text-white hover:bg-white hover:text-black px-16 py-8 rounded-full font-black uppercase tracking-[0.5em] text-[10px] transition-all shadow-2xl shadow-primary/40">
-                  SINCRONIZAR MINHA CAIXA DE ENTRADA
+            <div className="pt-4 flex justify-center">
+              <Link href="/#subscribe" className="w-full max-w-[240px] md:max-w-none">
+                <button className="w-full md:w-auto bg-primary text-white hover:bg-white hover:text-black px-6 md:px-16 py-3 md:py-8 rounded-full font-black uppercase tracking-tight md:tracking-[0.5em] text-[8px] md:text-[10px] transition-all shadow-2xl shadow-primary/40 whitespace-normal">
+                  SINCRONIZAR <br className="md:hidden" /> AGORA
                 </button>
               </Link>
             </div>
@@ -277,15 +284,15 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
       </main>
 
       {/* FOOTER Liquid Glass */}
-      <footer className="bg-white/[0.01] backdrop-blur-3xl border-t border-white/5 py-24 text-center relative z-[110]">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-4">
+      <footer className="bg-white/[0.01] backdrop-blur-3xl border-t border-white/5 py-12 md:py-24 text-center relative z-[110]">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-12">
+          <div className="flex flex-col md:flex-row items-center gap-4">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-black text-[10px]">FN</span>
             </div>
-            <span className="font-black text-xs tracking-[0.4em] uppercase text-foreground/40">Fresh News // Premium Intelligence Layer</span>
+            <span className="font-black text-[8px] md:text-xs tracking-[0.4em] uppercase text-foreground/40 text-center md:text-left">Fresh News // Premium Intelligence Layer</span>
           </div>
-          <div className="text-muted-foreground/5 text-[8px] font-black uppercase tracking-[1em]">
+          <div className="text-muted-foreground/5 text-[6px] md:text-[8px] font-black uppercase tracking-[0.5em] md:tracking-[1em] break-all">
             TERMINAL_SESSIONS_ID_{newsletter.id.substring(0, 8).toUpperCase()}
           </div>
         </div>
