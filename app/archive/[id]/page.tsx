@@ -5,6 +5,7 @@ import { ptBR } from 'date-fns/locale'
 import { ArrowLeft, ArrowRight, Share2, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { ChameleonEffects } from '@/components/ChameleonEffects'
+import { cleanAISummary } from '@/lib/utils/text-cleanup'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -138,7 +139,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
             {content.title}
           </h1>
           <p className="text-[10px] sm:text-base md:text-xl lg:text-2xl text-muted-foreground font-medium max-w-4xl leading-tight border-l-2 md:border-l-4 border-primary pl-3 md:pl-8 py-0.5 italic bg-black/40 backdrop-blur-md">
-            {content.intro}
+            {cleanAISummary(content.intro)}
           </p>
         </div>
       </section>
@@ -246,7 +247,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                           )}
 
                           <p className="text-muted-foreground/80 text-[10px] sm:text-sm md:text-lg lg:text-xl xl:text-2xl leading-normal font-medium max-w-3xl">
-                            {item.summary || item.story}
+                            {cleanAISummary(item.summary || item.story)}
                           </p>
                           
                           <div className="flex items-center gap-6 md:gap-8">

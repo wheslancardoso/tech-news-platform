@@ -2,12 +2,13 @@
 
 import { useState, useRef } from 'react'
 import { FileText, Send, Zap, Copy, Check, ImageIcon, Link as LinkIcon, Upload, Loader2, ChevronDown, ChevronUp, Wand2 } from 'lucide-react'
-import { updateNewsletter } from '@/actions/newsletter'
+import { updateNewsletter, uploadImageAction } from '@/actions/newsletter'
 import { generateImagePromptAction } from '@/actions/generate'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { compressAndConvertToWebP } from '@/lib/utils/image-compression'
+import { cleanAISummary } from '@/lib/utils/text-cleanup'
 
 interface NewsletterCardProps {
   draft: any
@@ -16,7 +17,20 @@ interface NewsletterCardProps {
 export function NewsletterCard({ draft }: NewsletterCardProps) {
   const [imageUrl, setImageUrl] = useState(draft.image_url || '')
   const [imagePrompt, setImagePrompt] = useState(draft.image_prompt || '')
-  const [contentJson, setContentJson] = useState(draft.content_json || {})
+  
+  // Limpa artefatos de markdown no carregamento inicial
+  const initialContent = draft.content_json || {}
+  if (initialContent.intro) initialContent.intro = cleanAISummary(initialContent.intro)
+  if (initialContent.categories) {
+    initialContent.categories.forEach((cat: any) => {
+      cat.items?.forEach((item: any) => {
+        if (item.summary) item.summary = cleanAISummary(item.summary)
+        if (item.story) item.story = cleanAISummary(item.story)
+      })
+    })
+  }
+
+  const [contentJson, setContentJson] = useState(initialContent)
   const [isSaving, setIsSaving] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false)
@@ -44,6 +58,18 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
     }
   }
 
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const base64 = (reader.result as string).split(',')[1]
+        resolve(base64)
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -66,27 +92,28 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
       const compressedSizeKB = (compressedBlob.size / 1024).toFixed(0)
       console.log(`[Compression] Original: ${originalSize}MB | WebP: ${compressedSizeKB}KB`)
       
-      // 2. Upload para o Supabase Storage
+      // 2. Upload via Server Action (Bypass RLS com Service Role)
+      const base64 = await blobToBase64(compressedBlob)
       const fileName = `edition-${draft.edition_number}-${Date.now()}.webp`
-      const { data, error } = await supabase.storage
-        .from('newsletters')
-        .upload(fileName, compressedBlob, {
-          contentType: 'image/webp',
-          upsert: true
-        })
-
-      if (error) throw error
-
-      // 3. Obter URL Pública
-      const { data: { publicUrl } } = supabase.storage
-        .from('newsletters')
-        .getPublicUrl(fileName)
-
-      setImageUrl(publicUrl)
-      toast.success(`Imagem otimizada: ${compressedSizeKB}KB!`, { id: toastId })
       
-      // Salva automaticamente a nova URL
-      await updateNewsletter(draft.id, { image_url: publicUrl })
+      const result = await uploadImageAction(base64, fileName, 'image/webp')
+
+      if (!result.success) {
+        console.error('Erro retornado pela Action:', result.error)
+        throw new Error(result.error)
+      }
+
+      const publicUrl = result.publicUrl!
+      setImageUrl(publicUrl)
+      
+      // 3. Salva automaticamente a nova URL no Banco
+      const dbResult = await updateNewsletter(draft.id, { image_url: publicUrl })
+      
+      if (dbResult.success) {
+        toast.success(`Upload concluído! Imagem otimizada (${compressedSizeKB}KB).`, { id: toastId })
+      } else {
+        toast.error('Imagem enviada, mas houve erro ao salvar no banco.', { id: toastId })
+      }
       
     } catch (error: any) {
       console.error('Erro no upload:', error)
@@ -110,23 +137,17 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
     
     try {
       const compressedBlob = await compressAndConvertToWebP(file, 0.7, 800)
+      const base64 = await blobToBase64(compressedBlob)
       const fileName = `item-${draft.edition_number}-${catIdx}-${itemIdx}-${Date.now()}.webp`
       
-      const { error } = await supabase.storage
-        .from('newsletters')
-        .upload(fileName, compressedBlob, {
-          contentType: 'image/webp',
-          upsert: true
-        })
+      const result = await uploadImageAction(base64, fileName, 'image/webp')
 
-      if (error) throw error
+      if (!result.success) throw new Error(result.error)
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('newsletters')
-        .getPublicUrl(fileName)
+      const publicUrl = result.publicUrl!
 
       updateItemData(catIdx, itemIdx, { imageUrl: publicUrl })
-      toast.success('Imagem do item atualizada!', { id: toastId })
+      toast.success('Imagem do item enviada com sucesso!', { id: toastId })
       
     } catch (error: any) {
       toast.error('Falha no upload do item: ' + error.message, { id: toastId })

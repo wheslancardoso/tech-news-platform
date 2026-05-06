@@ -32,8 +32,9 @@ export async function generateImagePromptAction(text: string) {
           - Textures: Brushed metal, glowing circuitry, frosted glass, raw concrete.
           - NO CLICHES: Avoid friendly robots or generic office settings. 
           - TONE: Serious, professional, avant-garde.
+          - TYPOGRAPHY: If the image includes any text, titles, or headlines, they MUST be in Portuguese (pt-BR). For example: use 'O NOVO SUBSTRATO' instead of 'THE NEW SUBSTRATE'.
           
-          RETURN ONLY THE PROMPT IN ENGLISH.`
+          RETURN ONLY THE PROMPT IN ENGLISH (The description for the AI), but specify the Portuguese text inside the prompt.`
         },
         {
           role: 'user',
