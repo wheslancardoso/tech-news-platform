@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { FileText, Send, Zap, Copy, Check, ImageIcon, Link as LinkIcon, Upload, Loader2 } from 'lucide-react'
+import { FileText, Send, Zap, Copy, Check, ImageIcon, Link as LinkIcon, Upload, Loader2, ChevronDown, ChevronUp, Wand2 } from 'lucide-react'
 import { updateNewsletter } from '@/actions/newsletter'
+import { generateImagePromptAction } from '@/actions/generate'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
@@ -15,10 +16,15 @@ interface NewsletterCardProps {
 export function NewsletterCard({ draft }: NewsletterCardProps) {
   const [imageUrl, setImageUrl] = useState(draft.image_url || '')
   const [imagePrompt, setImagePrompt] = useState(draft.image_prompt || '')
+  const [contentJson, setContentJson] = useState(draft.content_json || {})
   const [isSaving, setIsSaving] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false)
+  const [generatingItemIdx, setGeneratingItemIdx] = useState<string | null>(null)
+  const [showItems, setShowItems] = useState(false)
   const [copied, setCopied] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const itemFileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({})
   
   const supabase = createClient()
 
@@ -26,7 +32,8 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
     setIsSaving(true)
     const result = await updateNewsletter(draft.id, { 
       image_url: imageUrl, 
-      image_prompt: imagePrompt 
+      image_prompt: imagePrompt,
+      content_json: contentJson
     })
     setIsSaving(false)
     
@@ -89,6 +96,60 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
     }
   }
 
+  const handleItemFileUpload = async (catIdx: number, itemIdx: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const MAX_SIZE = 10 * 1024 * 1024 
+    if (file.size > MAX_SIZE) {
+      toast.error('O arquivo é muito grande!')
+      return
+    }
+
+    const toastId = toast.loading('Processando imagem do item...')
+    
+    try {
+      const compressedBlob = await compressAndConvertToWebP(file, 0.7, 800)
+      const fileName = `item-${draft.edition_number}-${catIdx}-${itemIdx}-${Date.now()}.webp`
+      
+      const { error } = await supabase.storage
+        .from('newsletters')
+        .upload(fileName, compressedBlob, {
+          contentType: 'image/webp',
+          upsert: true
+        })
+
+      if (error) throw error
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('newsletters')
+        .getPublicUrl(fileName)
+
+      updateItemData(catIdx, itemIdx, { imageUrl: publicUrl })
+      toast.success('Imagem do item atualizada!', { id: toastId })
+      
+    } catch (error: any) {
+      toast.error('Falha no upload do item: ' + error.message, { id: toastId })
+    }
+  }
+
+  const updateItemData = (catIdx: number, itemIdx: number, newData: any) => {
+    const newContent = { ...contentJson }
+    if (newContent.categories?.[catIdx]?.items?.[itemIdx]) {
+      const item = newContent.categories[catIdx].items[itemIdx]
+      // Garantir que o theme existe para o prompt
+      if (newData.image_prompt !== undefined) {
+        if (!item.theme) item.theme = {}
+        item.theme.image_prompt = newData.image_prompt
+      }
+      // Imagem na raiz do item para o template
+      if (newData.imageUrl !== undefined) {
+        item.imageUrl = newData.imageUrl
+      }
+      setContentJson(newContent)
+    }
+  }
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(imagePrompt)
     setCopied(true)
@@ -96,8 +157,53 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleGenerateGlobalPrompt = async () => {
+    setIsGeneratingPrompt(true)
+    const toastId = toast.loading('Analisando edição para criar prompt visual...')
+    
+    try {
+      // Coletar contexto da edição
+      const titles = contentJson.categories?.flatMap((c: any) => c.items.map((i: any) => i.title)).join(', ')
+      const context = `Edition #${draft.edition_number}: ${draft.title}. Main topics: ${titles}`
+      
+      const result = await generateImagePromptAction(context)
+      if (result.success) {
+        setImagePrompt(result.prompt)
+        toast.success('Prompt global gerado!', { id: toastId })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error: any) {
+      toast.error('Erro ao gerar prompt: ' + error.message, { id: toastId })
+    } finally {
+      setIsGeneratingPrompt(false)
+    }
+  }
+
+  const handleGenerateItemPrompt = async (catIdx: number, itemIdx: number) => {
+    const item = contentJson.categories[catIdx].items[itemIdx]
+    const textToAnalyze = item.summary || item.story || item.title
+    
+    setGeneratingItemIdx(`${catIdx}-${itemIdx}`)
+    const toastId = toast.loading('Gerando prompt para esta notícia...')
+
+    try {
+      const result = await generateImagePromptAction(textToAnalyze)
+      if (result.success) {
+        updateItemData(catIdx, itemIdx, { image_prompt: result.prompt })
+        toast.success('Prompt individual gerado!', { id: toastId })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error: any) {
+      toast.error('Erro: ' + error.message, { id: toastId })
+    } finally {
+      setGeneratingItemIdx(null)
+    }
+  }
+
   return (
-    <div className="glass-card p-10 rounded-[3rem] border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden shadow-xl">
+    <div className="glass-card p-6 md:p-8 rounded-[2rem] border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden shadow-xl">
       <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-[80px] -mr-24 -mt-24 group-hover:bg-primary/10 transition-all"></div>
       
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8 relative z-10">
@@ -131,13 +237,23 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
             <label className="tech-label text-primary flex items-center gap-2">
               <ImageIcon className="w-3 h-3" /> Prompt Sugerido (IA)
             </label>
-            <button 
-              onClick={copyToClipboard}
-              className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-white transition-colors flex items-center gap-2"
-            >
-              {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              {copied ? 'Copiado' : 'Copiar Prompt'}
-            </button>
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={handleGenerateGlobalPrompt}
+                disabled={isGeneratingPrompt}
+                className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-white transition-colors flex items-center gap-2"
+              >
+                {isGeneratingPrompt ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                Gerar com IA
+              </button>
+              <button 
+                onClick={copyToClipboard}
+                className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-white transition-colors flex items-center gap-2"
+              >
+                {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                {copied ? 'Copiado' : 'Copiar Prompt'}
+              </button>
+            </div>
           </div>
           <textarea 
             value={imagePrompt}
@@ -194,16 +310,142 @@ export function NewsletterCard({ draft }: NewsletterCardProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 relative z-10 border-t border-white/5 pt-8">
-        <button className="flex items-center gap-3 tech-label text-primary hover:text-white transition-colors">
-          <FileText className="w-4 h-4" />
-          Visualizar rascunho
-        </button>
-        <button className="flex items-center gap-3 tech-label text-muted-foreground/40 cursor-not-allowed">
-          <Send className="w-4 h-4" />
-          Disparar via Resend
-        </button>
+      <div className="flex items-center justify-between relative z-10 border-t border-white/5 pt-8">
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={() => setShowItems(!showItems)}
+            className="flex items-center gap-3 tech-label text-primary hover:text-white transition-colors"
+          >
+            <FileText className="w-4 h-4" />
+            {showItems ? 'Ocultar Notícias' : 'Curar Imagens Individualmente'}
+            {showItems ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          </button>
+          <button className="flex items-center gap-3 tech-label text-muted-foreground/40 cursor-not-allowed">
+            <Send className="w-4 h-4" />
+            Disparar via Resend
+          </button>
+        </div>
       </div>
+
+      {/* Seção de Notícias Individuais */}
+      {showItems && contentJson.categories && (
+        <div className="mt-8 space-y-8 relative z-10 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="h-px flex-1 bg-white/5"></div>
+            <span className="tech-label text-muted-foreground/40 uppercase tracking-[0.3em] text-[10px]">Protocolo de Curadoria Individual</span>
+            <div className="h-px flex-1 bg-white/5"></div>
+          </div>
+
+          {contentJson.categories.map((category: any, catIdx: number) => (
+            <div key={catIdx} className="space-y-4">
+              <h4 className="tech-label text-primary flex items-center gap-2 text-xs">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                {category.name}
+              </h4>
+              <div className="grid gap-6">
+                {category.items.map((item: any, itemIdx: number) => (
+                  <div key={itemIdx} className="glass-card p-6 rounded-2xl border-white/5 bg-white/[0.01] transition-all">
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div className="flex-1">
+                        <input 
+                          type="text"
+                          value={item.title || item.headline || ''}
+                          onChange={(e) => updateItemData(catIdx, itemIdx, { title: e.target.value })}
+                          className="w-full bg-transparent text-lg font-bold text-foreground/80 leading-tight border-none p-0 focus:ring-0 placeholder:opacity-30"
+                          placeholder="Título da Notícia..."
+                        />
+                      </div>
+                      {item.relevance_score && (
+                        <div className="px-2 py-1 bg-primary/10 rounded text-[10px] font-black text-primary border border-primary/20">
+                          {item.relevance_score}%
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                      <div className="space-y-3">
+                        <label className="tech-label text-muted-foreground text-[9px] uppercase tracking-wider">Resumo Técnico (n8n)</label>
+                        <textarea 
+                          value={item.summary || item.story || ''}
+                          onChange={(e) => updateItemData(catIdx, itemIdx, { summary: e.target.value })}
+                          className="w-full h-32 bg-black/20 border border-white/5 rounded-xl p-3 text-xs text-muted-foreground focus:border-primary/30 outline-none transition-all resize-none"
+                          placeholder="Resumo gerado pelo especialista..."
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="tech-label text-muted-foreground text-[9px] uppercase tracking-wider">Prompt de Imagem</label>
+                          <button 
+                            onClick={() => handleGenerateItemPrompt(catIdx, itemIdx)}
+                            disabled={generatingItemIdx === `${catIdx}-${itemIdx}`}
+                            className="text-[9px] font-bold text-primary hover:text-white flex items-center gap-1 transition-colors"
+                          >
+                            {generatingItemIdx === `${catIdx}-${itemIdx}` ? <Loader2 className="w-2 h-2 animate-spin" /> : <Wand2 className="w-2 h-2" />}
+                            Auto-Gerar
+                          </button>
+                        </div>
+                        <textarea 
+                          value={item.image_prompt || item.theme?.image_prompt || ''}
+                          onChange={(e) => updateItemData(catIdx, itemIdx, { image_prompt: e.target.value })}
+                          className="w-full h-32 bg-black/20 border border-white/5 rounded-xl p-3 text-[10px] text-muted-foreground/60 font-mono focus:border-primary/30 outline-none transition-all resize-none"
+                          placeholder="Prompt para geração..."
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
+                      <div className="space-y-3">
+                        <label className="tech-label text-muted-foreground text-[9px] uppercase tracking-wider">WhatsApp Summary</label>
+                        <textarea 
+                          value={item.whatsapp_summary || ''}
+                          onChange={(e) => updateItemData(catIdx, itemIdx, { whatsapp_summary: e.target.value })}
+                          className="w-full h-20 bg-black/20 border border-white/5 rounded-xl p-3 text-[10px] text-muted-foreground/60 focus:border-primary/30 outline-none transition-all resize-none"
+                          placeholder="Versão cirúrgica para WhatsApp..."
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="tech-label text-muted-foreground text-[9px] uppercase tracking-wider">Imagem do Item</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text"
+                            value={item.imageUrl || ''}
+                            onChange={(e) => updateItemData(catIdx, itemIdx, { imageUrl: e.target.value })}
+                            className="flex-1 bg-black/20 border border-white/5 rounded-xl p-3 text-[10px] text-foreground focus:border-primary/30 outline-none transition-all"
+                            placeholder="URL..."
+                          />
+                          <input 
+                            type="file"
+                            onChange={(e) => handleItemFileUpload(catIdx, itemIdx, e)}
+                            accept="image/*"
+                            className="hidden"
+                            ref={el => { itemFileInputRefs.current[`${catIdx}-${itemIdx}`] = el }}
+                          />
+                          <Button 
+                            type="button"
+                            onClick={() => itemFileInputRefs.current[`${catIdx}-${itemIdx}`]?.click()}
+                            className="rounded-xl h-[42px] px-3 bg-primary/10 hover:bg-primary/20 border border-primary/20"
+                          >
+                            <Upload className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        
+                        {item.imageUrl && (
+                          <div className="mt-3 aspect-video rounded-xl overflow-hidden border border-white/5">
+                            <img src={item.imageUrl} alt="Item Preview" className="w-full h-full object-cover" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

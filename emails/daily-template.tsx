@@ -9,6 +9,7 @@ import {
   Section,
   Text,
   Hr,
+  Img,
 } from "@react-email/components";
 import * as React from "react";
 
@@ -22,6 +23,7 @@ interface NewsletterProps {
       headline: string;
       story: string;
       link: string;
+      imageUrl?: string;
     }>;
   }>;
 }
@@ -89,6 +91,17 @@ export const DailyNewsletter = ({
                 {/* Itens da Categoria */}
                 {category.items.map((item, itemIndex) => (
                   <div key={itemIndex} style={{ ...itemContainer, borderLeftColor: catColor }}>
+                    {item.imageUrl && (
+                      <Link href={item.link}>
+                        <Img
+                          src={item.imageUrl}
+                          width="560"
+                          alt={item.headline}
+                          style={itemImage}
+                        />
+                      </Link>
+                    )}
+
                     <Link href={item.link} style={headlineLink}>
                       <Heading as="h4" style={headline}>
                         {item.headline}
@@ -287,6 +300,13 @@ const itemSeparator = {
   height: "1px",
   backgroundColor: "#353534",
   margin: "25px 0",
+};
+
+const itemImage = {
+  borderRadius: "16px",
+  marginBottom: "16px",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  objectFit: "cover" as const,
 };
 
 const footer = {

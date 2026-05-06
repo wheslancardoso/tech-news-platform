@@ -91,7 +91,7 @@
   }
   
   .glass-card:hover {
-    @apply bg-white/[0.06] border-white/[0.15] scale-[1.02];
+    @apply bg-white/[0.06] border-white/[0.15];
   }
 
   .glass-nav {

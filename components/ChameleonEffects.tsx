@@ -48,6 +48,26 @@ export function ChameleonEffects({ effects }: ChameleonEffectsProps) {
       {effects.includes('scanlines') && (
         <div className="absolute top-0 left-0 w-full h-4 bg-[var(--theme-primary)]/10 z-30 blur-md" style={{ animation: 'scanline 4s linear infinite' }} />
       )}
+
+      {/* Blur Overlay */}
+      {effects.includes('blur_overlay') && (
+        <div className="absolute inset-0 z-0 backdrop-blur-[2px] bg-black/10" />
+      )}
+
+      {/* Pulsing Borders */}
+      {effects.includes('pulsing_borders') && (
+        <div className="absolute inset-0 z-40 border-2 border-[var(--theme-primary)]/30 animate-pulse rounded-inherit" />
+      )}
+
+      {/* Terminal Cursor Effect */}
+      {effects.includes('terminal_cursor') && (
+        <div className="absolute bottom-4 right-4 z-50 animate-terminal-cursor text-[var(--theme-primary)] font-mono text-xs opacity-50" />
+      )}
+
+      {/* Glassmorphism Extra */}
+      {effects.includes('glassmorphism') && (
+        <div className="absolute inset-0 z-0 bg-white/[0.02] backdrop-blur-[10px] border border-white/10" />
+      )}
     </div>
   )
 }

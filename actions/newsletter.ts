@@ -3,7 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
-export async function updateNewsletter(id: string, data: { image_url?: string, image_prompt?: string }) {
+export async function updateNewsletter(id: string, data: { image_url?: string, image_prompt?: string, content_json?: any }) {
   const supabase = createAdminClient()
   
   const { error } = await supabase

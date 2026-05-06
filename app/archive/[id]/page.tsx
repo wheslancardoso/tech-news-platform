@@ -216,7 +216,9 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                 {/* Grid de Artigos */}
                 <div className="grid grid-cols-1 gap-12 md:gap-40 relative z-10">
                   {cat.items?.map((item: any, itemIdx: number) => {
-                    const itemEffects = item.theme?.ui_effects || theme.effects;
+                    const itemTheme = item.theme_config || item.theme || {};
+                    const itemEffects = itemTheme.ui_effects || theme.effects;
+                    const itemAccent = itemTheme.accent_color || 'var(--theme-primary)';
                     
                     return (
                       <article key={itemIdx} className="group relative">
@@ -225,17 +227,26 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
                            <ChameleonEffects effects={itemEffects} />
                         </div>
                         
-                        <div className="max-w-4xl space-y-3 md:space-y-12 relative z-10 p-1.5 md:p-4 transition-transform duration-500 group-hover:translate-x-4">
-                          <div className="space-y-1.5 md:space-y-4">
-                             <h3 className="text-base sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-snug md:leading-[1] tracking-tighter group-hover:text-[var(--theme-primary)] transition-all duration-500">
-                              <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-[var(--theme-primary)]/40 decoration-2 underline-offset-[4px] md:underline-offset-[20px]">
-                                {item.headline}
+                        <div className="max-w-4xl space-y-2 md:space-y-6 relative z-10 p-1.5 md:p-2 transition-transform duration-500">
+                             <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-snug md:leading-[1.1] tracking-tighter transition-all duration-500" style={{ color: itemAccent === 'var(--theme-primary)' ? undefined : itemAccent }}>
+                              <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-2 underline-offset-[4px] md:underline-offset-[12px]" style={{ textDecorationColor: itemAccent === 'var(--theme-primary)' ? 'rgba(var(--theme-primary-rgb), 0.4)' : `${itemAccent}66` }}>
+                                {item.title || item.headline}
                               </a>
                             </h3>
-                          </div>
                           
+                          {item.imageUrl && (
+                            <div className="relative aspect-video md:aspect-[21/9] rounded-xl md:rounded-[2rem] overflow-hidden border border-white/5 my-4 md:my-8">
+                              <img 
+                                src={item.imageUrl} 
+                                alt={item.title || item.headline} 
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            </div>
+                          )}
+
                           <p className="text-muted-foreground/80 text-[10px] sm:text-sm md:text-lg lg:text-xl xl:text-2xl leading-normal font-medium max-w-3xl">
-                            {item.story}
+                            {item.summary || item.story}
                           </p>
                           
                           <div className="flex items-center gap-6 md:gap-8">
