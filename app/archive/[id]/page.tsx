@@ -5,6 +5,7 @@ import { ptBR } from 'date-fns/locale'
 import { ArrowLeft, ArrowRight, Share2, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { ChameleonEffects } from '@/components/ChameleonEffects'
+import { ChameleonScrollObserver } from '@/components/ChameleonScrollObserver'
 import { cleanAISummary } from '@/lib/utils/text-cleanup'
 
 export const dynamic = 'force-dynamic'
@@ -132,6 +133,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
 
   return (
     <div className="bg-[#050505] min-h-screen text-foreground font-sans selection:bg-primary/30 relative overflow-x-hidden">
+      <ChameleonScrollObserver />
       
       {/* Overlays Globais Tech (Quase invisíveis, apenas textura) */}
       <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] bg-scanlines bg-fixed"></div>
@@ -214,6 +216,8 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
             return (
               <section 
                 key={catIdx} 
+                data-theme-color={theme.color}
+                data-category-name={cat.name}
                 className="relative scroll-mt-40 pt-8 md:pt-32 pb-12 md:pb-40 px-3 md:px-12 md:-mx-12 rounded-xl md:rounded-[5rem] transition-colors duration-1000"
                 style={{ 
                   '--theme-primary': theme.color,

@@ -102,12 +102,14 @@ export async function distributeNewsletter(newsletterId: string) {
  */
 function formatWhatsAppMessage(newsletter: any, categories: any[], subscriber: any) {
   const content = newsletter.content_json
-  const prefsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/preferencias/${subscriber.id}`
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const prefsUrl = `${appUrl}/api/track?sub=${subscriber.id}&nl=${newsletter.id}&cat=Preferences&url=${encodeURIComponent(`${appUrl}/preferencias/${subscriber.id}`)}`
+  const archiveUrl = `${appUrl}/api/track?sub=${subscriber.id}&nl=${newsletter.id}&cat=WebArchive&url=${encodeURIComponent(`${appUrl}/archive/${newsletter.id}`)}`
 
-  let text = `*FRESH NEWS / EDIÇÃO #${newsletter.edition_number}*\n`
-  text += `_Sem hype, só o que importa_\n\n`
+  let text = `*FRESH NEWS / EDIÇÃO #${newsletter.edition_number}* 📰\n`
+  text += `_Sem hype, só o que importa de verdade_\n\n`
   
-  text += `*${content.title.toUpperCase()}*\n\n`
+  text += `*🔥 ${content.title.toUpperCase()}*\n\n`
   text += `${content.intro}\n\n`
 
   if (content.quickTakes && content.quickTakes.length > 0) {
@@ -118,21 +120,26 @@ function formatWhatsAppMessage(newsletter: any, categories: any[], subscriber: a
     text += `\n`
   }
 
-  text += `--------------------------\n\n`
+  text += `━━━━━━━━━━━━━━━━━━━━━\n\n`
+
+  text += `🎯 *SEUS DESTAQUES PERSONALIZADOS:*\n\n`
 
   categories.forEach(cat => {
-    text += `*${cat.name.toUpperCase()}*\n\n`
+    // Obter o nome limpo da categoria (sem emojis)
+    const cleanCatName = cat.name.replace(/[^a-zA-Z0-9\s]/g, '').trim()
+    
+    text += `*${cat.name.toUpperCase()}*\n`
     cat.items.forEach((item: any) => {
-      text += `${item.headline}\n`
-      text += `${item.story}\n`
-      text += `🔗 _Fonte:_ ${item.link}\n\n`
+      // Link rastreável para a notícia individual
+      const trackItemUrl = `${appUrl}/api/track?sub=${subscriber.id}&nl=${newsletter.id}&cat=${encodeURIComponent(cleanCatName)}&url=${encodeURIComponent(item.link)}`
+      text += `• *${item.headline}*\n`
+      text += `👉 _Ler matéria:_ ${trackItemUrl}\n\n`
     })
-    text += `\n`
   })
 
-  text += `--------------------------\n`
-  text += `📖 *Ler na web:* ${process.env.NEXT_PUBLIC_APP_URL}/archive/${newsletter.id}\n`
-  text += `⚙️ *Ajustar o que você recebe:* ${prefsUrl}\n\n`
+  text += `━━━━━━━━━━━━━━━━━━━━━\n`
+  text += `📖 *Ler Edição Completa na Web:* ${archiveUrl}\n`
+  text += `⚙️ *Ajustar Preferências de IA:* ${prefsUrl}\n\n`
   text += `_© 2026 Fresh News Zine_`
 
   return text
