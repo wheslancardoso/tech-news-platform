@@ -14,7 +14,6 @@ export async function POST() {
         return NextResponse.json({
             success: true,
             message: 'Edição gerada com sucesso!',
-            edition: result.edition,
             data: result
         })
     } catch (error: any) {

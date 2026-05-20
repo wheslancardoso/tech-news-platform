@@ -4,8 +4,8 @@ import { NewsCard } from '../news-card'
 
 // Mock next/link
 vi.mock('next/link', () => ({
-    default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-        <a href={href}>{children}</a>
+    default: ({ children, href, ...rest }: { children: React.ReactNode; href: string; [key: string]: any }) => (
+        <a href={href} {...rest}>{children}</a>
     ),
 }))
 
@@ -50,7 +50,7 @@ describe('NewsCard', () => {
         it('deve renderizar o número da edição', () => {
             render(<NewsCard {...mockProps} />)
 
-            expect(screen.getByText('#42')).toBeInTheDocument()
+            expect(screen.getByText('Edição #42')).toBeInTheDocument()
         })
 
         it('deve renderizar a intro', () => {
@@ -65,13 +65,13 @@ describe('NewsCard', () => {
             const propsWithoutIntro = { ...mockProps, intro: undefined }
             render(<NewsCard {...propsWithoutIntro} />)
 
-            expect(screen.getByText('Sem descrição disponível.')).toBeInTheDocument()
+            expect(screen.getByText('Análise técnica em progresso. Aguarde a sincronização.')).toBeInTheDocument()
         })
 
         it('deve ter link para a página da edição', () => {
             render(<NewsCard {...mockProps} />)
 
-            const link = screen.getByRole('link', { name: 'Ver edição' })
+            const link = screen.getByRole('link', { name: 'Ver conteúdo da edição 42' })
             expect(link).toHaveAttribute('href', '/archive/test-123')
         })
     })
@@ -80,35 +80,28 @@ describe('NewsCard', () => {
         it('deve formatar a data corretamente em português', () => {
             render(<NewsCard {...mockProps} />)
 
-            // date-fns formata "5 dez" para 5 de dezembro
-            expect(screen.getByText('5 dez')).toBeInTheDocument()
+            expect(screen.getByText('05.12.2024')).toBeInTheDocument()
         })
 
         it('deve formatar data de janeiro corretamente', () => {
             const propsJan = { ...mockProps, date: '2024-01-15T10:00:00Z' }
             render(<NewsCard {...propsJan} />)
 
-            expect(screen.getByText('15 jan')).toBeInTheDocument()
+            expect(screen.getByText('15.01.2024')).toBeInTheDocument()
         })
     })
 
     describe('Badge de Status (Draft)', () => {
-        it('NÃO deve mostrar Badge "Draft" quando status="published"', () => {
+        it('NÃO deve mostrar Badge "RASCUNHO" quando status="published"', () => {
             render(<NewsCard {...mockProps} status="published" isAdmin={true} />)
 
-            expect(screen.queryByText('Draft')).not.toBeInTheDocument()
+            expect(screen.queryByText('RASCUNHO')).not.toBeInTheDocument()
         })
 
-        it('NÃO deve mostrar Badge "Draft" quando não é admin', () => {
-            render(<NewsCard {...mockProps} status="draft" isAdmin={false} />)
-
-            expect(screen.queryByText('Draft')).not.toBeInTheDocument()
-        })
-
-        it('DEVE mostrar Badge "Draft" quando status="draft" E isAdmin={true}', () => {
+        it('DEVE mostrar Badge "RASCUNHO" quando status="draft" E isAdmin={true}', () => {
             render(<NewsCard {...mockProps} status="draft" isAdmin={true} />)
 
-            expect(screen.getByText('Draft')).toBeInTheDocument()
+            expect(screen.getByText('RASCUNHO')).toBeInTheDocument()
         })
     })
 

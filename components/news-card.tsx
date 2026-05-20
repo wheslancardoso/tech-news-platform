@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Trash2 } from 'lucide-react'
+import { ArrowRight, Trash2, Edit2 } from 'lucide-react'
 import { PublishButton } from '@/components/publish-button'
 import { Button } from '@/components/ui/button'
 import { deleteNewsletter } from '@/actions/admin'
@@ -99,8 +99,18 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
           {isAdmin && (
             <div className="flex gap-3 relative z-30">
               <PublishButton id={id} status={status} />
+              {status === 'draft' && (
+                <Link
+                  href="/admin/newsletters"
+                  title="Editar Draft"
+                  className="p-2.5 glass-card rounded-xl hover:bg-primary/10 hover:border-primary/20 transition-all group/edit border-white/5 flex items-center justify-center"
+                >
+                  <Edit2 className="w-4 h-4 text-muted-foreground/40 group-hover/edit:text-primary" />
+                </Link>
+              )}
               <button 
                 onClick={handleDelete} 
+                title="Excluir Edição"
                 className="p-2.5 glass-card rounded-xl hover:bg-red-500/10 hover:border-red-500/20 transition-all group/del border-white/5"
                 disabled={isDeleting}
               >
