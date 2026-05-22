@@ -43,6 +43,12 @@
   --cat-dev: 142 70% 55%;
   --cat-sec: 0 84% 60%;
   --cat-biz: 45 93% 47%;
+
+  /* Chameleon Engine Dynamic CSS Variables (Fallbacks) */
+  --theme-bg: hsl(240, 10%, 3.9%);
+  --theme-accent: hsl(142.1, 70.6%, 45.3%);
+  --theme-primary: hsl(142.1, 70.6%, 35%);
+  --theme-font: var(--font-geist-mono), Courier New, Courier, monospace;
 }
 
 @theme {
@@ -53,6 +59,12 @@
   --color-surface: var(--glass-bg);
   --color-surface-container: rgba(255, 255, 255, 0.05);
   --color-editorial: var(--glass-border);
+
+  /* Chameleon Engine Bindings */
+  --color-theme-bg: var(--theme-bg);
+  --color-theme-accent: var(--theme-accent);
+  --color-theme-primary: var(--theme-primary);
+  --font-theme: var(--theme-font);
   
   --font-sans: var(--font-inter);
   --font-heading: var(--font-outfit);

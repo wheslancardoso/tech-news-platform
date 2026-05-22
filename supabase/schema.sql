@@ -23,6 +23,8 @@ create type subscriber_status as enum ('active', 'unsubscribed');
 create table subscribers (
   id uuid primary key default uuid_generate_v4(),
   email text unique not null,
+  phone text,
+  preferences jsonb default '[]'::jsonb,
   status subscriber_status default 'active',
   unsubscribe_token uuid default uuid_generate_v4() not null,
   created_at timestamp with time zone default now()
@@ -46,6 +48,8 @@ create table posts (
   source text,
   score integer default 0,
   status post_status default 'pending',
+  category text not null,
+  sub_category text not null,
   theme_config jsonb,
   whatsapp_summary text,
   created_at timestamp with time zone default now()
