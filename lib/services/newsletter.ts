@@ -513,6 +513,60 @@ SAÍDA JSON:
 
       const metadata = JSON.parse(metaContent)
 
+      // ===== GERAÇÃO DO DEBATE TÉCNICO INTERATIVO (Fase 6.3) =====
+      console.log('🤖 [Generate] Orquestrando o debate técnico entre as IAs especialistas...')
+      let debateLog = []
+      try {
+        const debateResponse = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: `Você é o orquestrador do "Interactive AI Debate Mode" no Fresh News.
+              Sua missão é gerar um diálogo de debate técnico acirrado e fascinante entre as 4 personas de IA especialistas da equipe sobre o assunto principal da edição de hoje.
+              
+              AS PERSONAS SÃO:
+              1. 🤖 **Neuralista-Chefe**: Foca em LLMs, escala de dados, eficiência de modelo, redes neurais e arquitetura computacional. Cor violeta (#8B5CF6).
+              2. 🛡️ **Red Team**: Foca em segurança defensiva/ofensiva, exploits, vulnerabilidades de infra, criptografia e privacidade. Cor vermelha (#F43F5E).
+              3. 💻 **Arquiteto Sênior**: Foca em elegância de código, engenharia de software pura, padrões SOLID/DRY, SDKs, APIs e produtividade dev. Cor verde (#10B981).
+              4. ☁️ **SRE/Cloud**: Foca em deployment, FinOps (custos de infra), Kubernetes, escala de cloud e latência/alta disponibilidade. Cor ciano (#06B6D4).
+
+              O debate deve ser estruturado em 4 a 6 interações (mensagens). As personas devem discordar de forma saudável e debater os trade-offs práticos da notícia principal.
+              Mantenha as respostas de cada persona concisas, com terminologia técnica de alta densidade e jargões reais de engenharia.
+              O tom deve ser instigante, focado em quem constrói software no mundo real.
+              IDIOMA: Português do Brasil (pt-BR).
+
+              SAÍDA JSON OBRIGATÓRIA (Retorne um objeto com a chave "debate"):
+              {
+                "debate": [
+                  {
+                    "persona": "Neuralista-Chefe | Red Team | Arquiteto Sênior | SRE/Cloud",
+                    "role": "AI | SEC | DEV | CLOUD",
+                    "avatar": "🤖 | 🛡️ | 💻 | ☁️",
+                    "color": "#8B5CF6 | #F43F5E | #10B981 | #06B6D4",
+                    "message": "Mensagem instigante e focada..."
+                  }
+                ]
+              }`
+            },
+            {
+              role: "user",
+              content: `Tema Principal: ${metadata.title}\nResumo da Edição: ${metadata.intro}\nManchetes:\n${allHeadlines}`
+            }
+          ],
+          response_format: { type: "json_object" }
+        })
+
+        const debateRaw = debateResponse.choices[0].message.content
+        if (debateRaw) {
+          const parsedDebate = JSON.parse(debateRaw)
+          debateLog = parsedDebate.debate || []
+          console.log(`✅ [Generate] Debate gerado com sucesso! ${debateLog.length} interações.`)
+        }
+      } catch (errDebate) {
+        console.error('⚠️ [Generate] Falha ao gerar o debate técnico das personas:', errDebate)
+      }
+
       const contentJson = {
         title: metadata.title,
         intro: metadata.intro,
@@ -535,7 +589,7 @@ SAÍDA JSON:
       const formattedDate = today.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
-        year: '2-digit'
+        year: 'numeric'
       })
       const title = `Edição de ${formattedDate}`
 
@@ -546,6 +600,7 @@ SAÍDA JSON:
           title: title,
           summary_intro: contentJson.intro,
           content_json: contentJson,
+          debate_log: debateLog,
           html_content: htmlContent,
           status: 'draft',
           category: 'MASTER',

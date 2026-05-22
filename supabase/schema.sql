@@ -10,6 +10,7 @@ create table newsletters (
   title text not null,
   summary_intro text,
   content_json jsonb, -- Estrutura da IA
+  debate_log jsonb default '[]'::jsonb, -- Debate entre as IAs especialistas
   html_content text, -- Email final renderizado
   status newsletter_status default 'draft',
   created_at timestamp with time zone default now(),

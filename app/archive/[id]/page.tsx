@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { ChameleonEffects } from '@/components/ChameleonEffects'
 import { ChameleonScrollObserver } from '@/components/ChameleonScrollObserver'
 import { cleanAISummary } from '@/lib/utils/text-cleanup'
+import { TerminalToggle } from '@/components/terminal-toggle'
+import { TerminalDebate } from '@/components/terminal-debate'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -153,6 +155,7 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
              <button className="p-2 md:p-3 glass-card rounded-lg md:rounded-xl border-white/5 text-muted-foreground hover:text-white transition-colors">
               <Share2 className="w-3 h-3 md:w-4 md:h-4" />
             </button>
+            <TerminalToggle />
             <Link href="/#subscribe">
               <button className="bg-primary text-white hover:bg-white hover:text-black px-3 md:px-8 py-2 md:py-3 rounded-full text-[7px] md:text-[10px] font-black uppercase tracking-wider md:tracking-widest transition-all shadow-xl shadow-primary/25 whitespace-nowrap">
                 Assinar
@@ -208,6 +211,8 @@ export default async function ArchivePage({ params }: ArchivePageProps) {
             </div>
           </div>
         )}
+
+        <TerminalDebate debate={newsletter.debate_log} />
 
         {/* CATEGORIAS CAMALEÔNICAS */}
         <div className="space-y-16 md:space-y-64 pb-16 md:pb-64">
