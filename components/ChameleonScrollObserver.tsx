@@ -46,45 +46,161 @@ const hexToHsl = (hex: string): string => {
  */
 export function ChameleonScrollObserver() {
   useEffect(() => {
-    // 1. Guardar a cor padrão original do primary
-    const originalPrimary = '275 80% 55%' // #8B5CF6 (Premium Violet)
-    
-    // 2. Configurar a transição na tag HTML para ficar suave
-    document.documentElement.style.setProperty('transition', 'color 1s ease, background-color 1s ease, border-color 1s ease, box-shadow 1s ease')
+    // 1. Guardar valores padrões originais para restauração
+    const originalBg = 'hsl(240, 10%, 3.9%)'
+    const originalAccent = 'hsl(142.1, 70.6%, 45.3%)'
+    const originalPrimary = 'hsl(142.1, 70.6%, 35%)'
+    const originalFont = 'var(--font-geist-mono), Courier New, Courier, monospace'
+
+    // Configurar a transição na tag HTML para ficar extremamente fluida
+    document.documentElement.style.setProperty(
+      'transition',
+      'color 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+    )
 
     const sections = document.querySelectorAll('section[data-theme-color]')
-    
     if (sections.length === 0) return
 
     const observerOptions = {
       root: null, // viewport
-      rootMargin: '-30% 0px -45% 0px', // Gatilho de foco no terço central da tela
-      threshold: 0.1 // 10% da seção visível
+      rootMargin: '-25% 0px -40% 0px', // Gatilho otimizado no terço central da tela
+      threshold: 0.1
+    }
+
+    // Mapeamento enriquecido do Chameleon Engine
+    const getThemeConfigByCategory = (categoryName: string) => {
+      const upper = categoryName.toUpperCase()
+
+      // 1. SEGURANÇA & CYBERSECURITY / TECH_HACKER (Brutalist Hacker)
+      if (
+        upper.includes('SEGURANÇA') ||
+        upper.includes('SEC') ||
+        upper.includes('HACK') ||
+        upper.includes('DESENVOLVIMENTO') ||
+        upper.includes('CODING')
+      ) {
+        return {
+          bg: 'hsl(240, 10%, 2%)',
+          accent: 'hsl(142.1, 70.6%, 45.3%)', // Verde terminal
+          primary: 'hsl(346.8, 77.2%, 49.8%)', // Vermelho alarmante
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['scanlines', 'terminal_glow', 'glitch']
+        }
+      }
+
+      // 2. IA / INTELIGÊNCIA ARTIFICIAL (Futurista Neural)
+      if (upper.includes('IA') || upper.includes('INTELIGÊNCIA') || upper.includes('AI')) {
+        return {
+          bg: 'hsl(224, 25%, 5%)', // Deep Indigo
+          accent: 'hsl(244.5, 97.3%, 80.8%)', // Lavanda brilhante
+          primary: 'hsl(180, 70%, 50%)', // Ciano digital
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['glow', 'grainy_texture']
+        }
+      }
+
+      // 3. ARTE DIGITAL / SYNTH / ELETRÔNICA (Neon Cyberpunk)
+      if (
+        upper.includes('SYNTH') ||
+        upper.includes('ELETRONICA') ||
+        upper.includes('TECHNO') ||
+        upper.includes('ARTE')
+      ) {
+        return {
+          bg: 'hsl(295, 20%, 4%)', // Roxo profundo
+          accent: 'hsl(315, 90%, 65%)', // Pink neon
+          primary: 'hsl(275, 80%, 55%)', // Lavanda vibrante
+          font: 'Georgia, Times New Roman, Times, serif',
+          effects: ['glow', 'neural_particles']
+        }
+      }
+
+      // 4. BIG TECH & MERCADO (Corporate Slate)
+      if (upper.includes('BIG TECH') || upper.includes('MERCADO') || upper.includes('NEGÓCIOS')) {
+        return {
+          bg: 'hsl(210, 15%, 4%)', // Dark Slate Blue
+          accent: 'hsl(200, 85%, 55%)', // Azul futurista
+          primary: 'hsl(200, 85%, 45%)',
+          font: 'var(--font-geist-sans), Inter, Roboto, sans-serif',
+          effects: ['glow']
+        }
+      }
+
+      // 5. CULTURA URBANA / GEARHEAD (Industrial Raw)
+      if (
+        upper.includes('GEARHEAD') ||
+        upper.includes('URBANA') ||
+        upper.includes('HIP') ||
+        upper.includes('RAP') ||
+        upper.includes('BRASIL') ||
+        upper.includes('BR')
+      ) {
+        return {
+          bg: 'hsl(12, 10%, 3%)', // Asfalto escuro
+          accent: 'hsl(45, 93%, 47%)', // Amarelo industrial
+          primary: 'hsl(25, 90%, 50%)', // Laranja queimado
+          font: 'var(--font-geist-sans), Inter, Roboto, sans-serif',
+          effects: ['street_glitch', 'grainy_texture']
+        }
+      }
+
+      // Tema Default
+      return {
+        bg: originalBg,
+        accent: originalAccent,
+        primary: originalPrimary,
+        font: originalFont,
+        effects: ['glow']
+      }
     }
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const hexColor = entry.target.getAttribute('data-theme-color')
+          const categoryName = entry.target.getAttribute('data-category-name') || ''
+          const theme = getThemeConfigByCategory(categoryName)
+          const root = document.documentElement
+
+          // Transmutar dinamicamente as variáveis de design no root do documento
+          root.style.setProperty('--theme-bg', theme.bg)
+          root.style.setProperty('--theme-accent', theme.accent)
+          root.style.setProperty('--theme-primary', theme.primary)
+          root.style.setProperty('--theme-font', theme.font)
+          root.style.setProperty('--primary', hexToHsl(entry.target.getAttribute('data-theme-color') || '#8b5cf6'))
+
+          // Atualizar classes de efeitos no root do documento de forma limpa
+          const currentEffects = Array.from(root.classList).filter(cls => cls.startsWith('effect-'))
+          currentEffects.forEach(cls => root.classList.remove(cls))
           
-          if (hexColor) {
-            const hslColor = hexToHsl(hexColor)
-            // Atualiza a variável primária do Tailwind
-            document.documentElement.style.setProperty('--primary', hslColor)
-            console.log(`[CAMALEAO-UI] Foco na seção: ${entry.target.getAttribute('data-category-name')}, cor alterada para: ${hslColor}`)
-          }
+          theme.effects.forEach((effect) => {
+            root.classList.add(`effect-${effect}`)
+          })
+
+          console.log(`[CAMALEAO-ENGINE] Transmutação ativa para: ${categoryName}`, {
+            bg: theme.bg,
+            accent: theme.accent,
+            font: theme.font,
+            effects: theme.effects
+          })
         }
       })
     }
 
     const observer = new IntersectionObserver(observerCallback, observerOptions)
-    
     sections.forEach((section) => observer.observe(section))
 
     // Cleanup ao desmontar
     return () => {
       observer.disconnect()
-      document.documentElement.style.setProperty('--primary', originalPrimary)
+      const root = document.documentElement
+      root.style.setProperty('--theme-bg', originalBg)
+      root.style.setProperty('--theme-accent', originalAccent)
+      root.style.setProperty('--theme-primary', originalPrimary)
+      root.style.setProperty('--theme-font', originalFont)
+      root.style.setProperty('--primary', originalPrimary)
+      
+      const currentEffects = Array.from(root.classList).filter(cls => cls.startsWith('effect-'))
+      currentEffects.forEach(cls => root.classList.remove(cls))
     }
   }, [])
 

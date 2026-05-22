@@ -45,7 +45,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
   }
 
   return (
-    <div className="group relative h-full glass-card rounded-[2.5rem] overflow-hidden flex flex-col hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 border-white/5">
+    <div className="group relative h-full glass-card rounded-none overflow-hidden flex flex-col hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 border-2 border-white/5 hover:border-primary/50">
       {/* Invisible Link covering the whole card */}
       <Link 
         href={`/archive/${id}`} 
@@ -55,7 +55,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
 
       {/* Status Badge (Glass Style) */}
       <div className="absolute top-5 left-5 z-20 pointer-events-none">
-        <span className="px-4 py-1.5 rounded-full text-[9px] font-bold tracking-[0.2em] uppercase backdrop-blur-xl border border-white/10 shadow-2xl bg-black/40 text-white/80">
+        <span className="px-4 py-1.5 rounded-none text-[9px] font-bold tracking-[0.2em] uppercase backdrop-blur-xl border border-white/10 shadow-2xl bg-black/40 text-white/80">
           {status === 'draft' ? 'RASCUNHO' : 'PÚBLICO'}
         </span>
       </div>
@@ -74,7 +74,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
         {/* Meta Info */}
         <div className="flex items-center gap-3 mb-6 tech-label opacity-50">
           <span>Edição #{edition}</span>
-          <span className="w-1 h-1 bg-primary/30 rounded-full" />
+          <span className="w-1.5 h-1.5 bg-primary/30 rounded-none" />
           <span>{format(dateObj, "dd.MM.yyyy", { locale: ptBR })}</span>
         </div>
 
@@ -103,7 +103,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
                 <Link
                   href="/admin/newsletters"
                   title="Editar Draft"
-                  className="p-2.5 glass-card rounded-xl hover:bg-primary/10 hover:border-primary/20 transition-all group/edit border-white/5 flex items-center justify-center"
+                  className="p-2.5 glass-card rounded-none hover:bg-primary/10 hover:border-primary/20 transition-all group/edit border-white/5 flex items-center justify-center"
                 >
                   <Edit2 className="w-4 h-4 text-muted-foreground/40 group-hover/edit:text-primary" />
                 </Link>
@@ -111,7 +111,7 @@ export function NewsCard({ id, edition, title, date, intro, status = 'published'
               <button 
                 onClick={handleDelete} 
                 title="Excluir Edição"
-                className="p-2.5 glass-card rounded-xl hover:bg-red-500/10 hover:border-red-500/20 transition-all group/del border-white/5"
+                className="p-2.5 glass-card rounded-none hover:bg-red-500/10 hover:border-red-500/20 transition-all group/del border-white/5"
                 disabled={isDeleting}
               >
                 <Trash2 className="w-4 h-4 text-muted-foreground/40 group-hover/del:text-red-500" />
