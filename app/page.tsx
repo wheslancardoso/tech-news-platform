@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Logo } from '@/components/logo'
+import { TerminalToggle } from '@/components/terminal-toggle'
 
 export const revalidate = 0
 
@@ -63,6 +64,8 @@ export default async function Home(props: { searchParams: SearchParams }) {
                 <Link href="/admin/posts" className="text-primary hover:brightness-125">Console</Link>
               )}
             </div>
+
+            <TerminalToggle />
 
             <ScrollLink
               href="#subscribe"

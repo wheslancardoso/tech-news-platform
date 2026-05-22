@@ -6,6 +6,7 @@ import { ScrollLink } from '@/components/scroll-link'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
+import { TerminalToggle } from '@/components/terminal-toggle'
 
 export const revalidate = 0
 
@@ -43,6 +44,7 @@ export default async function ArchiveIndexPage() {
                             <Link href="/archive" className="text-primary">Edições</Link>
                             <Link href="/about" className="hover:text-primary transition-colors">Sobre</Link>
                         </div>
+                        <TerminalToggle />
                         <Link
                             href="/#subscribe"
                             className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20"
