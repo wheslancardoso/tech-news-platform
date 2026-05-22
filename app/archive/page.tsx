@@ -289,14 +289,12 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
 
                                             {/* Título */}
                                             <h3 className="text-xl md:text-2xl font-black tracking-tight text-white uppercase italic leading-tight group-hover:text-primary transition-colors font-mono">
-                                                <a 
-                                                    href={post.url} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer" 
+                                                <Link 
+                                                    href={`/post/${post.id}`} 
                                                     className="hover:underline decoration-2 underline-offset-4"
                                                 >
                                                     {post.title}
-                                                </a>
+                                                </Link>
                                             </h3>
 
                                             {/* Resumo */}
@@ -308,14 +306,12 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
                                         {/* Footer do Card */}
                                         <div className="pt-6 mt-6 border-t border-white/5 flex items-center justify-between gap-4 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 font-mono">
                                             <span>FONTE: {post.source || "web"}</span>
-                                            <a 
-                                                href={post.url} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
+                                            <Link 
+                                                href={`/post/${post.id}`} 
                                                 className="inline-flex items-center gap-1.5 text-primary hover:text-white transition-colors group-hover:gap-3"
                                             >
-                                                LER_FONTE <ArrowRight className="w-3 h-3" />
-                                            </a>
+                                                LER_POST <ArrowRight className="w-3 h-3" />
+                                            </Link>
                                         </div>
                                     </div>
                                 );

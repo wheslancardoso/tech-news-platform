@@ -116,6 +116,28 @@ export function scoreItem(item: { title?: string; content?: string; contentSnipp
 }
 
 /**
+ * Determina o mundo/nicho do post baseado na category_hint da fonte.
+ */
+export function determineWorld(categoryHint: string): string {
+  const musicHints = [
+    'MUSICA_URBANA', 'MUSICA_ELETRONICA', 'VANGUARDA_CRITICA', 
+    'CULTURA_BR', 'ROCK_INDIE', 'RAP_HIPHOP', 'MUSIC'
+  ]
+  const gearHints = [
+    'F1_MOTORSPORT', 'RAW_HARDWARE', 'GEARHEAD', 'GEAR'
+  ]
+  
+  const hint = (categoryHint || '').toUpperCase()
+  if (musicHints.includes(hint)) {
+    return 'MUSIC'
+  }
+  if (gearHints.includes(hint)) {
+    return 'GEAR'
+  }
+  return 'TECH'
+}
+
+/**
  * Serviço de Ingestão: Coleta notícias dos feeds RSS e salva no banco de dados.
  * Este serviço NÃO gera a newsletter, apenas popula a tabela de posts para curadoria.
  * 
@@ -127,16 +149,15 @@ export async function ingestPostsService() {
   try {
     const supabase = createAdminClient()
 
-    // 1. Ingestão: Buscar fontes ativas do banco
+    // 1. Ingestão: Buscar fontes ativas do banco com a dica de categoria
     const { data: sources, error: sourcesError } = await supabase
       .from('sources')
-      .select('rss_url')
+      .select('rss_url, category_hint')
       .eq('is_active', true)
 
     if (sourcesError) throw sourcesError
-    const activeFeeds = sources?.map(s => s.rss_url) || []
 
-    if (activeFeeds.length === 0) {
+    if (!sources || sources.length === 0) {
       console.warn('⚠️ [Ingest] Nenhuma fonte ativa encontrada na tabela sources.')
       return { success: false, total: 0, inserted: 0, skipped: 0 }
     }
@@ -148,12 +169,16 @@ export async function ingestPostsService() {
     })
 
     // Processamento Paralelo de RSS
-    const feedPromises = activeFeeds.map(async (url) => {
+    const feedPromises = sources.map(async (source) => {
       try {
-        const feed = await parser.parseURL(url);
-        return feed.items;
+        const feed = await parser.parseURL(source.rss_url);
+        // Anexa a category_hint aos itens retornados do feed
+        return feed.items.map(item => ({
+          ...item,
+          category_hint: source.category_hint
+        }));
       } catch (error) {
-        console.error(`Erro ao ler feed ${url}:`, error);
+        console.error(`Erro ao ler feed ${source.rss_url}:`, error);
         return [];
       }
     });
@@ -201,6 +226,7 @@ export async function ingestPostsService() {
     let skipped = 0
 
     for (const item of sortedItems) {
+      const world = determineWorld(item.category_hint)
       const postData = {
         title: item.title || 'Sem título',
         url: item.link,
@@ -208,7 +234,10 @@ export async function ingestPostsService() {
         summary: (item.contentSnippet || '').substring(0, 500),
         source: item.source || new URL(item.link).hostname,
         score: item.score,
-        status: 'pending' as const
+        status: 'pending' as const,
+        world: world,
+        category: item.category_hint || 'TECH_HACKER',
+        sub_category: ''
       }
 
       const { error } = await supabase
@@ -257,18 +286,19 @@ export async function ingestPostsService() {
  * 
  * @returns Dados da edição gerada
  */
-export async function generateNewsletterService() {
-  console.log('🚀 [Generate] Iniciando geração Map-Reduce...')
+export async function generateNewsletterService(world: string = 'TECH') {
+  console.log(`🚀 [Generate] Iniciando geração Map-Reduce para o mundo: ${world}...`)
 
   try {
     const supabase = createAdminClient()
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-    // ===== 1. SELEÇÃO: Buscar 25 posts (pending ou approved) =====
+    // ===== 1. SELEÇÃO: Buscar 25 posts (pending ou approved) do mundo especificado =====
     const { data: allPosts, error: fetchError } = await supabase
       .from('posts')
       .select('*')
       .in('status', ['pending', 'approved'])
+      .eq('world', world)
       .order('score', { ascending: false })
       .limit(25)
 
@@ -604,6 +634,7 @@ SAÍDA JSON:
           html_content: htmlContent,
           status: 'draft',
           category: 'MASTER',
+          world: world,
           image_prompt: contentJson.image_prompt
         })
         .select()
