@@ -91,10 +91,22 @@ Foco em telemetria avançada, dinâmica de fluidos computacional (CFD), motoriza
   - *Por que usar:* Artigos e opiniões de correspondentes especializados nos bastidores da velocidade.
 
 ### 2. `RAW_HARDWARE` // BENCHMARKS & SILICON (Cinza Metal / Amarelo Alerta)
-Foco em arquitetura x86/ARM/RISC-V, litografia de chips, benchmarks extremos de placas de silício, modificação física (modding) e projetos eletrônicos caseiros.
+Foco em arquitetura x86/ARM/RISC-V, litografia de chips, benchmarks extremos de placas de silício, engenharia reversa, eletrônica analógica e projetos artesanais (DIY).
+
 - **AnandTech**: `https://www.anandtech.com/rss`
-  - *Por que usar:* O mais profundo portal de benchmarks e diagramas lógicos de processadores e placas mãe do mercado.
+  - *Por que usar:* O mais detalhado portal de benchmarks de hardware corporativo, microarquiteturas de CPU/GPU e diagramas de blocos lógicos.
 - **Hackaday**: `https://hackaday.com/feed/`
-  - *Por que usar:* Projetos DIY brutais. Hackers que modificam fisicamente eletrônicos antigos, criam robôs de garagem e chips artesanais.
+  - *Por que usar:* O lar dos hacks de hardware, projetos de eletrônica caseiros, engenharia reversa e modificações físicas bizarras.
 - **Phoronix**: `https://www.phoronix.com/phoronix-rss.php`
-  - *Por que usar:* Cobertura diária focada em drivers de hardware de baixo nível do Linux e benchmarks gráficos (Phoronix Test Suite).
+  - *Por que usar:* Referência absoluta em benchmarks de baixo nível no Linux, novos drivers gráficos open-source e kernel hacking.
+- **ServeTheHome (STH)**: `https://www.servethehome.com/feed/`
+  - *Por que usar:* Foco cirúrgico em hardware de infraestrutura profunda, servidores de alta performance, networking de silício e switches complexos.
+- **Igor's LAB**: `https://www.igorslab.de/en/feed/`
+  - *Por que usar:* Engenharia reversa e testes físicos extremamente detalhados de VRMs, composto térmico, osciloscópios e hardware bruto sob stress.
+- **EE Times (Electronic Engineering Times)**: `https://www.eetimes.com/feed/`
+  - *Por que usar:* Cobertura analítica global sobre a indústria de semicondutores, litografias de ponta, circuitos integrados e projetos eletrônicos acadêmicos.
+- **SemiAccurate**: `https://semiaccurate.com/feed/`
+  - *Por que usar:* Furos e análises minuciosas sobre o ecossistema de semicondutores, arquiteturas de CPU/GPU em desenvolvimento e segredos da indústria física.
+- **TechPowerUp**: `https://www.techpowerup.com/rss/reviews`
+  - *Por que usar:* Análise técnica aprofundada de placas de vídeo, memórias e SSDs, com tabelas densas de componentes eletrônicos internos e BIOS.
+

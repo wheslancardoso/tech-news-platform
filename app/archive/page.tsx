@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { TerminalToggle } from '@/components/terminal-toggle'
 import { ArrowRight } from 'lucide-react'
+import { WorldSelector } from '@/components/world-selector'
 
 export const revalidate = 0
 
@@ -22,6 +23,7 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
     const supabase = await createClient()
     const cookieStore = await cookies()
     const isAdmin = cookieStore.has('admin_session')
+    const activeWorld = cookieStore.get('active_world')?.value || 'TECH'
 
     let subscriber = null
     let affinityPosts: any[] = []
@@ -36,11 +38,12 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
         if (subData) {
             subscriber = subData
             
-            // Buscar posts aprovados
+            // Buscar posts aprovados pertencentes ao mundo ativo
             const { data: postsData } = await supabase
                 .from('posts')
                 .select('*')
                 .eq('status', 'approved')
+                .eq('world', activeWorld)
                 .order('score', { ascending: false })
             
             if (postsData) {
@@ -59,11 +62,12 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
             }
         }
     } else {
-        // Se não houver subscriber logado, busca posts para exibição geral
+        // Se não houver subscriber logado, busca posts do mundo ativo para exibição geral
         const { data: postsData } = await supabase
             .from('posts')
             .select('*')
             .eq('status', 'approved')
+            .eq('world', activeWorld)
             .order('score', { ascending: false })
             .limit(10)
         if (postsData) {
@@ -74,6 +78,7 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
     let query = supabase
         .from('newsletters')
         .select('*')
+        .eq('world', activeWorld)
         .order('edition_number', { ascending: false })
         .limit(100)
 
@@ -96,11 +101,15 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
                     </Link>
 
                     <nav className="flex items-center gap-6">
-                        <div className="hidden md:flex items-center gap-8 text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground mr-4">
+                        <div className="hidden lg:flex items-center gap-8 text-[10px] font-black tracking-[0.2em] uppercase text-muted-foreground mr-4">
                             <Link href="/archive" className="text-primary">Edições</Link>
                             <Link href="/about" className="hover:text-primary transition-colors">Sobre</Link>
                         </div>
+                        
+                        <WorldSelector activeWorld={activeWorld} />
+
                         <TerminalToggle />
+                        
                         <Link
                             href="/#subscribe"
                             className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3 rounded-none text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 border border-primary/50 cursor-pointer"

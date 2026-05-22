@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Logo } from '@/components/logo'
 import { TerminalToggle } from '@/components/terminal-toggle'
+import { WorldSelector } from '@/components/world-selector'
 
 export const revalidate = 0
 
@@ -24,12 +25,44 @@ export default async function Home(props: { searchParams: SearchParams }) {
   const supabase = await createClient()
   const cookieStore = await cookies()
   const isAdmin = cookieStore.has('admin_session')
+  const activeWorld = cookieStore.get('active_world')?.value || 'TECH'
 
-  // Início da Query
+  // Configuração adaptativa do Hero com base no mundo ativo do multiverso
+  let heroTitle = (
+    <>
+      Sua Dose de <br />
+      <span className="text-primary drop-shadow-[0_0_40px_rgba(124,58,237,0.4)] italic font-black">Inteligência Tech.</span>
+    </>
+  )
+  let heroSubtitle = "Curadoria técnica de alta densidade para quem constrói o futuro. Sem ruído, sem distrações, apenas o core da inovação."
+  let transmissionLabel = "Protocolo de Transmissão // v1.0"
+  
+  if (activeWorld === 'MUSIC') {
+    heroTitle = (
+      <>
+        Batidas & Sons da <br />
+        <span className="text-yellow-500 drop-shadow-[0_0_40px_rgba(234,179,8,0.4)] italic font-black">Contracultura.</span>
+      </>
+    )
+    heroSubtitle = "Design sonoro visceral, resenhas de rock alternativo e a pulsação das batidas do techno e hip hop de rua."
+    transmissionLabel = "Frequência Cultural // v1.0"
+  } else if (activeWorld === 'GEAR') {
+    heroTitle = (
+      <>
+        Engenharia Extrema <br />
+        <span className="text-red-500 drop-shadow-[0_0_40px_rgba(239,68,68,0.4)] italic font-black">& Silício.</span>
+      </>
+    )
+    heroSubtitle = "Aerodinâmica avançada de F1, benchmarks detalhados de hardware bruto e a arte eletrônica DIY de baixo nível."
+    transmissionLabel = "Velocidade & Hardware // v1.0"
+  }
+
+  // Início da Query filtrando pelo mundo ativo
   let query = supabase
     .from('newsletters')
     .select('*')
     .eq('status', 'published')
+    .eq('world', activeWorld)
     .order('edition_number', { ascending: false })
 
   if (selectedCategory) {
@@ -41,23 +74,26 @@ export default async function Home(props: { searchParams: SearchParams }) {
 
   const { data: newsletters } = await query
 
-  // Buscar todas as categorias disponíveis para montar o filtro
-  const { data: catData } = await supabase.from('newsletters').select('category').not('category', 'is', null)
+  // Buscar todas as categorias disponíveis para montar o filtro do mundo ativo
+  const { data: catData } = await supabase
+    .from('newsletters')
+    .select('category')
+    .eq('world', activeWorld)
+    .not('category', 'is', null)
   const availableCategories = Array.from(new Set(catData?.map(n => n.category) || []))
-
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans flex flex-col selection:bg-primary/30">
-      {/* Header Liquid Glass */}
-      <div className="fixed top-8 left-0 right-0 z-50 px-6">
-        <header className="max-w-7xl mx-auto glass-nav h-20 px-10 rounded-full flex items-center justify-between border border-white/5 shadow-2xl">
+      {/* Header Brutalista */}
+      <div className="fixed top-6 left-0 right-0 z-50 px-6">
+        <header className="max-w-7xl mx-auto glass-nav h-20 px-8 rounded-none flex items-center justify-between border-b-2 border-primary shadow-2xl">
           <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-all active:scale-95 group">
             <Logo size={42} className="group-hover:rotate-6 transition-transform duration-500" />
-            <span className="font-heading font-bold text-2xl tracking-tighter text-foreground md:block">Fresh News</span>
+            <span className="font-heading font-black text-2xl tracking-tighter text-foreground md:block">Fresh News</span>
           </Link>
 
-          <nav className="flex items-center gap-8">
-            <div className="hidden md:flex items-center gap-10 tech-label">
+          <nav className="flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-8 tech-label">
               <ScrollLink href="#archive" className="hover:text-primary transition-colors">Edições</ScrollLink>
               <Link href="/about" className="hover:text-primary transition-colors">Sobre</Link>
               {isAdmin && (
@@ -65,11 +101,13 @@ export default async function Home(props: { searchParams: SearchParams }) {
               )}
             </div>
 
+            <WorldSelector activeWorld={activeWorld} />
+
             <TerminalToggle />
 
             <ScrollLink
               href="#subscribe"
-              className="bg-primary text-white hover:bg-white hover:text-black px-10 py-4 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-2xl shadow-primary/40 active:scale-95"
+              className="bg-primary text-white hover:bg-white hover:text-black px-8 py-3.5 rounded-none text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-[3px_3px_0px_#000] dark:shadow-[3px_3px_0px_#fff] active:scale-95 border-2 border-black dark:border-white cursor-pointer"
             >
               Acessar Protocolo
             </ScrollLink>
@@ -95,22 +133,20 @@ export default async function Home(props: { searchParams: SearchParams }) {
             <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-[140px]"></div>
 
             <div className="space-y-12 relative z-10">
-              <div className="inline-flex items-center gap-3 px-6 py-2.5 glass-card rounded-full border-white/5">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.5)]"></span>
-                <span className="tech-label opacity-80">Protocolo de Transmissão // v1.0</span>
+              <div className="inline-flex items-center gap-3 px-6 py-2.5 glass-card rounded-none border border-black dark:border-white">
+                <span className="w-1.5 h-1.5 bg-primary rounded-none animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.5)]"></span>
+                <span className="tech-label opacity-80">{transmissionLabel}</span>
               </div>
               
               <h1 className="text-7xl md:text-9xl font-heading font-bold tracking-tight text-foreground leading-[0.9] max-w-5xl mx-auto">
-                Sua Dose de <br />
-                <span className="text-primary drop-shadow-[0_0_40px_rgba(124,58,237,0.4)] italic font-black">Inteligência Tech.</span>
+                {heroTitle}
               </h1>
 
               <p className="text-xl md:text-2xl text-muted-foreground/60 max-w-3xl mx-auto font-medium leading-relaxed">
-                Curadoria técnica de alta densidade para quem constrói o futuro. <br className="hidden md:block" />
-                Sem ruído, sem distrações, apenas o core da inovação.
+                {heroSubtitle}
               </p>
 
-              <div className="max-w-xl mx-auto mt-20 glass-card p-1.5 rounded-[2.5rem] shadow-2xl border-white/5 bg-white/[0.02]">
+              <div className="max-w-xl mx-auto mt-20 glass-card p-1.5 rounded-none shadow-2xl border-black dark:border-white border bg-white/[0.02]">
                 <SubscribeForm />
               </div>
             </div>
