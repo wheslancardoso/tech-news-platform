@@ -127,24 +127,24 @@ Para fluxos que realizam gravações críticas no Supabase (como `/preferencias/
 
 ## 📋 4. Checklist Completo de Implementação de Testes E2E
 
-### Fase 1: Setup e Configuração (Pendente de Aprovação)
-- [ ] Instalar o pacote de desenvolvimento `@playwright/test`.
-- [ ] Criar o arquivo de parametrização `playwright.config.ts` (timeouts, viewports, caminhos de testes, inicialização de servidor Next.js local).
-- [ ] Adicionar scripts de execução no `package.json` (`test:e2e`, `test:e2e:ui`).
+### Fase 1: Setup e Configuração (Concluído)
+- [x] Instalar o pacote de desenvolvimento `@playwright/test`.
+- [x] Criar o arquivo de parametrização `playwright.config.ts` (timeouts, viewports, caminhos de testes, inicialização de servidor Next.js local).
+- [x] Adicionar scripts de execução no `package.json` (`test:e2e`, `test:e2e:ui`).
 
 ### Fase 2: Construção dos Page Object Models (POMs)
-- [ ] Criar `tests/e2e/pages/home.ts` (mecanismos de mundos).
-- [ ] Criar `tests/e2e/pages/archive.ts` (feed de afinidades).
-- [ ] Criar `tests/e2e/pages/preferences.ts` (checkboxes e submit CRT).
-- [ ] Criar `tests/e2e/pages/debate.ts` (terminal de debates e controles).
+- [x] Criar `tests/e2e/pages/home.ts` (mecanismos de mundos).
+- [x] Criar `tests/e2e/pages/archive.ts` (feed de afinidades).
+- [x] Criar `tests/e2e/pages/preferences.ts` (checkboxes e submit CRT).
+- [x] Criar `tests/e2e/pages/debate.ts` (terminal de debates e controles).
 
 ### Fase 3: Escrita dos Casos de Teste (Specs)
-- [ ] Implementar `tests/e2e/specs/multiverse.spec.ts` (Cenários A.1 a A.4).
-- [ ] Implementar `tests/e2e/specs/affinity.spec.ts` (Cenários B.1 a B.4).
-- [ ] Implementar `tests/e2e/specs/debate.spec.ts` (Cenários C.1 a C.4).
-- [ ] Implementar `tests/e2e/specs/hacker-cli.spec.ts` (Cenários D.1 e D.2).
-- [ ] Implementar `tests/e2e/specs/chameleon.spec.ts` (Cenários E.1 e E.2).
+- [x] Implementar `tests/e2e/specs/multiverse.spec.ts` (Cenários A.1 a A.4).
+- [x] Implementar `tests/e2e/specs/affinity.spec.ts` (Cenários B.1 a B.4).
+- [x] Implementar `tests/e2e/specs/debate.spec.ts` (Cenários C.1 a C.4).
+- [x] Implementar `tests/e2e/specs/hacker-cli.spec.ts` (Cenários D.1 e D.2).
+- [x] Implementar `tests/e2e/specs/chameleon.spec.ts` (Cenários E.1 e E.2).
 
 ### Fase 4: CI/CD e Validação
-- [ ] Configurar execução headless e relatórios HTML.
-- [ ] Garantir que toda a suite roda de forma bem-sucedida de ponta a ponta sem falsos-positivos.
+- [x] Configurar execução headless e relatórios HTML.
+- [x] Garantir que toda a suite roda de forma bem-sucedida de ponta a ponta sem falsos-positivos (100% verde).
