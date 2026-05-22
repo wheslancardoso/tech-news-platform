@@ -1,7 +1,5 @@
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-
-export const dynamic = 'force-dynamic'
 
 // Códigos de formatação de cores e estilos ANSI para o terminal
 const ANSI = {
@@ -78,7 +76,10 @@ export async function GET(request: Request) {
         }
 
         const editionParam = searchParams.get('edition')
-        const supabase = createAdminClient()
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
 
         let query = supabase.from('newsletters').select('*')
 

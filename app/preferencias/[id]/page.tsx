@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { updatePreferences } from '@/actions/preferences'
 
 interface PreferencesPageProps {
@@ -34,6 +34,7 @@ export default async function PreferencesPage({ params }: PreferencesPageProps) 
     'use server'
     const prefs = formData.getAll('preferences') as string[]
     await updatePreferences(id, prefs)
+    redirect(`/archive?subscriber=${id}`)
   }
 
   return (

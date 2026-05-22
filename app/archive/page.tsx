@@ -152,7 +152,7 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
                 {/* ZINE PESSOAL // FEED DE AFINIDADES */}
                 <section className="max-w-7xl mx-auto px-6 py-10">
                     {/* Alerta Brutalista de Preferências */}
-                    <div className={cn(
+                    <div role="alert" className={cn(
                         "p-6 md:p-8 rounded-none border-2 mb-16 relative overflow-hidden",
                         subscriber 
                             ? "border-emerald-500 bg-emerald-950/10 shadow-[0_0_20px_rgba(16,185,129,0.1)] text-emerald-400"
@@ -259,6 +259,7 @@ export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPag
                                 return (
                                     <div 
                                         key={post.id}
+                                        data-testid="post-card"
                                         className={cn(
                                             "p-6 md:p-8 rounded-none border bg-black/40 flex flex-col justify-between transition-all group relative overflow-hidden h-full",
                                             isPreferred 
