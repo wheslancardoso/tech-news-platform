@@ -18,11 +18,11 @@ Este documento vivo detalha o progresso atual do portal Fresh News rumo à vers�
 
 ## ✅ Fase 1 — Planejamento & Fundações (Concluído)
 
-- [x] PRD de alta autoridade técnica criado (docs/PRD.md).
+- [x] PRD de alta autoridade técnica criado (docs/02_PRD.md).
 - [x] ADR-001: Edição Mestra Unificada com Snapshots JSONB.
 - [x] ADR-002: Brutalismo Digital e Tema Camaleão.
 - [x] ADR-003: Distribuição Omnichannel via n8n e WhatsApp.
-- [x] Templates JSON de workflows n8n com agentes de IA (docs/N8N_WORKFLOW_TEMPLATES.md).
+- [x] Templates JSON de workflows n8n com agentes de IA (docs/11_N8N_WORKFLOW_TEMPLATES.md).
 
 ---
 
@@ -43,7 +43,7 @@ Este documento vivo detalha o progresso atual do portal Fresh News rumo à vers�
 
 A integração do segundo universo (Música - hip-hop, rock, eletrônica) está em andamento.
 
-- [x] Definição da taxonomia de música simplificada na UI (Hip-Hop, Rock & Indie, Eletrônica, Cultura Geral) e mapeamento com hints granulares das fontes (docs/MUSIC_VERTICAL.md).
+- [x] Definição da taxonomia de música simplificada na UI (Hip-Hop, Rock & Indie, Eletrônica, Cultura Geral) e mapeamento com hints granulares das fontes (docs/28_MUSIC_VERTICAL.md).
 - [ ] **n8n Workflow Expansion:**
   - [ ] Implementar Switch no fluxo de entrada baseado em `category_hint`.
   - [ ] Criar prompts de triagem e prompts específicos para especialistas musicais no n8n.
