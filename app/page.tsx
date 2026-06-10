@@ -50,11 +50,20 @@ export default async function Home(props: { searchParams: SearchParams }) {
     heroTitle = (
       <>
         Engenharia Extrema <br />
-        <span className="text-red-500 drop-shadow-[0_0_40px_rgba(239,68,68,0.4)] italic font-black">& Silício.</span>
+        <span className="text-amber-500 drop-shadow-[0_0_40px_rgba(245,158,11,0.4)] italic font-black">& Silício.</span>
       </>
     )
     heroSubtitle = "Aerodinâmica avançada de F1, benchmarks detalhados de hardware bruto e a arte eletrônica DIY de baixo nível."
     transmissionLabel = "Velocidade & Hardware // v1.0"
+  } else if (activeWorld === 'GAME') {
+    heroTitle = (
+      <>
+        Retro Arcade & <br />
+        <span className="text-purple-500 drop-shadow-[0_0_40px_rgba(168,85,247,0.4)] italic font-black">Cultura Pixel.</span>
+      </>
+    )
+    heroSubtitle = "Desenvolvimento de jogos indie, análises viscerais de consoles de próxima geração, retrogaming clássico e os segredos da cultura de pixels."
+    transmissionLabel = "Linha de Varredura // v1.0"
   }
 
   // Início da Query filtrando pelo mundo ativo

@@ -29,9 +29,16 @@ export function WorldSelector({ activeWorld }: WorldSelectorProps) {
     {
       id: 'GEAR',
       label: 'GEAR',
-      sub: 'RPM & SILÍCIO',
-      colorClass: 'bg-red-600 text-white border-black dark:border-white',
-      activeColor: '#ef4444',
+      sub: 'RPM & GADGETS',
+      colorClass: 'bg-amber-500 text-black border-black dark:border-white',
+      activeColor: '#f59e0b',
+    },
+    {
+      id: 'GAME',
+      label: 'GAME',
+      sub: 'ARCADE & PIXEL',
+      colorClass: 'bg-purple-600 text-white border-black dark:border-white',
+      activeColor: '#a855f7',
     },
   ]
 

@@ -106,6 +106,66 @@ const getCategoryTheme = (name: string) => {
       label: 'CULTURAL_THEORY' 
     };
   }
+
+  // --- GEAR - RAW HARDWARE / DIY / MAKER (Laranja/Amarelo Industrial) ---
+  if (upper.includes('RAW_HARDWARE') || upper.includes('HARDWARE_HACKER') || upper.includes('DIY') || upper.includes('MAKER') || upper.includes('SOLDA')) {
+    return { 
+      color: '#F59E0B', 
+      rgb: hexToRgb('#F59E0B'), 
+      effects: ['cloud_compute_grid', 'scanlines', 'terminal_glow'],
+      label: 'HARDWARE_REVERSE' 
+    };
+  }
+
+  // --- GEAR - GEARHEAD / MOTORSPORT / F1 (Vermelho Corrida) ---
+  if (upper.includes('GEARHEAD') || upper.includes('MOTORSPORT') || upper.includes('F1') || upper.includes('MOTOR') || upper.includes('VELOCIDADE')) {
+    return { 
+      color: '#EF4444', 
+      rgb: hexToRgb('#EF4444'), 
+      effects: ['glitch', 'grainy_texture'],
+      label: 'MECHANICAL_RPM' 
+    };
+  }
+
+  // --- GEAR - EDC / GADGETS / DESIGN (Olive EDC) ---
+  if (upper.includes('EDC') || upper.includes('GADGET') || upper.includes('DESIGN_INDUSTRIAL') || upper.includes('CARREGAR')) {
+    return { 
+      color: '#84CC16', 
+      rgb: hexToRgb('#84CC16'), 
+      effects: ['glow', 'grainy_texture'],
+      label: 'EVERYDAY_CARRY' 
+    };
+  }
+
+  // --- GAME - INDIE GAME / PIXEL ART (Ciano Neon) ---
+  if (upper.includes('INDIE_GAME') || upper.includes('PIXEL') || upper.includes('JOGO_INDIE')) {
+    return { 
+      color: '#06B6D4', 
+      rgb: hexToRgb('#06B6D4'), 
+      effects: ['glitch', 'scanlines'],
+      label: 'INDIE_ARCADE' 
+    };
+  }
+
+  // --- GAME - ESPORTS / COMPETITIVO (Rosa Choque) ---
+  if (upper.includes('ESPORTS') || upper.includes('COMPETITIVO') || upper.includes('TORNEIO')) {
+    return { 
+      color: '#EC4899', 
+      rgb: hexToRgb('#EC4899'), 
+      effects: ['glow', 'glitch'],
+      label: 'META_COMPETITIVE' 
+    };
+  }
+
+  // --- GAME - HARDWARE CONSOLE / CONSOLE / GAME (Roxo Synthwave) ---
+  if (upper.includes('HARDWARE_CONSOLE') || upper.includes('CONSOLE') || upper.includes('GAME') || upper.includes('JOGO') || upper.includes('PLAY')) {
+    return { 
+      color: '#A855F7', 
+      rgb: hexToRgb('#A855F7'), 
+      effects: ['terminal_glow', 'grainy_texture'],
+      label: 'CONSOLE_UNIT' 
+    };
+  }
   
   // Default (Violet)
   return { 

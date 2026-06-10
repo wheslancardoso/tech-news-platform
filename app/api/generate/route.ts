@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         }
 
         // Validação estrita
-        const allowedWorlds = ['TECH', 'MUSIC', 'GEAR']
+        const allowedWorlds = ['TECH', 'MUSIC', 'GEAR', 'GAME']
         if (!allowedWorlds.includes(world)) {
             return NextResponse.json(
                 { success: false, message: `Mundo inválido: ${world}. Mundos permitidos: ${allowedWorlds.join(', ')}` },

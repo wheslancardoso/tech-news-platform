@@ -17,7 +17,7 @@ Este documento centraliza e unifica todos os checklists de evolução, seguranç
 | [Checklist 4: Documentação `/docs`](#-checklist-4-documentação-docs-p1) | P1 | **100% CONCLUÍDO** | 10/06/2026 |
 | [Checklist 5: Testes](#-checklist-5-testes-p2) | P2 | **100% CONCLUÍDO** | 10/06/2026 |
 | [Checklist 6: Deploy & Produção](#-checklist-6-deploy--produção-p2) | P2 | *Pendente* | 13/06/2026 |
-| [Checklist 7: App Flutter](#-checklist-7-app-flutter-p3--colaborativo-por-prompts) | P3 | *Em Progresso* | Em steps de prompts |
+| [Checklist 7: App Flutter](#-checklist-7-app-flutter-p3--colaborativo-por-prompts) | P3 | **PAUSADO / BACKLOG** | Foco na Validação Web |
 
 ---
 
@@ -110,6 +110,7 @@ Este documento centraliza e unifica todos os checklists de evolução, seguranç
 - [x] **4.10** Criar `CHECKLIST_STATUS.md` (Doc Central Unificada - Este arquivo).
 - [x] **4.11** Criar `MUSIC_VERTICAL.md` (Detalhamento do mundo da música e taxonomia).
 - [x] **4.12** Atualizar `RELEASE_NOTES.md` com v2.0 (Multiverso + Música).
+- [x] **4.13** Criar `30_N8N_PREPARATION_GUIDE.md` (Guia de preparação do n8n para os 4 mundos).
 
 ---
 

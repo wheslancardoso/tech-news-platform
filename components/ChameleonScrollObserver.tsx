@@ -126,9 +126,8 @@ export function ChameleonScrollObserver() {
         }
       }
 
-      // 5. CULTURA URBANA / HIP-HOP / GEARHEAD (Industrial Raw)
+      // 5. CULTURA URBANA / HIP-HOP (Street Vinyl / Yellow)
       if (
-        upper.includes('GEARHEAD') ||
         upper.includes('URBANA') ||
         upper.includes('HIP') ||
         upper.includes('RAP') ||
@@ -162,6 +161,72 @@ export function ChameleonScrollObserver() {
           primary: 'hsl(24, 95%, 43%)',
           font: 'Georgia, Times New Roman, Times, serif',
           effects: ['glow']
+        }
+      }
+
+      // 8. GEAR - RAW HARDWARE / DIY / MAKER (Laranja/Amarelo Industrial)
+      if (upper.includes('RAW_HARDWARE') || upper.includes('HARDWARE_HACKER') || upper.includes('DIY') || upper.includes('MAKER') || upper.includes('SOLDA')) {
+        return {
+          bg: 'hsl(38, 15%, 3%)', // Laranja/Marrom industrial escuro
+          accent: 'hsl(38, 95%, 50%)', // Laranja/Amarelo Industrial
+          primary: 'hsl(25, 95%, 45%)', // Laranja Queimado
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['cloud_compute_grid', 'scanlines']
+        }
+      }
+
+      // 9. GEAR - GEARHEAD / MOTORSPORT / F1 (Vermelho Corrida)
+      if (upper.includes('GEARHEAD') || upper.includes('MOTORSPORT') || upper.includes('F1') || upper.includes('MOTOR') || upper.includes('VELOCIDADE')) {
+        return {
+          bg: 'hsl(355, 10%, 3%)', // Vermelho asfalto escuro
+          accent: 'hsl(0, 84%, 55%)', // Vermelho Corrida
+          primary: 'hsl(0, 84%, 40%)',
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['glitch', 'grainy_texture']
+        }
+      }
+
+      // 10. GEAR - EDC / GADGETS / DESIGN (Olive EDC)
+      if (upper.includes('EDC') || upper.includes('GADGET') || upper.includes('DESIGN_INDUSTRIAL') || upper.includes('CARREGAR')) {
+        return {
+          bg: 'hsl(84, 10%, 3%)', // Verde oliva profundo
+          accent: 'hsl(84, 70%, 50%)', // Verde EDC
+          primary: 'hsl(84, 70%, 40%)',
+          font: 'var(--font-geist-sans), Inter, Roboto, sans-serif',
+          effects: ['glow', 'grainy_texture']
+        }
+      }
+
+      // 11. GAME - INDIE GAME / PIXEL ART (Ciano Neon)
+      if (upper.includes('INDIE_GAME') || upper.includes('PIXEL') || upper.includes('JOGO_INDIE')) {
+        return {
+          bg: 'hsl(180, 20%, 3%)', // Ciano escuro
+          accent: 'hsl(180, 90%, 50%)', // Ciano Neon
+          primary: 'hsl(180, 90%, 40%)',
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['glitch', 'scanlines']
+        }
+      }
+
+      // 12. GAME - ESPORTS / COMPETITIVO (Rosa Choque)
+      if (upper.includes('ESPORTS') || upper.includes('COMPETITIVO') || upper.includes('TORNEIO')) {
+        return {
+          bg: 'hsl(320, 20%, 3%)', // Rosa profundo
+          accent: 'hsl(320, 90%, 55%)', // Rosa Choque
+          primary: 'hsl(320, 90%, 45%)',
+          font: 'var(--font-geist-sans), Inter, Roboto, sans-serif',
+          effects: ['glow', 'glitch']
+        }
+      }
+
+      // 13. GAME - HARDWARE CONSOLE / CONSOLE / GAME (Roxo Synthwave)
+      if (upper.includes('HARDWARE_CONSOLE') || upper.includes('CONSOLE') || upper.includes('GAME') || upper.includes('JOGO') || upper.includes('PLAY')) {
+        return {
+          bg: 'hsl(250, 15%, 3%)', // Indigo escuro
+          accent: 'hsl(250, 80%, 60%)', // Indigo de Console
+          primary: 'hsl(250, 80%, 45%)',
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['terminal_glow', 'grainy_texture']
         }
       }
 

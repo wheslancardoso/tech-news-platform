@@ -39,6 +39,7 @@ export default async function AdminNewslettersPage() {
               <option value="TECH">TECH</option>
               <option value="MUSIC">MUSIC</option>
               <option value="GEAR">GEAR</option>
+              <option value="GAME">GAME</option>
             </select>
             <Button type="submit" className="px-8 py-3 rounded-2xl bg-primary text-white hover:bg-white hover:text-black tech-label transition-all shadow-xl shadow-primary/20 flex items-center gap-3">
               <Zap className="w-4 h-4 fill-current" />

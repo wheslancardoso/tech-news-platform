@@ -25,6 +25,16 @@ describe('Lógica do Multiverso // determineWorld', () => {
     expect(determineWorld('gearhead')).toBe('GEAR')
   })
 
+  it('deve categorizar dicas de jogos/consoles no canal GAME', () => {
+    expect(determineWorld('INDIE_GAME')).toBe('GAME')
+    expect(determineWorld('ESPORTS')).toBe('GAME')
+    expect(determineWorld('HARDWARE_CONSOLE')).toBe('GAME')
+    expect(determineWorld('GAME')).toBe('GAME')
+    // Teste de case insensitivity
+    expect(determineWorld('indie_game')).toBe('GAME')
+    expect(determineWorld('esports')).toBe('GAME')
+  })
+
   it('deve classificar dicas de tecnologia ou dicas desconhecidas no canal padrão TECH', () => {
     expect(determineWorld('TECH_HACKER')).toBe('TECH')
     expect(determineWorld('IA')).toBe('TECH')
