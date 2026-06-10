@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache'
  * @param world O nome do mundo ('TECH', 'MUSIC' ou 'GEAR')
  */
 export async function setActiveWorld(world: string) {
-  const allowedWorlds = ['TECH', 'MUSIC', 'GEAR']
+  const allowedWorlds = ['TECH', 'MUSIC', 'GEAR', 'GAME']
   if (!allowedWorlds.includes(world)) {
     throw new Error(`Mundo inválido: ${world}`)
   }
