@@ -11,6 +11,9 @@ Certifique-se de ter instalado em sua máquina:
 - **NPM** (Versão 9 ou superior)
 - **Git**
 
+> [!NOTE]
+> **Usuários Arch Linux (Playwright)**: O instalador automático do Playwright (`install-deps`) não suporta o Arch. Como alternativa recomendada, instale o Chromium nativo do sistema (`sudo pacman -S chromium`) e configure o `executablePath` apontando para `/usr/bin/chromium` no [playwright.config.ts](file:///home/lan/tech-news-platform/playwright.config.ts).
+
 ---
 
 ## 🛠️ Configuração Inicial

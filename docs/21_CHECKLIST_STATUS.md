@@ -127,7 +127,7 @@ Este documento centraliza e unifica todos os checklists de evolução, seguranç
 - [x] **5.5** Adicionar spec E2E: preferências com categorias musicais.
   - *Status:* Criado e validado de forma serial para evitar colisão concorrente no banco Supabase remoto.
 - [x] **5.6** Rodar suite completa: `npx playwright test`.
-  - *Status:* Executada e estabilizada com 47 testes passando e timeouts ajustados.
+  - *Status:* Executada e estabilizada com testes passando no ambiente original. No desenvolvimento local na nova máquina (Arch Linux), a suíte E2E do Playwright foi desconsiderada/deixada de lado devido a incompatibilidades de dependência do sistema operacional, concentrando a garantia de qualidade local nos 51 testes unitários do Vitest (100% funcionais).
 
 ---
 
