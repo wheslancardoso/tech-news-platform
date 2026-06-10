@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
+
+dotenv.config({ path: '.env.local' })
+
 
 /**
  * Arquivo de configuração global do Playwright para o Fresh News
@@ -24,7 +28,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          executablePath: '/usr/bin/chromium'
+        }
+      },
     },
     {
       name: 'firefox',

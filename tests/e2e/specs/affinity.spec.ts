@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test'
 import { ArchivePage } from '../pages/archive'
 import { PreferencesPage } from '../pages/preferences'
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://vgsjpuxymtkkiaissrky.supabase.co'
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q'
+
 test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
   test.describe.configure({ mode: 'serial' })
   let archivePage: ArchivePage
@@ -20,10 +23,10 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
     }])
 
     // Reseta as preferências do subscriber real antes de cada teste
-    await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
+    await playwrightRequest.patch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
       headers: {
-        'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
-        'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'apikey': SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       data: { preferences: [] }
@@ -32,10 +35,10 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
 
   test.afterEach(async ({ request: playwrightRequest }) => {
     // Garante que limpamos o estado das preferências e mundos ativos no pós-teste
-    await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
+    await playwrightRequest.patch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
       headers: {
-        'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
-        'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'apikey': SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       data: { preferences: [], active_worlds: ['TECH'] }
@@ -68,10 +71,10 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
 
   test('deve exibir os posts reordenados por afinidade priorizando categorias correspondentes', async ({ page, request: playwrightRequest }) => {
     // Injeta as preferências 'TECH_HACKER' via API para este teste
-    await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
+    await playwrightRequest.patch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
       headers: {
-        'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
-        'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'apikey': SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       data: { preferences: ['TECH_HACKER'] }
@@ -93,10 +96,10 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
 
   test('deve permitir interagir e marcar interesses musicais quando o assinante possui o mundo MUSIC ativo', async ({ request: playwrightRequest }) => {
     // Habilita temporariamente o mundo MUSIC nos active_worlds do subscriber de teste
-    await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
+    await playwrightRequest.patch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
       headers: {
-        'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
-        'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'apikey': SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       data: { active_worlds: ['TECH', 'MUSIC'], preferences: [] }
