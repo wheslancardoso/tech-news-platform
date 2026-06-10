@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NewsCard } from '@/components/news-card'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -20,7 +20,7 @@ interface ArchiveIndexPageProps {
 
 export default async function ArchiveIndexPage({ searchParams }: ArchiveIndexPageProps) {
     const { subscriber: subscriberId } = await searchParams
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const cookieStore = await cookies()
     const isAdmin = cookieStore.has('admin_session')
     const activeWorld = cookieStore.get('active_world')?.value || 'TECH'

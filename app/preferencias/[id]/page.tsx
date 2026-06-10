@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import { savePreferencesAction } from '@/actions/preferences'
 
@@ -25,7 +25,7 @@ const MUSIC_CATEGORIES = [
 
 export default async function PreferencesPage({ params }: PreferencesPageProps) {
   const { id } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: subscriber, error } = await supabase
     .from('subscribers')
