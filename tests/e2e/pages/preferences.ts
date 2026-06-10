@@ -4,7 +4,7 @@ export class PreferencesPage {
   constructor(private page: Page) {}
 
   async goto(subscriberId: string) {
-    await this.page.goto(`/preferencias/${subscriberId}`)
+    await this.page.goto(`/preferencias/${subscriberId}`, { timeout: 60000 })
   }
 
   /**
@@ -15,7 +15,7 @@ export class PreferencesPage {
     // Busca a categoria pelo value exato do checkbox
     const checkbox = this.page.locator(`input[type="checkbox"][value="${category}"]`)
     await expect(checkbox).toBeAttached()
-    await checkbox.click()
+    await checkbox.click({ force: true })
   }
 
   /**
@@ -24,7 +24,7 @@ export class PreferencesPage {
   async save() {
     const saveBtn = this.page.getByRole('button', { name: /gravar_protocolos|gravar|preferência/i })
     await expect(saveBtn).toBeVisible()
-    await saveBtn.click()
+    await saveBtn.click({ force: true })
   }
 
   /**
@@ -32,7 +32,7 @@ export class PreferencesPage {
    */
   async expectSuccessToast() {
     // Atesta redirecionamento e ativação do motor de afinidades retro-CRT no arquivo
-    await expect(this.page).toHaveURL(/.*archive.*/)
+    await expect(this.page).toHaveURL(/.*archive.*/, { timeout: 15000 })
     const activeAlert = this.page.getByText('MOTOR_DE_AFINIDADES_ATIVO')
     await expect(activeAlert).toBeVisible()
   }

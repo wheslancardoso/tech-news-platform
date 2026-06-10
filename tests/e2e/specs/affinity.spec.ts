@@ -3,6 +3,7 @@ import { ArchivePage } from '../pages/archive'
 import { PreferencesPage } from '../pages/preferences'
 
 test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
+  test.describe.configure({ mode: 'serial' })
   let archivePage: ArchivePage
   let preferencesPage: PreferencesPage
   const SUBSCRIBER_ID = '8f7a281c-8a11-41eb-852b-9db04ca9f337'
@@ -30,14 +31,14 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
   })
 
   test.afterEach(async ({ request: playwrightRequest }) => {
-    // Garante que limpamos o estado das preferências no pós-teste
+    // Garante que limpamos o estado das preferências e mundos ativos no pós-teste
     await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
       headers: {
         'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
         'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
         'Content-Type': 'application/json'
       },
-      data: { preferences: [] }
+      data: { preferences: [], active_worlds: ['TECH'] }
     })
   })
 
@@ -88,5 +89,29 @@ test.describe('Zine Pessoal & Feed de Afinidades (CRT)', () => {
     const firstPost = page.getByTestId('post-card').first()
     const categorySpan = firstPost.getByText('TECH_HACKER')
     await expect(categorySpan).toBeVisible()
+  })
+
+  test('deve permitir interagir e marcar interesses musicais quando o assinante possui o mundo MUSIC ativo', async ({ request: playwrightRequest }) => {
+    // Habilita temporariamente o mundo MUSIC nos active_worlds do subscriber de teste
+    await playwrightRequest.patch(`https://vgsjpuxymtkkiaissrky.supabase.co/rest/v1/subscribers?id=eq.${SUBSCRIBER_ID}`, {
+      headers: {
+        'apikey': 'sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'Authorization': 'Bearer sb_publishable_6D8ptLACddu7D5r2SN0LTQ_RQMtS15q',
+        'Content-Type': 'application/json'
+      },
+      data: { active_worlds: ['TECH', 'MUSIC'], preferences: [] }
+    })
+
+    // Acessa a rota de preferências do assinante
+    await preferencesPage.goto(SUBSCRIBER_ID)
+
+    // Marca o checkbox de interesse musical (ROCK_INDIE)
+    await preferencesPage.toggleInterest('ROCK_INDIE')
+
+    // Salva as alterações
+    await preferencesPage.save()
+
+    // O toast de sucesso deve aparecer confirmando a ação reativa e redirecionando
+    await preferencesPage.expectSuccessToast()
   })
 })

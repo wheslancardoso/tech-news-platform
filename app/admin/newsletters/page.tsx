@@ -34,7 +34,12 @@ export default async function AdminNewslettersPage() {
            <div className="px-6 py-3 glass-card rounded-2xl border-white/10 tech-label text-muted-foreground">
             {drafts?.length || 0} Drafts em Fila
           </div>
-          <form action={generateDraft}>
+          <form action={generateDraft} className="flex items-center gap-3">
+            <select name="world" className="bg-zinc-950 text-white border-2 border-primary/20 rounded-2xl px-4 py-3 text-xs font-mono focus:border-primary outline-none h-[48px] uppercase tracking-widest cursor-pointer">
+              <option value="TECH">TECH</option>
+              <option value="MUSIC">MUSIC</option>
+              <option value="GEAR">GEAR</option>
+            </select>
             <Button type="submit" className="px-8 py-3 rounded-2xl bg-primary text-white hover:bg-white hover:text-black tech-label transition-all shadow-xl shadow-primary/20 flex items-center gap-3">
               <Zap className="w-4 h-4 fill-current" />
               Gerar Nova Edição

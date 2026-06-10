@@ -1,7 +1,28 @@
+# 🚀 Fresh News Platform - Release Notes v2.0.0 (Stable)
+
+**Data de Lançamento:** Junho 2026  
+**Status:** ✅ Stable Release - Pronto para Apresentação (15/06/2026)
+
+---
+
+## 📋 Visão Geral (v2.0.0)
+
+A versão **v2.0.0** consolida o portal Fresh News como uma plataforma editorial baseada no **Multiverso**. O sistema expande-se do nicho puramente tecnológico para integrar a vertical de **Música & Cultura Urbana** com isolamento lógico completo de posts e newsletters, mantendo a estética brutalista reativa e as melhores práticas de segurança corporativa.
+
+### 🎯 Principais Objetivos Alcançados nesta Versão
+
+- 🎹 **Multiverso da Música:** Nova vertical cobrendo Hip-Hop & Urbano, Rock & Indie, Eletrônica e Cultura Geral, chaveável pelo leitor no cabeçalho (`WorldSelector`).
+- 🛡️ **Segurança Máxima (RLS):** Habilitação de Row Level Security (RLS) restrito na tabela `subscribers` e `sources`. Transição de Server Actions no Next.js para usar `createAdminClient()` via `service_role` protegida.
+- 🗃️ **Normalização & Higienização do Banco:** Normalização de todos os 869 posts históricos para o padrão `TECH_HACKER` e suas respectivas subcategorias, além de saneamento de fontes RSS inválidas.
+- ⚙️ **Agentes de IA e Ingestão Multiverso:** Workflow do n8n reestruturado com Switch baseado em `category_hint` e classificação em 2 níveis (triagem GPT-5-mini e redação por especialistas GPT-5.4-mini).
+- 🧪 **Testes Unitários Consolidados:** 46 testes unitários do Vitest integrados e passando sem conflitos de execução com o Playwright.
+
+---
+
 # 🚀 Tech News API - Release Notes v1.1.0 (Stable)
 
 **Data de Lançamento:** Janeiro 2025  
-**Status:** ✅ Stable Release - Pronto para Apresentação
+**Status:** ✅ Legacy Stable Release
 
 ---
 

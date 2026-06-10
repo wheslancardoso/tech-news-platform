@@ -1,10 +1,10 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { GET } from '@/app/api/cli/route'
 
-// Mock do createAdminClient do Supabase
-vi.mock('@/lib/supabase/admin', () => {
+// Mock do @supabase/supabase-js
+vi.mock('@supabase/supabase-js', () => {
     return {
-        createAdminClient: vi.fn(() => ({
+        createClient: vi.fn(() => ({
             from: vi.fn().mockReturnThis(),
             select: vi.fn().mockReturnThis(),
             eq: vi.fn().mockReturnThis(),

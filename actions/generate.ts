@@ -6,7 +6,8 @@ import OpenAI from 'openai'
 
 export async function generateDraft(formData?: FormData) {
   try {
-    await generateNewsletterService()
+    const world = formData?.get('world') as string || 'TECH'
+    await generateNewsletterService(world)
     revalidatePath('/')
   } catch (error) {
     console.error('Erro ao gerar draft via Action:', error)

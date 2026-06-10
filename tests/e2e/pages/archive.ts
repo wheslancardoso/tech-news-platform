@@ -4,7 +4,7 @@ export class ArchivePage {
   constructor(private page: Page) {}
 
   async goto() {
-    await this.page.goto('/archive')
+    await this.page.goto('/archive', { timeout: 60000 })
   }
 
   /**

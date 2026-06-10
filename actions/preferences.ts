@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 export async function updatePreferences(id: string, preferences: string[]) {
   const supabase = await createClient()
@@ -17,4 +18,10 @@ export async function updatePreferences(id: string, preferences: string[]) {
 
   revalidatePath(`/preferencias/${id}`)
   return { success: true }
+}
+
+export async function savePreferencesAction(id: string, formData: FormData) {
+  const prefs = formData.getAll('preferences') as string[]
+  await updatePreferences(id, prefs)
+  redirect(`/archive?subscriber=${id}`)
 }

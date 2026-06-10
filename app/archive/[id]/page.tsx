@@ -67,8 +67,8 @@ const getCategoryTheme = (name: string) => {
   
   // --- NOVAS CATEGORIAS DE MÚSICA ---
   
-  // MUSICA_URBANA (Amarelo Ocre / Street Brutalism)
-  if (upper.includes('URBANA') || upper.includes('HIP') || upper.includes('RAP')) {
+  // HIP_HOP & URBANO (Amarelo Ocre / Street Brutalism)
+  if (upper.includes('URBANA') || upper.includes('HIP') || upper.includes('RAP') || upper.includes('HIP_HOP')) {
     return { 
       color: '#EAB308', 
       rgb: hexToRgb('#EAB308'), 
@@ -77,33 +77,33 @@ const getCategoryTheme = (name: string) => {
     };
   }
 
-  // MUSICA_ELETRONICA (Hacker / Synth / Matrix)
-  if (upper.includes('ELETRONICA') || upper.includes('TECHNO') || upper.includes('HOUSE')) {
+  // ROCK_INDIE (Red / Xerox Style)
+  if (upper.includes('ROCK') || upper.includes('INDIE')) {
     return { 
-      color: '#22C55E', 
-      rgb: hexToRgb('#22C55E'), 
+      color: '#DC2626', 
+      rgb: hexToRgb('#DC2626'), 
+      effects: ['paper_texture', 'grainy_texture'],
+      label: 'ROCK_VANGUARD' 
+    };
+  }
+
+  // ELECTRONICA & SYNTH (Roxo Neon / Synth)
+  if (upper.includes('ELECTRONICA') || upper.includes('ELETRONICA') || upper.includes('TECHNO') || upper.includes('HOUSE') || upper.includes('SYNTH')) {
+    return { 
+      color: '#A855F7', 
+      rgb: hexToRgb('#A855F7'), 
       effects: ['terminal_glow', 'scanlines', 'glitch'],
       label: 'SYNTH_PROTOCOL' 
     };
   }
 
-  // VANGUARDA_CRITICA (Monocromático / Acadêmico)
-  if (upper.includes('VANGUARDA') || upper.includes('CRITICA') || upper.includes('QUIETUS')) {
+  // CULTURA GERAL (Laranja / Magazine)
+  if (upper.includes('CULTURA') || upper.includes('GERAL') || upper.includes('BR') || upper.includes('BRASIL')) {
     return { 
-      color: '#FFFFFF', 
-      rgb: '255, 255, 255', 
-      effects: ['grainy_texture', 'subtle_glow'],
-      label: 'CRITICAL_THEORY' 
-    };
-  }
-
-  // CULTURA_BR (Brasil Tech)
-  if (upper.includes('BR') || upper.includes('BRASIL')) {
-    return { 
-      color: '#84CC16', 
-      rgb: hexToRgb('#84CC16'), 
-      effects: ['glow', 'street_glitch'],
-      label: 'BRAZIL_AXIS' 
+      color: '#F97316', 
+      rgb: hexToRgb('#F97316'), 
+      effects: ['glow'],
+      label: 'CULTURAL_THEORY' 
     };
   }
   

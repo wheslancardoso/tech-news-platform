@@ -126,14 +126,13 @@ export function ChameleonScrollObserver() {
         }
       }
 
-      // 5. CULTURA URBANA / GEARHEAD (Industrial Raw)
+      // 5. CULTURA URBANA / HIP-HOP / GEARHEAD (Industrial Raw)
       if (
         upper.includes('GEARHEAD') ||
         upper.includes('URBANA') ||
         upper.includes('HIP') ||
         upper.includes('RAP') ||
-        upper.includes('BRASIL') ||
-        upper.includes('BR')
+        upper.includes('HIP_HOP')
       ) {
         return {
           bg: 'hsl(12, 10%, 3%)', // Asfalto escuro
@@ -141,6 +140,28 @@ export function ChameleonScrollObserver() {
           primary: 'hsl(25, 90%, 50%)', // Laranja queimado
           font: 'var(--font-geist-sans), Inter, Roboto, sans-serif',
           effects: ['street_glitch', 'grainy_texture']
+        }
+      }
+
+      // 6. ROCK & INDIE (Xerox / Grunge Red)
+      if (upper.includes('ROCK') || upper.includes('INDIE')) {
+        return {
+          bg: 'hsl(0, 10%, 2%)', // Preto asfalto escuro
+          accent: 'hsl(0, 72%, 51%)', // Xerox Red
+          primary: 'hsl(0, 72%, 40%)',
+          font: 'var(--font-geist-mono), Courier New, Courier, monospace',
+          effects: ['paper_texture', 'grainy_texture']
+        }
+      }
+
+      // 7. CULTURA GERAL MÚSICA (Magazine Orange)
+      if (upper.includes('CULTURA') || upper.includes('BRASIL') || upper.includes('BR')) {
+        return {
+          bg: 'hsl(24, 15%, 3%)', // Laranja/marrom profundo
+          accent: 'hsl(24, 95%, 53%)', // Laranja
+          primary: 'hsl(24, 95%, 43%)',
+          font: 'Georgia, Times New Roman, Times, serif',
+          effects: ['glow']
         }
       }
 

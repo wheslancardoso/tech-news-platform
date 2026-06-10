@@ -1,47 +1,50 @@
-# 📱 Diagnóstico do Ecossistema Mobile: Fresh News
+# 📱 Diagnóstico do Ecossistema Mobile: Fresh News & Flutter Port
 
-Este documento detalha o estado atual da experiência mobile da plataforma Fresh News, abrangendo a arquitetura de distribuição, a interface progressiva (PWA) e as integrações.
+> **Data da última atualização:** 10/06/2026  
+> **Status:** Planejamento Finalizado (Congelado para Fase Pós-Apresentação)
 
----
-
-## 🏗️ 1. Arquitetura: "WhatsApp First"
-O Fresh News não é um app de loja (App Store/Play Store), mas sim uma **Zine Digital** entregue via WhatsApp, complementada por uma **Web App Progressiva (PWA)**.
-
-### Componentes Principais:
-- **Distribution Engine (`lib/services/distribution.ts`)**: Motor que recorta a edição mestre para as preferências de cada usuário.
-- **WhatsApp Zine**: Conteúdo entregue em Markdown Brutalista via Webhook (n8n/Twilio).
-- **Responsive Web App**: Frontend Next.js otimizado para mobile (Mobile-First).
+Este documento detalha o status da experiência móvel da plataforma Fresh News, definindo a estratégia de portabilidade da versão Web v2.0 para um **aplicativo móvel nativo em Flutter**.
 
 ---
 
-## 🎨 2. Interface & UX (Liquid Glass Premium)
-As telas mobile foram totalmente redesenhadas para a estética **Liquid Glass**, inspirada nas diretrizes de design mais modernas da Apple, com foco em profundidade, transparência e elegância.
+## 🏗️ 1. Estratégia Mobile: App Nativo Flutter
 
-### Telas Implementadas:
-- **Feed Principal**: Agora com `glass-cards` flutuantes, bordas ultra-arredondadas e desfoque de fundo (backdrop-blur).
-- **Leitura Imersiva**: Layout de leitura profunda com tipografia premium, organização em camadas translúcidas e badges de pílula.
-- **Central de Preferências**: Terminal de vidro centralizado com interações suaves e feedback visual tátil.
+Diferente do plano inicial focado exclusivamente em PWA e WhatsApp, a versão v2.0 estabelece a criação de um **aplicativo nativo compilado em Flutter (iOS e Android)**. A decisão de usar Flutter visa oferecer:
+- Performance nativa fluida a 60fps+ para scroll infinito de feeds.
+- Suporte nativo completo a push notifications e cache local offline eficiente.
+- Compartilhamento nativo no sistema operacional.
 
-### Efeitos Especiais:
-- **Layer Stacking**: Uso de camadas de vidro com diferentes níveis de opacidade para criar hierarquia visual.
-- **Dynamic Glows**: Gradientes radiais que acompanham o scroll, dando vida e movimento à interface.
-- **Micro-interações**: Transições suaves e efeitos de hover otimizados para o toque.
+### ⏳ Cronograma de Desenvolvimento
+Conforme acordado com o usuário, **o desenvolvimento do app Flutter é a última fase do ecossistema**. Toda a codificação Dart/Flutter ocorrerá apenas após a homologação completa e a apresentação da versão Web (15/06/2026).
 
 ---
 
-## ⚙️ 3. Funcionalidades de Gestão (Admin Command Center)
-- [x] **Painel Responsivo**: Interface administrativa otimizada para tablets e smartphones, permitindo curadoria "on-the-go".
-- [x] **Métricas em Tempo Real**: Visualização de KPIs (Tráfego, Conversão) em cards de vidro de alta fidelidade.
-- [x] **Curadoria Expressa**: Fluxo de aprovação/rejeição com feedback visual imediato e interações simplificadas para toque.
+## 🎨 2. UX & Temas Dinâmicos (Chameleon no Flutter)
+
+O aplicativo móvel herdará diretamente o conceito de **Digital Brutalism** e o dinamismo do **Chameleon Engine** da versão web:
+
+- **Estética Brutalista:** Layouts baseados em grades rígidas (`Table` / `CustomPaint`), cantos retos (`BorderRadius.zero`), tipografia de alto impacto (Space Grotesk via Google Fonts) e bordas grossas sólidas (`Border.all(width: 2.0)`).
+- **Chameleon Dart Engine:** Implementação de um gerenciador de estado (Provider ou Riverpod) que altera o `ThemeData` do app dinamicamente. Ao rolar para um post de IA, o accent do app se torna Cyber Cyan; ao chavear o multiverso para Música e focar em Hip-Hop, o accent muda para Gold com texturas customizadas.
 
 ---
 
-## 🚀 4. Roadmap & Próximos Passos
-- [ ] **Manifesto PWA**: Configurar `manifest.json` e ícones para instalação "Add to Home Screen".
-- [ ] **Service Workers**: Implementar cache estratégico para leitura offline das edições de vidro.
-- [ ] **Haptic Feedback**: Adicionar vibrações sutis em ações de salvar preferências e curadoria (Web API).
+## 🔌 3. Integração e Arquitetura do Flutter App
 
----
+O aplicativo consumirá diretamente as APIs integradas do Supabase, garantindo integridade e tempo real:
 
-**Última atualização:** 05/05/2026
-**Status Geral:** 🟣 100% Concluído (Interface Liquid Glass & Command Center Estabilizados)
+```
+[ App Mobile Flutter (Dart) ]
+              │
+              ├── (HTTPS REST) ──► [ Supabase Data API (Tabelas posts / newsletters) ]
+              │
+              ├── (Realtime)   ──► [ Supabase Realtime (Notificação de novos posts) ]
+              │
+              └── (HTTPS REST) ──► [ Supabase Auth (Assinantes via preferências) ]
+```
+
+### Escopo de Funcionalidades do App Mobile:
+1. **Chaveador de Multiverso (Home):** Seletor rápido no topo permitindo alternar instantaneamente entre o feed TECH e MUSIC.
+2. **Feed Reativo:** Lista de posts aprovados ordenados por afinidade local, priorizando categorias selecionadas na aba de preferências.
+3. **Leitor Brutalista:** Visualização limpa em formato de texto das matérias completas extraídas.
+4. **Gerenciador de Assinatura:** Tela de edição de perfil do assinante (`preferences` e `active_worlds`).
+5. **Push Notifications:** Alertas integrados via Edge Functions do Supabase e Firebase Cloud Messaging (FCM).

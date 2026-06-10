@@ -1,250 +1,135 @@
-# 🤖 Templates de Workflows do n8n: Agentes de IA do Fresh News
+# 🤖 Fluxo de Automação n8n: Pipeline fresh-news-platform (v2.0)
 
-Este documento contém o design do pipeline de automação e os templates estruturados em formato **JSON** para importar diretamente no seu painel do **n8n**. Ele configura os Agentes de IA especialistas em nichos para buscar, resumir, categorizar e salvar notícias automaticamente no banco de dados Supabase.
+Este documento descreve e detalha a arquitetura do workflow de automação do **n8n** integrado ao Fresh News Platform. Ele configura a ingestão autônoma de notícias de múltiplos canais RSS, deduplicação no banco de dados Supabase, raspagem de conteúdo completo e classificação agêntica em múltiplos níveis usando inteligência artificial.
 
 ---
 
-## 1. Arquitetura do Pipeline do n8n
+## 1. Arquitetura do Pipeline Real (Multiverso)
 
-O fluxo no n8n é dividido em 3 camadas principais:
-1.  **Gatilho (Cron / Webhook)**: Roda a cada 6 ou 12 horas para buscar novos feeds de notícias.
-2.  **Agentes de IA (Especialistas)**: Orquestração paralela com LLMs especialistas por categoria (IA, Dev, Sec, Música).
-3.  **Bandeja de Entrada (Supabase)**: Inserção dos registros formatados e com score técnico na tabela `public.posts`.
+O fluxo do n8n é projetado para processar posts separando-os por universos (`world = 'TECH'` ou `world = 'MUSIC'`). A separação lógica é feita no início por um Switch baseado em `category_hint` da fonte de origem.
 
 ```mermaid
 graph TD
-    Trigger[Gatilho Cron: 6/6 Horas] --> FetchRSS[Buscar Feeds RSS]
-    FetchRSS --> Router{Roteador por Tópico}
+    Trigger[Gatilho Cron: 6/6 Horas] --> FetchSources[Supabase: Ler 50 Sources]
+    FetchSources --> IngestRSS[Ingerir Feeds RSS e Extrair URLs]
+    IngestRSS --> CheckDup[Supabase: Verificar posts.url existente]
+    CheckDup -->|Duplicado| Discard[Descartar Post]
+    CheckDup -->|Novo Post| ScrapFirecrawl[Scraping: Firecrawl Markdown]
     
-    Router -->|IA Feeds| AgenteIA[Agente IA: GPT-4o / Gemini]
-    Router -->|Dev Feeds| AgenteDev[Agente Dev: Claude / GPT-4o]
-    Router -->|Sec Feeds| AgenteSec[Agente Sec: GPT-4o]
-    Router -->|Música/Cultura| AgenteMusica[Agente Música: GPT-4]
+    ScrapFirecrawl --> RouterWorld{Switch por category_hint}
     
-    AgenteIA --> InsertDB[Salvar em public.posts como pending]
-    AgenteDev --> InsertDB
-    AgenteSec --> InsertDB
-    AgenteMusica --> InsertDB
+    %% ROTA TECH
+    RouterWorld -->|Tech hints| ClassifyTech[Triagem Tech: GPT-5-mini]
+    ClassifyTech --> SwitchTech{Switch Subcategoria Tech}
+    SwitchTech -->|SEC| SpecSec[IA Especialista SEC: GPT-5.4-mini]
+    SwitchTech -->|IA| SpecIA[IA Especialista IA: GPT-5.4-mini]
+    SwitchTech -->|DEV| SpecDev[IA Especialista DEV: GPT-5.4-mini]
+    SwitchTech -->|CLOUD| SpecCloud[IA Especialista CLOUD: GPT-5.4-mini]
+    
+    %% ROTA MUSIC
+    RouterWorld -->|Music hints| ClassifyMusic[Triagem Music: GPT-5-mini]
+    ClassifyMusic --> SwitchMusic{Switch Subcategoria Music}
+    SwitchMusic -->|HIP_HOP| SpecHipHop[IA Especialista Hip-Hop: GPT-5.4-mini]
+    SwitchMusic -->|ROCK_INDIE| SpecRock[IA Especialista Rock: GPT-5.4-mini]
+    SwitchMusic -->|ELECTRONICA| SpecSynth[IA Especialista Eletrônica: GPT-5.4-mini]
+    SwitchMusic -->|CULTURA| SpecGeneral[IA Especialista Cultura: GPT-5.4-mini]
+    
+    %% INSERÇÃO NO BANCO
+    SpecSec --> InsertTech[Supabase Insert: world='TECH']
+    SpecIA --> InsertTech
+    SpecDev --> InsertTech
+    SpecCloud --> InsertTech
+    
+    SpecHipHop --> InsertMusic[Supabase Insert: world='MUSIC']
+    SpecRock --> InsertMusic
+    SpecSynth --> InsertMusic
+    SpecGeneral --> InsertMusic
 ```
 
 ---
 
-## 2. Template JSON do Workflow de Ingestão (Importar no n8n)
+## 2. Detalhes de Ingestão e Raspagem (Firecrawl)
 
-Para instalar o workflow completo:
-1. Abra o painel do seu n8n.
-2. Clique em **Workflows** -> **Add Workflow**.
-3. No canto superior direito, clique nos três pontinhos (**...**) e selecione **Import from file...** (ou simplesmente dê um `Ctrl+C` no código JSON abaixo e `Ctrl+V` diretamente na tela em branco do n8n).
+1. **Gatilho de Ingestão:** Ativado periodicamente via Cron ou manualmente no painel admin.
+2. **Leitura das Fontes:** O n8n busca todos os registros ativos (`is_active = true`) na tabela `public.sources`.
+3. **Deduplicação Inteligente:** Para cada item do feed RSS, o nó do Supabase executa um SELECT rápido na tabela `posts` filtrando por `url`. Se o registro já existir, o processamento daquele item é abortado instantaneamente.
+4. **Raspagem Estendida (Firecrawl API):** O n8n chama o scraper da API Firecrawl em `https://firecrawl.wfixtech.com.br/v1/scrape` passando a URL da notícia para extrair o conteúdo completo limpo em formato Markdown.
 
-```json
-{
-  "name": "Fresh News - Ingestão Inteligente e Agentes de IA",
-  "nodes": [
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 6
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        0,
-        240
-      ],
-      "id": "trigger_cron"
-    },
-    {
-      "parameters": {
-        "url": "https://hnrss.org/frontpage"
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        200,
-        140
-      ],
-      "id": "rss_hackernews"
-    },
-    {
-      "parameters": {
-        "url": "https://techcrunch.com/feed/"
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        200,
-        340
-      ],
-      "id": "rss_techcrunch"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.xml",
-      "typeVersion": 1,
-      "position": [
-        420,
-        240
-      ],
-      "id": "xml_parser"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Você é o Agente Editorial da Fresh News especialista no nicho de tecnologia/IA. Analise a seguinte notícia e retorne um JSON estruturado contendo:\n1. 'headline': Título técnico e focado (estilo brutalista, sem sensacionalismo).\n2. 'summary': Resumo analítico de 2 a 3 parágrafos curtos explicando o impacto prático.\n3. 'score': Nota de relevância técnica de 0 a 100.\n4. 'category': Sempre 'IA'.\n\nNotícia:\nTítulo: {{ $json.title }}\nLink: {{ $json.link }}\nDescrição: {{ $json.description }}",
-        "options": {
-          "responseFormat": "json_object"
-        }
-      },
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1.1,
-      "position": [
-        640,
-        140
-      ],
-      "id": "agente_ia"
-    },
-    {
-      "parameters": {
-        "operation": "upsert",
-        "schema": {
-          "__rls": true
-        },
-        "table": "posts",
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "title": "={{ $json.headline }}",
-            "url": "={{ $json.link }}",
-            "summary": "={{ $json.summary }}",
-            "score": "={{ $json.score }}",
-            "category": "={{ $json.category }}",
-            "status": "pending"
-          }
-        }
-      },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [
-        900,
-        240
-      ],
-      "id": "supabase_insert"
-    }
-  ],
-  "connections": {
-    "trigger_cron": {
-      "main": [
-        [
-          {
-            "node": "rss_hackernews",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "rss_techcrunch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "rss_hackernews": {
-      "main": [
-        [
-          {
-            "node": "xml_parser",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "rss_techcrunch": {
-      "main": [
-        [
-          {
-            "node": "xml_parser",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "xml_parser": {
-      "main": [
-        [
-          {
-            "node": "agente_ia",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "agente_ia": {
-      "main": [
-        [
-          {
-            "node": "supabase_insert",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "settings": {
-    "executionOrder": "v1"
+---
+
+## 3. Classificadores e Especialistas de IA
+
+A classificação ocorre em dois níveis para garantir alta precisão e baixo custo de tokens:
+
+### Nível 1: Triagem & Direcionamento (GPT-5-mini)
+O nó de triagem analisa o título e o Markdown da notícia raspada para categorizar o post.
+
+* **Prompt do Classificador Tech:**
+  ```text
+  Você é o Editor-Chefe de Triagem da Fresh News (Tech).
+  Sua missão é analisar o texto fornecido e classificar a notícia na subcategoria correta.
+  Subcategorias disponíveis:
+  - SEC: Vulnerabilidades, cibersegurança, exploits, privacidade.
+  - IA: Inteligência Artificial, LLMs, Machine Learning.
+  - DEV: Linguagens de programação, engenharia de software, frameworks.
+  - CLOUD: Infraestrutura, cloud computing, Docker, DevOps.
+
+  Retorne rigorosamente apenas um JSON com:
+  {
+    "sub_category": "SEC" | "IA" | "DEV" | "CLOUD",
+    "routing_reason": "Breve justificativa."
   }
-}
-```
+  ```
+
+* **Prompt do Classificador Musical [NOVO]:**
+  ```text
+  Você é o Editor-Chefe de Triagem da Fresh News (Music).
+  Sua missão é analisar a notícia sobre música e classificá-la na subcategoria correta.
+  Subcategorias disponíveis:
+  - HIP_HOP: Cultura urbana, rap, hip-hop, produções e beats.
+  - ROCK_INDIE: Rock, indie, guitarras, festivais e bandas.
+  - ELECTRONICA: Eletrônica, techno, DJs, sintetizadores e sintetizadores modulares.
+  - CULTURA: Fallback musical, cultura geral, festivais de múltiplos estilos.
+
+  Retorne rigorosamente apenas um JSON com:
+  {
+    "sub_category": "HIP_HOP" | "ROCK_INDIE" | "ELECTRONICA" | "CULTURA",
+    "routing_reason": "Breve justificativa."
+  }
+  ```
+
+### Nível 2: Redação Especialista & Sumarização (GPT-5.4-mini)
+O post é encaminhado para a IA especialista na subcategoria correspondente, responsável por:
+1. Redigir um resumo técnico executivo de alto impacto técnico em pt-BR.
+2. Calcular o score de relevância da notícia de 0 a 100.
+3. Formatar o resumo para o WhatsApp (teaser minimalista).
+4. Gerar as cores de destaque e estilos no `theme_config` JSONB.
 
 ---
 
-## 3. Guia de Configuração dos Agentes
+## 4. Estrutura de Inserção no Supabase (`public.posts`)
 
-### 1. Agente de IA (`agente_ia`)
-*   **Prompt de Engenharia**: Focado em extrair o impacto em infraestrutura, arquitetura ou algoritmos de IA.
-*   **Modelos Recomendados**: `gpt-4o` ou `gemini-1.5-pro` (devido à alta precisão em saídas estruturadas JSON).
+Ao final do processamento agêntico, o n8n executa a inserção do post com os seguintes campos mapeados:
 
-### 2. Agente de Cibersegurança (`agente_sec`)
-*   **Prompt de Engenharia**: Focado em analisar vetores de ataque, vulnerabilidades conhecidas (CVEs), exploits de dia zero e impactos geopolíticos de breaches.
-*   **Modelo Recomendado**: `gpt-4o-mini` (rápido e econômico para análise de grandes logs de texto de feeds de segurança).
-
-### 3. Agente de Música e Cultura (`agente_musica`)
-*   **Prompt de Engenharia**: Focado em tendências sonoras, novos sintetizadores baseados em rede neural, movimentos artísticos underground, lançamentos musicais independentes e festivais eletrônicos avant-garde.
-*   **Modelo Recomendado**: `gpt-4` ou `claude-3-haiku` (excelente sensibilidade estética e riqueza poética).
+| Campo do Banco | Origem da Payload do n8n | Descrição |
+|:---|:---|:---|
+| `title` | `{{ $json.headline }}` | Título limpo brutalista gerado pela IA. |
+| `url` | `{{ $json.link }}` | Link original da notícia. |
+| `content` | `{{ $json.markdown }}` | Conteúdo completo limpo extraído pelo Firecrawl. |
+| `summary` | `{{ $json.summary }}` | Resumo executivo refinado pela IA especialista. |
+| `score` | `{{ $json.score }}` | Nota de relevância técnica ou cultural. |
+| `category` | `{{ $json.category }}` | `'TECH_HACKER'` para Tech, `'MUSIC'` para Música. |
+| `sub_category` | `{{ $json.sub_category }}` | Subcategoria específica do nicho correspondente. |
+| `world` | `{{ $json.world }}` | Universo/Mundo (`'TECH'` ou `'MUSIC'`). |
+| `theme_config` | `{{ $json.theme_config }}` | Cores HSL e efeitos visuais chameleon. |
+| `whatsapp_summary`| `{{ $json.whatsapp_teaser }}` | Versão minimalista de mensagem com emoji. |
+| `status` | `'pending'` | Inserido como pendente para moderação no Admin. |
 
 ---
 
-## 4. Integração com WhatsApp (Evolution API no n8n)
+## 5. Webhook de Distribuição (WhatsApp & Email)
 
-Para disparar as mensagens no WhatsApp via n8n quando a newsletter for publicada no Next.js:
-1.  O Next.js envia o Webhook HTTP POST contendo a payload minimalista compilada em `distributeNewsletter` para a URL do trigger do n8n.
-2.  No n8n, configure um nó **Evolution API** (ou HttpRequest comum) apontando para a sua instância Evolution com os seguintes parâmetros:
-    *   **Endpoint**: `https://sua-instancia.com/message/sendText/sua-sessao`
-    *   **Headers**:
-        *   `apikey`: `sua-apikey-evolution`
-        *   `Content-Type`: `application/json`
-    *   **Body (JSON)**:
-        ```json
-        {
-          "number": "{{ $json.to }}",
-          "options": {
-            "delay": 2000,
-            "linkPreview": true
-          },
-          "textMessage": {
-            "text": "{{ $json.message }}"
-          }
-        }
-        ```
-3.  O delay de 2000ms configurado nas opções da Evolution API garante que haja um espaçamento orgânico de 2 segundos entre mensagens para diferentes assinantes, mitigando riscos de banimento de conta.
+Quando o editor aprova as notícias e clica em **"Publicar"** no painel administrativo `/admin`:
+1. O Next.js faz o deploy da edição e dispara um POST HTTP para o Webhook de Distribuição do n8n.
+2. O n8n segmenta os emails usando o motor de afinidades.
+3. O n8n envia a requisição HTTP POST formatada para o webhook da **Evolution API** para disparar no WhatsApp dos usuários que possuem o mundo ativo e preferências correspondentes.

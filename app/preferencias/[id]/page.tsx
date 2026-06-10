@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { notFound, redirect } from 'next/navigation'
-import { updatePreferences } from '@/actions/preferences'
+import { notFound } from 'next/navigation'
+import { savePreferencesAction } from '@/actions/preferences'
 
 interface PreferencesPageProps {
   params: Promise<{
@@ -8,12 +8,19 @@ interface PreferencesPageProps {
   }>
 }
 
-const CATEGORIES = [
+const TECH_CATEGORIES = [
   { id: 'TECH_HACKER', label: '💻 TECH_HACKER // DEV & SEGURANÇA' },
   { id: 'GEARHEAD', label: '🏎️ GEARHEAD // PERFORMANCE & MOTOR' },
   { id: 'SYNTH_AESTHETICS', label: '🔮 SYNTH_AESTHETICS // ARTE DIGITAL' },
   { id: 'IA', label: '🤖 IA // INTELIGÊNCIA ARTIFICIAL' },
   { id: 'SEGURANÇA', label: '🛡️ SEGURANÇA // CYBERSECURITY' }
+]
+
+const MUSIC_CATEGORIES = [
+  { id: 'HIP_HOP', label: '🎤 HIP-HOP // CULTURA URBANA & BEATS' },
+  { id: 'ROCK_INDIE', label: '🎸 ROCK & INDIE // VANGUARDA ALTERNATIVA' },
+  { id: 'ELECTRONICA', label: '🎹 ELETRÔNICA // SYNTH & TECHNO' },
+  { id: 'CULTURA', label: '🌎 CULTURA // FESTIVAIS & MUSICA INDEPENDENTE' }
 ]
 
 export default async function PreferencesPage({ params }: PreferencesPageProps) {
@@ -30,12 +37,11 @@ export default async function PreferencesPage({ params }: PreferencesPageProps) 
     notFound()
   }
 
-  async function handleSubmit(formData: FormData) {
-    'use server'
-    const prefs = formData.getAll('preferences') as string[]
-    await updatePreferences(id, prefs)
-    redirect(`/archive?subscriber=${id}`)
-  }
+  const activeWorlds = subscriber.active_worlds || ['TECH']
+  const categoriesToShow = [
+    ...(activeWorlds.includes('TECH') ? TECH_CATEGORIES : []),
+    ...(activeWorlds.includes('MUSIC') ? MUSIC_CATEGORIES : [])
+  ]
 
   return (
     <div className="min-h-screen bg-black text-green-500 font-mono flex flex-col items-center justify-center p-4 relative overflow-hidden bg-scanlines">
@@ -60,13 +66,13 @@ export default async function PreferencesPage({ params }: PreferencesPageProps) 
           </p>
         </header>
 
-        <form action={handleSubmit} className="space-y-8">
+        <form action={savePreferencesAction.bind(null, id)} className="space-y-8">
           <div className="space-y-3">
             <p className="text-xs font-black text-green-400 uppercase tracking-[0.2em] mb-4 border-b border-green-500/20 pb-2">
               SELECIONE SEUS INTERESSES DE LEITURA:
             </p>
             
-            {CATEGORIES.map((cat) => {
+            {categoriesToShow.map((cat) => {
               const isChecked = subscriber.preferences?.includes(cat.id);
               return (
                 <label 
